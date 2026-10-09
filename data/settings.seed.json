@@ -1,0 +1,28 @@
+{
+  "orchestratorUrl": "https://217.216.82.209:15443",
+  "projects": [
+    {
+      "id": "fonomeets",
+      "name": "FonoMeets",
+      "description": "Volver a hablar. Una experiencia social para conocer a las personas que están en el mismo bar, local o evento, sin compartir tu número de teléfono. Conversaciones y nuevas conexiones que empiezan en el mundo real.",
+      "category": "CONEXIONES · EXPERIENCIAS SOCIALES",
+      "repository": "romancanoniero/fonomeets",
+      "published": true,
+      "screenshots": [
+        "/projects/fonomeets/onboarding.png",
+        "/projects/fonomeets/network.png",
+        "/projects/fonomeets/camera.png"
+      ],
+      "demoUrl": "https://fonomeets.com/app/",
+      "privateUrl": "https://fonomeets.com/admin/",
+      "iosUrl": "",
+      "androidUrl": "",
+      "modules": [
+        {
+          "label": "Panel del local",
+          "url": "https://fonomeets.com/local/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+name: improvingyourreality
+services:
+  site:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./storage:/data
+    networks:
+      - edge
+    mem_limit: 384m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: edge
+      traefik.http.routers.iyr-public.rule: Host(`improvingyourreality.com`) || Host(`www.improvingyourreality.com`)
+      traefik.http.routers.iyr-public.entrypoints: websecure
+      traefik.http.routers.iyr-public.tls.certresolver: le
+      traefik.http.services.iyr.loadbalancer.server.port: '3180'
+      traefik.http.routers.iyr-acme.rule: (Host(`improvingyourreality.com`) || Host(`www.improvingyourreality.com`)) && PathPrefix(`/.well-known/acme-challenge/`)
+      traefik.http.routers.iyr-acme.entrypoints: websecure
+      traefik.http.routers.iyr-acme.tls: 'true'
+      traefik.http.routers.iyr-acme.priority: '10000'
+      traefik.http.routers.iyr-acme.service: acme-http@internal
+networks:
+  edge:
+    external: true

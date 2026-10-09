@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+data/*.json
+!data/repositories.seed.json
+!data/settings.seed.json
+
+storage
+__pycache__
+*.pyc

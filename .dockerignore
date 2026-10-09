@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.git
+data/settings.json
+tests
+
+storage
+__pycache__
+*.pyc
