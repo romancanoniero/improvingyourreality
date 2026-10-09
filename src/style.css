@@ -568,6 +568,62 @@ select {
 .ecosystem p {
   font-size: 0.95rem;
 }
+.platforms {
+  margin-top: 28px;
+  border-top: 1px solid #d2cfc5;
+  padding-top: 18px;
+}
+.platforms h4 {
+  margin: 0 0 14px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6b716c;
+}
+.platforms > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #c3c9bd;
+  border-radius: 6px;
+  padding: 10px 16px 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+.platform svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.platform-mac svg {
+  color: #1d1d1f;
+}
+.platform-windows svg {
+  color: #0078d4;
+}
+.platform-android svg,
+.platform-androidtv svg {
+  color: #3ddc84;
+}
+.platform:hover,
+.platform:focus-visible {
+  background: #303d36;
+  border-color: #303d36;
+  color: white;
+}
+.platform:hover svg,
+.platform:focus-visible svg {
+  color: currentColor;
+}
 .related-suggestions > div {
   padding: 0.7rem 0;
   border-top: 1px solid #d2cfc5;
