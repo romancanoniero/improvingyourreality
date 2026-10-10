@@ -1,0 +1,64 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:2400px;height:1500px;overflow:hidden;font-family:Inter,sans-serif;position:relative;
+background:radial-gradient(1500px 900px at 50% 38%,#ffffff 0%,#f4f5f7 62%,#e9ebef 100%)}
+img{display:block;width:100%;height:100%;object-fit:cover;object-position:top left}
+.floor{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(20,24,34,.22),rgba(20,24,34,0));filter:blur(6px)}
+
+/* Projector screen hanging from the ceiling */
+.proj{position:absolute;left:70px;top:40px;width:1080px}
+.proj .case{height:34px;margin:0 -26px;border-radius:17px;background:linear-gradient(#fdfdfd,#d9dce2 55%,#b9bdc6);box-shadow:0 10px 22px rgba(20,24,34,.18)}
+.proj .case:before,.proj .case:after{content:'';position:absolute;top:-40px;width:3px;height:40px;background:#b8bcc4}
+.proj .case:before{left:120px}.proj .case:after{right:120px}
+.proj .cloth{background:#fbfbfc;padding:22px 22px 40px;box-shadow:0 26px 60px rgba(20,24,34,.16);position:relative}
+.proj .cloth .scr{aspect-ratio:16/9;overflow:hidden;outline:3px solid #15171c}
+.proj .bar{height:12px;margin:0 6px;border-radius:0 0 8px 8px;background:linear-gradient(#cfd2d8,#9fa4ad)}
+.proj .pull{width:4px;height:44px;margin:0 auto;background:#a9adb5;border-radius:2px}
+.proj .pull:after{content:'';display:block;width:22px;height:22px;margin:40px 0 0 -9px;border-radius:50%;background:#9fa4ad}
+
+/* iMac */
+.imac{position:absolute;left:1170px;top:150px;width:1110px}
+.imac .body{background:linear-gradient(#f2f3f5,#dfe2e7);border-radius:26px;padding:22px 22px 0;box-shadow:0 30px 70px rgba(20,24,34,.22),0 0 0 1px rgba(0,0,0,.06) inset}
+.imac .glass{background:#0b0d12;border-radius:10px;padding:16px}
+.imac .scr{aspect-ratio:16/9;overflow:hidden;border-radius:2px}
+.imac .chin{height:92px;display:flex;align-items:center;justify-content:center}
+.imac .chin i{width:30px;height:30px;border-radius:50%;background:linear-gradient(#cfd3d9,#eef0f3);box-shadow:0 1px 1px rgba(0,0,0,.12) inset}
+.imac .neck{width:230px;height:150px;margin:0 auto;background:linear-gradient(90deg,#a9aeb7,#e6e8ec 45%,#b3b8c1);clip-path:polygon(14% 0,86% 0,100% 100%,0 100%)}
+.imac .foot{width:360px;height:18px;margin:0 auto;border-radius:3px 3px 10px 10px;background:linear-gradient(#dfe2e6,#9ea3ad);box-shadow:0 10px 18px rgba(20,24,34,.22)}
+
+/* Laptop */
+.lap{position:absolute;left:300px;top:800px;width:900px}
+.lap .lid{background:#16181d;border-radius:24px 24px 0 0;padding:20px 20px 26px;box-shadow:0 0 0 2px #c9ccd3 inset}
+.lap .scr{aspect-ratio:16/10;overflow:hidden;border-radius:4px;background:#0b0d12}
+.lap .base{height:30px;margin:0 -74px;background:linear-gradient(#eef0f3,#c4c8cf 60%,#a7acb5);border-radius:2px 2px 30px 30px;position:relative}
+.lap .base:before{content:'';position:absolute;left:50%;top:0;width:190px;height:10px;margin-left:-95px;background:linear-gradient(#bfc3ca,#d9dce1);border-radius:0 0 12px 12px}
+
+/* Tablet (landscape) */
+.tab{position:absolute;left:1700px;top:900px;width:640px;background:#1a1c21;border-radius:36px;padding:24px;box-shadow:0 0 0 3px #d4d7dd inset,0 34px 70px rgba(20,24,34,.28)}
+.tab .scr{aspect-ratio:1180/820;overflow:hidden;border-radius:12px}
+
+/* Phone */
+.ph{position:absolute;left:1380px;top:790px;width:252px;background:#15171c;border-radius:44px;padding:11px;box-shadow:0 0 0 3px #cfd3d9 inset,0 36px 70px rgba(20,24,34,.32)}
+.ph .scr{aspect-ratio:390/844;overflow:hidden;border-radius:34px;position:relative;background:#0e1016;padding-top:34px}
+.ph .scr img{height:auto}
+.ph .scr:after{content:'';position:absolute;top:10px;left:50%;width:80px;height:24px;margin-left:-40px;background:#000;border-radius:14px}
+
+.tag{position:absolute;right:80px;top:56px;text-align:right;color:#1b1f29}
+.tag b{display:block;font:700 30px Inter;letter-spacing:.02em}
+.tag span{font:500 19px Inter;letter-spacing:.22em;text-transform:uppercase;color:#7a808c}
+</style></head><body>
+<div class="floor" style="left:1400px;top:1046px;width:720px;height:50px"></div>
+<div class="floor" style="left:200px;top:1350px;width:1120px;height:60px"></div>
+<div class="floor" style="left:1660px;top:1365px;width:720px;height:44px"></div>
+<div class="floor" style="left:1350px;top:1335px;width:320px;height:36px"></div>
+
+<div class="tag"><b>FonoMeets Fun</b><span>Fonomusic en todas las pantallas</span></div>
+
+<div class="proj"><div class="case"></div><div class="cloth"><div class="scr"><img src="proyector.png"></div></div><div class="bar"></div></div>
+<div class="imac"><div class="body"><div class="glass"><div class="scr"><img src="imac.png"></div></div><div class="chin"><i></i></div></div><div class="neck"></div><div class="foot"></div></div>
+<div class="lap"><div class="lid"><div class="scr"><img src="laptop.png"></div></div><div class="base"></div></div>
+<div class="tab"><div class="scr"><img src="tablet.png"></div></div>
+<div class="ph"><div class="scr"><img src="phone.png"></div></div>
+</body></html>
