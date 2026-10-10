@@ -2240,9 +2240,9 @@ function sonarAlTocar(player, youtube, now, key) {
     setTimeout(() => {
       if (ytPlayer !== player || stageKey !== key) return;
       ytSonidoPendiente = false;
-      if (ytMudo() || ytEstado !== 1) crearPlayerYoutube(youtube, now, key, true);
+      if (ytMudo() || (ytEstado !== 1 && ytEstado !== 3)) crearPlayerYoutube(youtube, now, key, true);
       else avisoReproducir();
-    }, 1500);
+    }, 2000);
   };
   document.addEventListener('pointerdown', alTocar, true);
 }
