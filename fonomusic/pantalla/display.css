@@ -1968,3 +1968,413 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 .elige-piel button { display: grid; gap: 2px; min-width: 96px; padding: 8px 14px; border-radius: 12px; text-align: left; }
 .elige-piel button b { font-weight: 700; }
 .elige-piel button small { margin: 0; font-size: 11px; opacity: .7; }
+
+/* Manga: H2, H3 y lámina L2. Tinta negra, papel crema y rojo hanko como único acento. */
+.escena[data-piel='manga'] {
+  --manga-titulo: 'Permanent Marker', 'Zen Maru Gothic', Impact, sans-serif;
+  --manga-texto: Kalam, 'Zen Maru Gothic', 'Comic Sans MS', sans-serif;
+}
+.escena[data-piel='manga'][data-fondo='juego'] {
+  background: #e8d4a8 url('./arte/manga/fondo.webp') center / cover no-repeat;
+}
+
+.escena[data-piel='manga'] .fx-sello-hanko,
+.escena[data-piel='manga'] .escena-capa[data-tipo='ruleta'] .fx-sello-hanko,
+.escena[data-piel='manga'] .escena-capa[data-tipo='votacion'] .fx-sello-hanko {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: clamp(104px, 15cqh, 172px);
+  aspect-ratio: 1;
+  margin: 0 auto 1.2cqh;
+  padding: 0 !important;
+  border: 5px solid #111;
+  border-radius: 50%;
+  background:
+    linear-gradient(transparent 33%, #111 33% 35.5%, #fff6dc 35.5% 64.5%, #111 64.5% 67%, transparent 67%),
+    radial-gradient(circle at 34% 30%, #d7334e, #c41e3a 60%, #a3142c);
+  color: #111;
+  font: 400 clamp(17px, 2.7cqh, 30px)/1 var(--manga-titulo) !important;
+  letter-spacing: 0;
+  box-shadow: 6px 6px 0 #111 !important;
+  transform: rotate(-8deg) !important;
+}
+
+.escena[data-piel='manga'] .escena-capa[data-tipo='match'] .escena-sello { display: none; }
+.escena[data-piel='manga'] .fx-lienzo-tinta canvas { filter: drop-shadow(10px 12px 0 rgba(17, 17, 17, .18)); }
+
+.escena[data-piel='manga'] .fx-ficha-tinta {
+  position: relative;
+  border: 4px solid #111;
+  border-radius: 6px;
+  background: #fff6dc;
+  box-shadow: 7px 8px 0 #c41e3a;
+  color: #111;
+  font: 700 clamp(13px, 2.3cqh, 24px)/1.1 var(--manga-texto);
+}
+.escena[data-piel='manga'] .fx-ficha-tinta .escena-elegido img {
+  border: 4px solid #111;
+  box-shadow: 0 0 0 4px #fff6dc, 0 0 0 8px #c41e3a, 0 0 0 11px #111;
+}
+.escena[data-piel='manga'] .escena-centro .fx-ficha-tinta,
+.escena[data-piel='manga'] .escena-pila.is-salon .fx-ficha-tinta {
+  gap: clamp(30px, 4.4cqw, 70px);
+  padding: clamp(16px, 2.6cqh, 28px) clamp(18px, 2.6cqw, 34px);
+}
+.escena[data-piel='manga'] .escena-centro .fx-ficha-tinta .escena-elegido span,
+.escena[data-piel='manga'] .escena-pila.is-salon .fx-ficha-tinta .escena-elegido span {
+  margin-top: 1cqh;
+  padding: .2em .9em;
+  border: 3px solid #111;
+  background: #fff;
+  color: #111;
+}
+.escena[data-piel='manga'] .escena-centro .fx-ficha-tinta::after,
+.escena[data-piel='manga'] .escena-pila.is-salon .fx-ficha-tinta::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(clamp(16px, 2.6cqh, 28px) + min(7cqh, 4cqw));
+  width: clamp(30px, 4.6cqh, 52px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Cpath d='M26 44 C12 34 6 26 6 18 C6 11 11 7 17 7 C21 7 24 9 26 13 C28 9 31 7 35 7 C41 7 46 11 46 18 C46 26 40 34 26 44Z' fill='%23c41e3a' stroke='%23111' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M15 15 q-3 3 -2 7' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M47 6 l4 -4 M49 14 l3 0 M3 8 l-2 -4' stroke='%23111' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.escena[data-piel='manga'] .escena-centro .fx-ficha-tinta::before {
+  content: '';
+  position: absolute;
+  right: clamp(-22px, -1.8cqh, -12px);
+  top: clamp(-24px, -2cqh, -14px);
+  width: clamp(34px, 5cqh, 56px);
+  aspect-ratio: 5 / 4;
+  transform: rotate(14deg);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 40'%3E%3Cpath d='M6 34 L3 10 L16 21 L25 5 L34 21 L47 10 L44 34Z' fill='%23111' stroke='%23111' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M9 29 L41 29' stroke='%23fff6dc' stroke-width='2.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.escena[data-piel='manga'] .escena-pila.is-tira .fx-ficha-tinta {
+  padding: 4px 14px 4px 5px;
+  gap: 8px;
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff6dc;
+  box-shadow: 4px 5px 0 #c41e3a;
+  font-size: clamp(13px, 1.6cqh, 17px);
+}
+.escena[data-piel='manga'] .escena-pila.is-tira .fx-ficha-tinta .escena-elegido span { font-size: clamp(13px, 1.6cqh, 17px); max-width: 9ch; }
+.escena[data-piel='manga'] .escena-pila.is-tira .fx-ficha-tinta .escena-elegido img {
+  width: clamp(30px, 4cqh, 44px);
+  height: clamp(30px, 4cqh, 44px);
+  border-width: 2.5px;
+  box-shadow: 0 0 0 2px #c41e3a;
+}
+.escena[data-piel='manga'] .escena-pila.is-tira .fx-apila-tinta:last-child { animation: fx-tira-tinta .6s cubic-bezier(.15, 1.4, .3, 1) both; }
+@keyframes fx-tira-tinta {
+  from { transform: translate(-18cqw, -40cqh) scale(2) rotate(-10deg); opacity: 0; }
+  60% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+
+.escena[data-piel='manga'] .escena-rechazo { filter: none; }
+.escena[data-piel='manga'] .fx-rechazo-tinta .fx-ficha-tinta { filter: grayscale(1) contrast(1.1); box-shadow: 7px 8px 0 #111; }
+.escena[data-piel='manga'] .fx-rechazo-tinta::before {
+  content: '';
+  position: absolute;
+  inset: -6% -10%;
+  z-index: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M18 14 L86 84 M84 12 L16 88' stroke='%23c41e3a' stroke-width='13' stroke-linecap='round'/%3E%3C/svg%3E") center / 62% no-repeat;
+  animation: fx-tinta-tacha .45s cubic-bezier(.2, 1.5, .4, 1) .15s both;
+}
+.escena[data-piel='manga'] .fx-rechazo-tinta::after {
+  content: 'NO';
+  position: absolute;
+  right: -18%;
+  bottom: -14%;
+  z-index: 2;
+  padding: .06em .22em;
+  border: 6px solid #c41e3a;
+  border-radius: 10px;
+  background: rgba(255, 246, 220, .7);
+  color: #c41e3a;
+  font: 400 clamp(56px, 11cqh, 118px)/1 var(--manga-titulo);
+  transform: rotate(-12deg);
+  animation: fx-tinta-sella .4s cubic-bezier(.2, 1.6, .4, 1) .35s both;
+}
+@keyframes fx-tinta-tacha { from { transform: scale(1.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fx-tinta-sella { from { transform: rotate(-12deg) scale(2.2); opacity: 0; } to { transform: rotate(-12deg); opacity: 1; } }
+
+.escena[data-piel='manga'] .escena-capa[data-tipo='votacion'] h2 {
+  font: 400 clamp(20px, 4cqh, 44px)/1.1 var(--manga-titulo);
+  color: #111;
+  -webkit-text-stroke: 0;
+  text-shadow: 3px 3px 0 #fff6dc, -2px -2px 0 #fff6dc, 2px -2px 0 #fff6dc, -2px 2px 0 #fff6dc, 5px 5px 0 #c41e3a;
+}
+.escena[data-piel='manga'] .escena-opcion {
+  position: relative;
+  width: min(24cqw, 17rem);
+  flex-basis: min(24cqw, 17rem);
+  padding: clamp(8px, 1.4cqh, 16px);
+  border: 4px solid #111;
+  border-radius: 6px;
+  background: #fff6dc;
+  box-shadow: 6px 7px 0 #111;
+  color: #111;
+  transition: transform .35s cubic-bezier(.15, 1.4, .3, 1), opacity .35s ease;
+}
+.escena[data-piel='manga'] .escena-opcion img {
+  width: min(22cqh, 14cqw);
+  height: min(22cqh, 14cqw);
+  border: 3px solid #111;
+  border-radius: 2px;
+}
+.escena[data-piel='manga'] .escena-opcion strong { font: 700 clamp(14px, 2.1cqh, 21px)/1.15 var(--manga-texto); }
+.escena[data-piel='manga'] .escena-opcion.is-ganador {
+  z-index: 1;
+  border-color: #c41e3a;
+  border-width: 5px;
+  transform: scale(1.1) rotate(-1.5deg);
+  box-shadow: 9px 10px 0 #c41e3a;
+}
+.escena[data-piel='manga'] .escena-opcion.is-ganador::before {
+  content: '勝';
+  position: absolute;
+  right: -18px;
+  top: -20px;
+  display: grid;
+  place-items: center;
+  width: clamp(54px, 8.4cqh, 90px);
+  aspect-ratio: 1;
+  border: 4px solid #111;
+  border-radius: 50%;
+  background: #c41e3a;
+  color: #fff6dc;
+  font: 900 clamp(30px, 5cqh, 54px)/1 'Zen Maru Gothic', sans-serif;
+  box-shadow: 3px 3px 0 #111;
+  transform: rotate(-10deg);
+  animation: fx-tinta-sella .4s cubic-bezier(.2, 1.6, .4, 1) both;
+}
+.escena[data-piel='manga'] .escena-opciones:has(.is-ganador) .escena-opcion:not(.is-ganador) { opacity: .45; filter: grayscale(.6); }
+
+.escena[data-piel='manga'] .escena-capa[data-tipo='match'] .escena-marco {
+  padding: 8px 14px;
+  border: 4px solid #111 !important;
+  border-radius: 999px;
+  background: #fff6dc !important;
+  box-shadow: 7px 8px 0 #c41e3a !important;
+  color: #111;
+}
+.escena[data-piel='manga'] .escena-capa[data-tipo='match'] .escena-marco:has(.escena-match-foto) { max-width: min(70cqw, 44rem); }
+.escena[data-piel='manga'] .escena-match-par { gap: 14px; }
+.escena[data-piel='manga'] .escena-match-foto {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(40px, 6.4cqh, 68px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #c4a86a;
+  color: #111;
+  font-weight: 700;
+  border: 4px solid #111;
+  box-shadow: 0 0 0 3px #c41e3a;
+}
+.escena[data-piel='manga'] .escena-match h2 { white-space: nowrap; color: #111; font: 700 clamp(15px, 2.4cqh, 26px)/1.1 var(--manga-texto); }
+.escena[data-piel='manga'] .escena-match p {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  color: #c41e3a;
+  opacity: 1;
+  font: 400 clamp(12px, 1.6cqh, 16px)/1 var(--manga-titulo);
+}
+.escena[data-piel='manga'] .escena-match p::before {
+  content: '';
+  width: 34px;
+  height: 32px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Cpath d='M26 44 C12 34 6 26 6 18 C6 11 11 7 17 7 C21 7 24 9 26 13 C28 9 31 7 35 7 C41 7 46 11 46 18 C46 26 40 34 26 44Z' fill='%23c41e3a' stroke='%23111' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M15 15 q-3 3 -2 7' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: fx-latido 1s ease-in-out infinite;
+}
+
+.escena[data-piel='manga'] .sms-marco {
+  --sms-blanco-in: #fff;
+  --sms-blanco-out: #fff6dc;
+  --sms-tinta: #111;
+  --sms-tinta-out: #111;
+  --sms-vol-in: 0 0 0 3px #111, 5px 6px 0 3px #111;
+  --sms-vol-out: 0 0 0 3px #111, 5px 6px 0 3px #c41e3a;
+  --sms-fuente: Kalam, 'Zen Maru Gothic', 'Comic Sans MS', sans-serif;
+}
+.escena[data-piel='manga'] .sms-burbuja { border: 0; font-weight: 700 !important; border-radius: 16px; }
+.escena[data-piel='manga'] .sms-burbuja::before { content: none; }
+.escena[data-piel='manga'] .sms-burbuja::after {
+  bottom: -12px;
+  width: 20px;
+  height: 16px;
+  filter: drop-shadow(2.5px 0 0 #111) drop-shadow(-2.5px 0 0 #111) drop-shadow(0 2.5px 0 #111);
+}
+.escena[data-piel='manga'] .sms-fila.is-in .sms-burbuja::after { background: #fff; }
+.escena[data-piel='manga'] .sms-fila.is-out .sms-burbuja::after { background: #fff6dc; }
+.escena[data-piel='manga'] .sms-avatar { border: 3px solid #111; outline: 0; box-shadow: 0 0 0 3px #c41e3a; background: #c4a86a; }
+.escena[data-piel='manga'] .sms-avatar.is-hueco { color: #111; }
+.escena[data-piel='manga'] .escena-cuerpo .sms-meta,
+.escena[data-piel='manga'] .sms-meta {
+  color: #111;
+  font-weight: 700 !important;
+  text-shadow: 1.5px 1.5px 0 #fff6dc, -1.5px -1.5px 0 #fff6dc, 1.5px -1.5px 0 #fff6dc, -1.5px 1.5px 0 #fff6dc;
+}
+.escena[data-piel='manga'] .sms-fila.is-out .sms-meta strong { color: #c41e3a; }
+.escena[data-piel='manga'] .sms-fila.is-nuevo .sms-burbuja { animation: fx-tinta-golpe .45s cubic-bezier(.15, 1.5, .3, 1) both; }
+@keyframes fx-tinta-golpe { from { transform: scale(1.18) rotate(-3deg); } to { transform: none; } }
+
+/* Ráfaga de H2: aros rojos concéntricos con líneas de concentración en tinta, compacta y centrada. */
+.escena[data-piel='manga'] .fx-impacto-don {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 60cqh;
+  height: 60cqh;
+  margin: -30cqh 0 0 -30cqh;
+  background: none;
+  animation: fx-estallido-tinta .8s cubic-bezier(.15, 1.2, .3, 1) both;
+}
+.escena[data-piel='manga'] .fx-impacto-don::before,
+.escena[data-piel='manga'] .fx-impacto-don::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.escena[data-piel='manga'] .fx-impacto-don::before {
+  background: repeating-conic-gradient(from 2deg, #111 0 1.6deg, transparent 1.6deg 9deg, #111 9deg 10deg, transparent 10deg 17deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 64%, #000 66% 96%, transparent 98%);
+  mask: radial-gradient(circle closest-side, transparent 0 64%, #000 66% 96%, transparent 98%);
+}
+.escena[data-piel='manga'] .fx-impacto-don::after {
+  background: radial-gradient(circle closest-side, transparent 0 46%, #c41e3a 46.5% 49.5%, transparent 50% 54%, #c41e3a 54.5% 56.5%, transparent 57%);
+}
+@keyframes fx-estallido-tinta { 0% { transform: scale(.35); opacity: 0; } 20% { opacity: 1; } 70% { opacity: 1; } 100% { transform: scale(1.18); opacity: 0; } }
+.escena[data-piel='manga'] .papel-picado i { filter: drop-shadow(1.5px 1.5px 0 #111); }
+
+.fx-mascota .sumi { width: 100%; height: 100%; overflow: visible; transform: scaleX(-1); }
+
+body:has(.escena[data-piel='manga']) #ahora-media { background: #e8d4a8 url('./arte/manga/fondo.webp') center / cover no-repeat; }
+body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; }
+.escena[data-piel='manga'] .ahora-velo {
+  background:
+    linear-gradient(90deg, rgba(232, 212, 168, .97) 0, rgba(232, 212, 168, .86) 24%, transparent 44%),
+    linear-gradient(to top, rgba(232, 212, 168, .92), transparent 34%);
+}
+.escena[data-piel='manga'] .ahora-datos { color: #111; font-family: var(--manga-texto); }
+.escena[data-piel='manga'] .ahora-disco {
+  display: block;
+  position: relative;
+  width: clamp(76px, 14cqh, 160px);
+  aspect-ratio: 1;
+  margin: 0 0 2cqh;
+}
+.escena[data-piel='manga'] .ahora-funda {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border: 5px solid #111;
+  background: #fff6dc;
+  box-shadow: 7px 8px 0 #c41e3a;
+}
+.escena[data-piel='manga'] .ahora-funda img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(.25) contrast(1.05); }
+.escena[data-piel='manga'] .ahora-funda:empty::before {
+  content: '♪';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #111;
+  font: 400 clamp(36px, 7cqh, 80px)/1 var(--manga-titulo);
+}
+.escena[data-piel='manga'] .ahora-vinilo {
+  position: absolute;
+  top: 5%;
+  left: 52%;
+  width: 90%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid #111;
+  background:
+    radial-gradient(circle, #fff6dc 0 5%, #111 5.5% 7%, #c41e3a 7.5% 18%, #111 18.5% 19.5%, transparent 20%),
+    repeating-radial-gradient(circle, #111 0 2.5px, #3a3a3a 2.5px 3.5px);
+  animation: fx-vinilo-gira 2.4s linear infinite;
+}
+.escena[data-piel='manga'] .ahora-disco.is-pausa .ahora-vinilo { animation-play-state: paused; }
+.escena[data-piel='manga'] .ahora-marca { color: #6b5a3a; font-family: system-ui, sans-serif; }
+.escena[data-piel='manga'] .ahora-sello {
+  display: inline-block;
+  margin: 0 0 1.2cqh;
+  padding: .32em .7em .24em;
+  border: 4px solid #111;
+  background: #fff6dc;
+  color: #111;
+  font: 400 clamp(16px, 2.8cqh, 32px)/1 var(--manga-titulo);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  box-shadow: 6px 6px 0 #c41e3a;
+  transform: rotate(-2deg);
+}
+.escena[data-piel='manga'] .ahora-kicker { color: #c41e3a; font-family: var(--manga-titulo); font-weight: 400; letter-spacing: .08em; }
+.escena[data-piel='manga'] .ahora-titulo { color: #111; font: 400 clamp(26px, 5.4cqh, 62px)/1.05 var(--manga-titulo); letter-spacing: 0; }
+.escena[data-piel='manga'] .ahora-artista { color: #2b2418; font-weight: 700; }
+.escena[data-piel='manga'] .ahora-meta { color: #6b5a3a; }
+.escena[data-piel='manga'] .ahora-dedicatoria {
+  position: relative;
+  display: inline-block;
+  max-width: min(30ch, 100%);
+  overflow: visible;
+  white-space: normal;
+  margin: 1.4cqh 0 0;
+  padding: .5em .95em;
+  border: 3px solid #111;
+  border-radius: 18px;
+  background: #fff;
+  color: #111;
+  font-weight: 700;
+  box-shadow: 5px 6px 0 #c41e3a;
+}
+.escena[data-piel='manga'] .ahora-dedicatoria::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: -13px;
+  width: 18px;
+  height: 16px;
+  background: #fff;
+  clip-path: polygon(0 0, 100% 0, 10% 100%);
+  filter: drop-shadow(2.5px 0 0 #111) drop-shadow(-2.5px 0 0 #111) drop-shadow(0 2.5px 0 #111);
+}
+.escena[data-piel='manga'] .ahora-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(4px, .45cqw, 9px);
+  height: clamp(30px, 6.4cqh, 74px);
+  margin: 2cqh 0 0;
+}
+.escena[data-piel='manga'] .ahora-eq i {
+  width: clamp(8px, .95cqw, 18px);
+  height: 100%;
+  border-radius: 2px 6px 1px 4px;
+  background: repeating-linear-gradient(to top, #111 0 6px, transparent 6px 9px);
+  transform: skewX(-6deg);
+  animation: fx-eq calc(.7s + var(--i) * 37ms) ease-in-out calc(var(--i) * -173ms) infinite alternate;
+}
+.escena[data-piel='manga'] .ahora-eq i:nth-child(4n) { background: repeating-linear-gradient(to top, #c41e3a 0 6px, transparent 6px 9px); }
+.escena[data-piel='manga'] .ahora-eq.is-pausa i { animation-play-state: paused; opacity: .5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .escena[data-piel='manga'] .ahora-vinilo,
+  .escena[data-piel='manga'] .ahora-eq i,
+  .escena[data-piel='manga'] .escena-match p::before,
+  .escena[data-piel='manga'] .sms-fila.is-nuevo .sms-burbuja,
+  .escena[data-piel='manga'] .escena-pila.is-tira .fx-apila-tinta:last-child,
+  .escena[data-piel='manga'] .fx-rechazo-tinta::before,
+  .escena[data-piel='manga'] .fx-rechazo-tinta::after,
+  .escena[data-piel='manga'] .escena-opcion.is-ganador::before { animation: none; }
+}

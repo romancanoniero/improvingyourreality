@@ -25,8 +25,10 @@ const PIELES = {
     id: 'manga',
     fondo: '#E8D4A8', sectorA: '#FFF6DC', sectorB: '#C4A86A', acento: '#C41E3A',
     info: '#111111', texto: '#111111', colores: ['#111111', '#C41E3A', '#111111', '#1F4E79'],
-    fotoHueco: '#B89A5C', fuente: '800 14px "Zen Maru Gothic", Impact, sans-serif',
-    sellos: { ruleta: 'ルーレット', votacion: '投票', mensaje: '伝言', match: 'ドン' },
+    fotoHueco: '#B89A5C', fuente: '700 19px Kalam, "Zen Maru Gothic", sans-serif',
+    sellos: { ruleta: 'Ruleta', votacion: 'Votación', mensaje: 'Mensaje', match: 'Match' },
+    rueda: 'tinta',
+    mascota: 'sumi',
     efectos: {
       fondo: 'fx-fondo-papel', ambiente: 'fx-ambiente-lineas', marco: 'fx-marco-tinta',
       sello: 'fx-sello-hanko', foto: 'fx-foto-circulo', globo: 'fx-globo-fukidashi',
@@ -668,7 +670,65 @@ const VOLTIO_POSES = {
   },
 };
 
+const SUMI_POSES = {
+  reposo: {
+    brazos: 'M176 176 Q192 186 188 204 M50 178 Q36 190 42 206',
+    boca: '<path d="M106 176 Q116 187 126 176" fill="none"/>',
+  },
+  festeja: {
+    brazos: 'M176 146 Q198 124 194 96 M52 150 Q30 128 34 102',
+    boca: '<path d="M103 171 Q116 198 129 171 Z" fill="#111"/><path d="M109 184 Q116 192 123 184 Z" fill="#e0576b" stroke="none"/>',
+    extra: '<path d="M200 74 l8 -14 M212 90 l14 -6 M26 80 l-8 -14 M14 98 l-12 -4" fill="none"/>',
+  },
+  decepcion: {
+    brazos: 'M62 200 Q64 186 78 180 M162 198 Q160 184 148 178',
+    boca: '<path d="M105 186 Q116 176 127 186" fill="none"/>',
+    cejas: '<path d="M76 130 L100 122 M156 128 L132 120" fill="none"/>',
+    extra: '<path d="M188 104 q7 11 0 16 q-7 -5 0 -16z" fill="#bfe0f2"/><path d="M176 52 a9 9 0 1 1 9 9 a5 5 0 1 1 -5 -5" fill="none"/>',
+    cabeza: 'rotate(-6 112 150)',
+  },
+  senala: {
+    brazos: 'M180 164 L210 150 M50 180 Q36 192 42 208',
+    dedo: 'M210 150 L220 146',
+    boca: '<path d="M106 172 Q116 190 128 172 Z" fill="#111"/>',
+    cejas: '<path d="M78 124 L100 130 M154 122 L132 128" fill="none"/>',
+  },
+};
+
+function svgSumi(pose) {
+  const p = SUMI_POSES[pose] || SUMI_POSES.reposo;
+  const cuerpo = 'M118 30 C132 62 186 98 184 156 C182 204 150 228 112 228 C72 228 42 204 42 158 C42 108 100 70 118 30 Z';
+  const ojo = (x, y) => `<circle cx="${x}" cy="${y}" r="17" fill="#fff"/><circle cx="${x + 2}" cy="${y + 2}" r="11" fill="#111" stroke="none"/>`
+    + `<circle cx="${x - 2}" cy="${y - 3}" r="4.6" fill="#fff" stroke="none"/><circle cx="${x + 7}" cy="${y + 7}" r="2" fill="#fff" stroke="none"/>`;
+  const extremidad = (d) => `<path d="${d}" stroke="#111" stroke-width="17"/><path d="${d}" stroke="#fdfbf4" stroke-width="8"/>`;
+  return `<svg class="sumi" viewBox="0 0 220 250" role="presentation"><defs>`
+    + `<pattern id="sumi-trama" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="3.5" cy="3.5" r="1.5" fill="#111"/></pattern>`
+    + `<radialGradient id="sumi-luz" cx=".42" cy=".66" r=".62"><stop offset=".5" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>`
+    + `<mask id="sumi-mascara"><rect width="220" height="250" fill="url(#sumi-luz)"/></mask><clipPath id="sumi-forma"><path d="${cuerpo}"/></clipPath></defs>`
+    + `<g fill="none" stroke-linecap="round" stroke-linejoin="round">`
+    + `<path d="M50 196 Q26 214 20 190" stroke="#111" stroke-width="6"/>`
+    + `<path d="M20 184 C7 173 7 154 18 140 C31 154 31 173 20 184 Z" fill="#fdfbf4" stroke="#111" stroke-width="4.5"/>`
+    + `<path d="M18 140 C13 150 14 159 19 164 C25 158 25 149 18 140 Z" fill="#111"/>`
+    + `<path d="M14 182 L26 186" stroke="#c41e3a" stroke-width="6"/>`
+    + extremidad(p.brazos) + (p.dedo ? extremidad(p.dedo) : '')
+    + `<ellipse cx="94" cy="230" rx="14" ry="8" fill="#fdfbf4" stroke="#111" stroke-width="5"/><ellipse cx="132" cy="230" rx="14" ry="8" fill="#fdfbf4" stroke="#111" stroke-width="5"/>`
+    + `<g transform="${p.cabeza || ''}">`
+    + `<path d="${cuerpo}" transform="translate(-8 6)" fill="#c41e3a"/>`
+    + `<path d="${cuerpo}" fill="#fdfbf4"/>`
+    + `<rect width="220" height="250" fill="url(#sumi-trama)" mask="url(#sumi-mascara)" clip-path="url(#sumi-forma)"/>`
+    + `<path d="${cuerpo}" stroke="#111" stroke-width="6"/>`
+    + `<path d="M104 52 Q98 66 88 76" stroke="#fff" stroke-width="5"/>`
+    + `<path d="M56 112 Q116 92 178 108 L181 128 Q116 112 48 134 Z" fill="#c41e3a" stroke="#111" stroke-width="4"/>`
+    + `<path d="M46 118 Q24 102 8 108 Q20 116 18 126 Q32 120 44 126 Z M44 128 Q28 142 26 160 Q36 150 48 148 Q46 138 50 132 Z" fill="#c41e3a" stroke="#111" stroke-width="4"/>`
+    + `<path d="M40 114 q12 -8 18 4 q-6 12 -18 6 z" fill="#c41e3a" stroke="#111" stroke-width="4"/>`
+    + `<g stroke="#111" stroke-width="4.5">${ojo(92, 150)}${ojo(140, 148)}</g>`
+    + `<ellipse cx="74" cy="174" rx="10" ry="5" fill="#f2a3b0" opacity=".85"/><ellipse cx="160" cy="172" rx="10" ry="5" fill="#f2a3b0" opacity=".85"/>`
+    + `<g stroke="#111" stroke-width="4">${p.boca}${p.cejas || ''}</g>`
+    + `</g><g stroke="#111" stroke-width="4">${p.extra || ''}</g></g></svg>`;
+}
+
 function svgMascota(id, pose) {
+  if (id === 'sumi') return svgSumi(pose);
   if (id !== 'voltio') return '';
   const p = VOLTIO_POSES[pose] || VOLTIO_POSES.reposo;
   const manos = p.manos.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="8"/>`).join('');
@@ -1014,6 +1074,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   let fuerzaGiro = 0;
   const slice = (Math.PI * 2) / opciones.length;
   const neon = pal.rueda === 'neon';
+  const tinta = pal.rueda === 'tinta';
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   const dibujar = () => {
     const cx = canvas.width / 2;
@@ -1065,6 +1126,14 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
         ctx.shadowColor = ctx.strokeStyle;
         ctx.shadowBlur = 10;
         ctx.lineWidth = 3;
+      } else if (tinta) {
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(x, y, radio + 5, 0, Math.PI * 2);
+        ctx.strokeStyle = '#C41E3A';
+        ctx.lineWidth = 3;
       } else {
         ctx.strokeStyle = pal.texto;
         ctx.lineWidth = 2;
@@ -1079,13 +1148,26 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       ctx.fillStyle = pal.texto;
       ctx.font = pal.fuente;
       ctx.textAlign = 'center';
-      ctx.fillText(neon ? nombreFicha(opcion.titulo, true) : (opcion.titulo || ''), cx + Math.cos(mid) * r * 0.82, cy + Math.sin(mid) * r * 0.82);
+      const nombre = neon || tinta ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+      const nx = cx + Math.cos(mid) * r * 0.8;
+      const ny = cy + Math.sin(mid) * r * 0.8;
+      if (tinta) {
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#FFF6DC';
+        ctx.strokeText(nombre, nx, ny);
+      }
+      ctx.fillText(nombre, nx, ny);
       ctx.restore();
     });
     if (giro.lineas && ajustesDe(pal.id).efectos && fuerzaGiro > 0.05) pintarLineasVelocidad(ctx, cx, cy, r, fuerzaGiro, pal.id);
     ctx.restore();
     if (neon) {
       decorarRuedaNeon(ctx, cx, cy, r, angulo, slice, opciones.length, fuerzaGiro);
+      return;
+    }
+    if (tinta) {
+      decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, opciones.length);
       return;
     }
     ctx.beginPath();
@@ -1138,6 +1220,78 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     }
   };
   requestAnimationFrame(paso);
+}
+
+function decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, n) {
+  ctx.save();
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#111';
+  ctx.lineWidth = 4;
+  for (let i = 0; i < n; i += 1) {
+    const a = angulo + i * slice - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * r * 0.16, cy + Math.sin(a) * r * 0.16);
+    ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
+  ctx.strokeStyle = '#C41E3A';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx + 7, cy + 8, r + 9, 0, Math.PI * 2);
+  ctx.strokeStyle = '#C41E3A';
+  ctx.lineWidth = 16;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r + 9, 0, Math.PI * 2);
+  ctx.strokeStyle = '#111';
+  ctx.lineWidth = 16;
+  ctx.stroke();
+  for (let i = 0; i < n; i += 1) {
+    const a = angulo + i * slice - Math.PI / 2;
+    ctx.save();
+    ctx.translate(cx + Math.cos(a) * (r + 9), cy + Math.sin(a) * (r + 9));
+    ctx.rotate(a);
+    ctx.fillStyle = '#C41E3A';
+    ctx.fillRect(-6, -6, 12, 12);
+    ctx.restore();
+  }
+  const hub = r * 0.16;
+  ctx.beginPath();
+  ctx.arc(cx, cy, hub, 0, Math.PI * 2);
+  ctx.fillStyle = '#C41E3A';
+  ctx.fill();
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = '#111';
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(-0.14);
+  ctx.strokeStyle = '#FFF6DC';
+  ctx.lineWidth = 3.5;
+  ctx.strokeRect(-hub * 0.52, -hub * 0.52, hub * 1.04, hub * 1.04);
+  ctx.strokeRect(-hub * 0.22, -hub * 0.22, hub * 0.44, hub * 0.44);
+  ctx.restore();
+  const top = cy - r - 30;
+  ctx.beginPath();
+  ctx.moveTo(cx - 22, top);
+  ctx.quadraticCurveTo(cx - 4, top + 6, cx + 22, top - 2);
+  ctx.lineTo(cx + 6, top + 40);
+  ctx.lineTo(cx, top + 56);
+  ctx.lineTo(cx - 7, top + 40);
+  ctx.closePath();
+  ctx.fillStyle = '#111';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx - 7, top + 40);
+  ctx.lineTo(cx + 6, top + 40);
+  ctx.lineTo(cx, top + 56);
+  ctx.closePath();
+  ctx.fillStyle = '#C41E3A';
+  ctx.fill();
+  ctx.restore();
 }
 
 const JUGADORES_DEMO = [
@@ -1437,7 +1591,7 @@ async function correrDemo(tipo) {
 const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon'];
 const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
-  manga: { nombre: 'Manga', estado: 'Arte pendiente' },
+  manga: { nombre: 'Manga', estado: 'Arte parcial' },
   meteoro: { nombre: 'Meteoro', estado: 'Arte pendiente' },
   doraemon: { nombre: 'Cielo', estado: 'Arte pendiente' },
 };
