@@ -3274,3 +3274,129 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
 .escena[data-piel='meteoro']:has(.escena-celebra) .fx-mascota .turbo { transform: none; }
 .escena[data-piel='meteoro'] .celebra-foto { background: #2a2a2a; }
 .escena[data-piel='meteoro'] .celebra-foto b { color: #ffd100; font-family: var(--met-titulo); font-style: italic; }
+
+.escena[data-piel='manga'] .escena-bienvenida { gap: 3cqh; padding-top: 8cqh; }
+.escena[data-piel='manga'] .bienvenida-bar {
+  position: absolute;
+  left: 5cqw;
+  top: 6cqh;
+  margin: 0;
+  padding: .35em 2.6em .35em 1em;
+  border-radius: 2px;
+  font-size: clamp(20px, 4cqh, 46px);
+  transform: rotate(-2deg);
+}
+.escena[data-piel='manga'] .bienvenida-bar::after {
+  content: '楽';
+  position: absolute;
+  right: .35em;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: -.75em;
+  border: 2px solid #c41e3a;
+  border-radius: 50%;
+  color: #c41e3a;
+  font: 700 .8em/1 'Zen Maru Gothic', serif;
+  transform: rotate(8deg);
+}
+.escena[data-piel='manga'] .bienvenida-logo { position: relative; margin-left: 28cqw; color: #111; transform: rotate(-3deg); }
+.escena[data-piel='manga'] .bienvenida-logo::before {
+  content: '';
+  position: absolute;
+  inset: -34% -10%;
+  z-index: -1;
+  background: #fff6dc;
+  clip-path: polygon(0 50%, 8% 30%, 4% 8%, 18% 22%, 26% 0, 34% 20%, 46% 4%, 52% 22%, 64% 2%, 70% 22%, 84% 6%, 86% 26%, 100% 18%, 94% 42%, 100% 60%, 90% 70%, 98% 92%, 80% 80%, 72% 100%, 62% 80%, 50% 98%, 42% 80%, 28% 96%, 24% 76%, 6% 90%, 10% 68%);
+}
+.escena[data-piel='manga'] .bienvenida-tarjeta {
+  grid-template-columns: auto 28cqh auto;
+  column-gap: 0;
+  padding: 4cqh 4cqw;
+  border-radius: 2px;
+  box-shadow: 12px 14px 0 #c41e3a, 12px 14px 0 4px #111;
+  transform: rotate(-1.2deg);
+}
+.escena[data-piel='manga'] .bienvenida-qr { grid-column: 1; }
+.escena[data-piel='manga'] .bienvenida-texto { grid-column: 3; }
+.escena[data-piel='manga'] .bienvenida-codigo { padding: 1.2cqh; background: #fff; box-shadow: 0 0 0 5px #c41e3a, 0 0 0 9px #111; }
+.escena[data-piel='manga'] .bienvenida-qr p { order: -1; padding: 0; border: 0; background: none; color: #111; font: 700 clamp(15px, 2.8cqh, 32px)/1.1 var(--manga-texto); text-transform: uppercase; transform: rotate(-3deg); }
+.escena[data-piel='manga'] .bienvenida-qr p::after { content: ' ⤵'; color: #c41e3a; font-size: 1.4em; }
+.escena[data-piel='manga'] .bienvenida-texto h2 { font-size: clamp(36px, 9cqh, 104px); }
+.escena[data-piel='manga'] .bienvenida-texto ul { gap: 1.6cqw; }
+.escena[data-piel='manga'] .bienvenida-texto li {
+  display: grid;
+  place-items: center;
+  width: 15cqh;
+  height: 15cqh;
+  border: 4px solid #111;
+  border-radius: 50%;
+  background: linear-gradient(#c41e3a 0 33%, #fff6dc 33% 67%, #c41e3a 67%);
+  box-shadow: inset 0 0 0 4px #fff6dc, 0 0 0 2px #c41e3a, 4px 5px 0 2px #111;
+  color: #111;
+  font: 400 clamp(12px, 2.1cqh, 24px)/1 var(--manga-titulo);
+}
+.escena[data-piel='manga'] .bienvenida-texto li i { display: none; }
+.escena[data-piel='manga'][data-slots~='bienvenida'] .fx-mascota { right: 50%; margin-right: 1cqh; bottom: 24cqh; height: 30cqh; }
+
+.escena[data-piel='manga'] .escena-celebra {
+  background:
+    radial-gradient(ellipse at 50% 48%, #fff3c4 0 16%, rgba(255, 243, 196, .7) 26%, transparent 50%),
+    repeating-conic-gradient(from 2deg at 50% 48%, #111 0 .5deg, transparent .5deg 5deg, #111 5deg 5.3deg, transparent 5.3deg 11deg),
+    repeating-conic-gradient(from 0deg at 50% 48%, rgba(196, 30, 58, .55) 0 2.5deg, transparent 2.5deg 17deg),
+    #f2e2bc url('./arte/manga/fondo.webp') center / cover no-repeat;
+  color: #111;
+  font-family: var(--manga-titulo);
+}
+.escena[data-piel='manga'] .celebra-titulo {
+  position: relative;
+  isolation: isolate;
+  padding: .2em .7em .28em;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: #c41e3a;
+  font: 400 clamp(48px, 14cqh, 160px)/1 var(--manga-titulo);
+  -webkit-text-stroke: 3px #111;
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 #111;
+  filter: drop-shadow(4px 0 0 #111) drop-shadow(-4px 0 0 #111) drop-shadow(0 4px 0 #111) drop-shadow(0 -4px 0 #111) drop-shadow(10px 10px 0 #c41e3a);
+  rotate: -4deg;
+}
+.escena[data-piel='manga'] .celebra-titulo::before {
+  content: '';
+  position: absolute;
+  inset: -16% -6%;
+  z-index: -1;
+  background: #fff6dc;
+  clip-path: polygon(0 52%, 6% 34%, 2% 12%, 16% 24%, 22% 2%, 32% 20%, 42% 0, 50% 18%, 60% 2%, 66% 20%, 78% 4%, 82% 24%, 96% 10%, 94% 36%, 100% 50%, 94% 64%, 100% 88%, 84% 78%, 80% 100%, 68% 82%, 58% 98%, 50% 82%, 40% 100%, 32% 80%, 18% 96%, 16% 76%, 2% 86%, 6% 66%);
+}
+.escena[data-piel='manga'] .celebra-par { align-self: start; margin-top: 3cqh; }
+.escena[data-piel='manga'] .celebra-par::before {
+  background: repeating-conic-gradient(from 4deg, #f2b233 0 6deg, transparent 6deg 14deg, #c41e3a 14deg 16deg, transparent 16deg 26deg);
+}
+.escena[data-piel='manga'] .celebra-par figure { --anillo: #c41e3a; }
+.escena[data-piel='manga'] .celebra-foto { border: 5px solid #111; background: #fff6dc; box-shadow: 0 0 0 1.4cqh #c41e3a, 0 0 0 calc(1.4cqh + 4px) #111, 8px 10px 0 calc(1.4cqh + 4px) rgba(17, 17, 17, .25); }
+.escena[data-piel='manga'] .celebra-foto b { color: #111; font: 400 9cqh/1 var(--manga-titulo); }
+.escena[data-piel='manga'] .celebra-par figcaption { margin-top: 1.4cqh; border: 4px solid #111; border-radius: 2px; background: #fff6dc; color: #111; box-shadow: 5px 5px 0 #111; font: 400 clamp(16px, 3.4cqh, 38px)/1 var(--manga-titulo); }
+.escena[data-piel='manga'] .celebra-corazon {
+  width: 20cqh;
+  height: 20cqh;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Cpath d='M26 45 C11 35 5 26 5 18 C5 11 10 6 17 6 C21 6 24 8 26 12 C28 8 31 6 35 6 C42 6 47 11 47 18 C47 26 41 35 26 45Z' fill='%23c41e3a' stroke='%23111' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M13 14 C15 11 18 11 20 12' fill='none' stroke='%23fff6dc' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  filter: drop-shadow(5px 5px 0 rgba(17, 17, 17, .3));
+}
+.escena[data-piel='manga'] .celebra-cinta span { border: 5px solid #111; border-radius: 2px; background: #fff6dc; color: #111; box-shadow: 8px 8px 0 #c41e3a, 8px 8px 0 3px #111; font: 400 clamp(20px, 5.4cqh, 60px)/1 var(--manga-titulo); }
+.escena[data-piel='manga'] .celebra-cinta::before,
+.escena[data-piel='manga'] .celebra-cinta::after { display: none; }
+.escena[data-piel='manga'] .celebra-fuego {
+  width: 26cqh;
+  height: 26cqh;
+  border-radius: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='%23111' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M20 10 l4 9 10 1 -8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 10 -1z' fill='%23c41e3a'/%3E%3Cpath d='M74 60 l3 6 7 1 -5 4 2 7 -7 -4 -6 4 2 -7 -5 -4 7 -1z' fill='%23fff6dc'/%3E%3Cpath d='M60 12 l16 4 -4 12 -15 -5z' fill='%23fff'/%3E%3Cpath d='M14 64 l14 -6 5 11 -13 6z' fill='%23fff'/%3E%3Cpath d='M44 84 l12 2 -2 9 -12 -2z' fill='%23fff'/%3E%3C/g%3E%3Cpath d='M86 30 q6 -6 10 0 q-4 6 -10 0z M40 46 q5 -5 9 0 q-4 5 -9 0z' fill='%23f4a6b8'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: none;
+  mask: none;
+}
+.escena[data-piel='manga']:has(.escena-celebra) .fx-mascota { right: 50%; margin-right: -12cqh; bottom: 15cqh; height: 24cqh; }

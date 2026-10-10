@@ -30,6 +30,8 @@ const PIELES = {
     sellos: { ruleta: 'Ruleta', votacion: 'Votación', mensaje: 'Mensaje', match: 'Match' },
     rueda: 'tinta',
     mascota: 'sumi',
+    celebracion: true,
+    lemasPareja: ['¡Sumi ha unido a estas mesas!', '¡Sumi los unió!'],
     efectos: {
       fondo: 'fx-fondo-papel', ambiente: 'fx-ambiente-lineas', marco: 'fx-marco-tinta',
       sello: 'fx-sello-hanko', foto: 'fx-foto-circulo', globo: 'fx-globo-fukidashi',

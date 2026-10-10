@@ -44,3 +44,9 @@ Now make IMAGE 4 — Interface kit B, exactly as described in my first message: 
 ```
 Now make IMAGE 5 — Wheel, voting and now playing, exactly as described in my first message. Same MANGA style, flat solid green #00FF00 background. Write the names on the wheel normally, not mirrored.
 ```
+
+## Pantallas extra (`manga-extra.jpg`)
+
+- **Bienvenida con QR (arriba):** aplicada. Placa "BAR LUNA" arriba a la izquierda con sello 楽, logo sobre un globo de explosión, tarjeta de papel inclinada, texto a mano con flecha sobre el QR, Sumi dentro de la tarjeta señalando el QR, y Votá / Canciones / Conectá como sellos rojos con la palabra adentro. El sello "MENSAJES" bajo el logo no se aplicó: en las otras pieles ese lugar es el nombre del bar y no tiene función en la pantalla.
+- **"¡Hay pareja!" (derecha):** aplicada. Líneas de concentración negras y rojas, título en globo de explosión, fotos con aro rojo, placas "MESA X", corazón rojo con rayos amarillos, papelitos, estrellas y pétalos, y Sumi festejando abajo al centro. La cinta dice "¡Sumi ha unido a estas mesas!", porque la frase de la hoja ("¡Se ha unido a estas mesas!") no tiene sujeto. Dura 7 s y después queda el chip del match.
+- **Estados de interacción (centro):** botón "¡A jugar!" (normal, presionado, deshabilitado, cargando), engranaje girando, Sumi mareado y decepcionado, estado vacío "Sin mensajes" y reacciones (corazón, estrella, ドン): son de la app del invitado (celular), que no está en este repositorio.
