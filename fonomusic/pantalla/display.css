@@ -1188,6 +1188,9 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 .demo-capas.is-dock .demo-dock { display: grid; transform: translate(-50%, 0); }
+@media (max-width: 600px) {
+  .demo-dock { grid-auto-flow: row; grid-template-columns: repeat(4, 64px); gap: 6px; }
+}
 .demo-dock button {
   width: 64px;
   padding: 6px 4px 8px;
