@@ -354,8 +354,33 @@ function formatearQueda(ms) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
+const MODOS_JUEGO = [
+  { id: 'seguir', nombre: 'Seguir igual', aviso: 'Durante los juegos el video sigue igual' },
+  { id: 'mudo', nombre: 'Silenciar', aviso: 'Durante los juegos se silencia el video' },
+  { id: 'pausa', nombre: 'Pausar', aviso: 'Durante los juegos se pausa el video' },
+  { id: 'fondo', nombre: 'Fondo de la piel', aviso: 'Durante los juegos: fondo de la piel (la música sigue)' },
+];
+
+function claveModoJuego() {
+  return 'fonomeets.pantalla.modoJuego.' + (localId() || 'demo');
+}
+
+function modoJuego() {
+  try {
+    const valor = localStorage.getItem(claveModoJuego());
+    return MODOS_JUEGO.some((modo) => modo.id === valor) ? valor : '';
+  } catch (error) {
+    return '';
+  }
+}
+
 function aplicarFondoEscena(escena, capa) {
-  escena.dataset.fondo = capa?.fondo || 'juego';
+  let fondo = capa?.fondo || 'juego';
+  const modo = modoJuego();
+  const juego = capa && (capa.tipo === 'ruleta' || capa.tipo === 'votacion');
+  // La elección guardada en la pantalla manda sobre "sobre el video / fondo de la piel"; foto y logo se respetan.
+  if (juego && modo && (fondo === 'actual' || fondo === 'juego')) fondo = modo === 'fondo' ? 'juego' : 'actual';
+  escena.dataset.fondo = fondo;
   if ((capa?.fondo === 'foto' || capa?.fondo === 'logo') && capa.foto) {
     escena.style.setProperty('--foto-fondo', `url("${capa.foto}")`);
   } else {
@@ -676,13 +701,14 @@ function pintarCapas(capas, dedicatorias, avatares) {
   previoCierre = cierre;
   escena.className = `escena ${fx.fondo}`;
   escena.dataset.piel = piel.id;
-  aplicarFondoEscena(escena, lista[0]);
+  aplicarFondoEscena(escena, lista.find((capa) => capa.tipo === 'ruleta' || capa.tipo === 'votacion') || lista[0]);
   const pendientes = [...(avatares || [])];
   for (const capa of lista) for (const opcion of capa.opciones || []) pendientes.push(opcion);
   void precargarAvatares(pendientes);
   if (lista.length === 0 && !(dedicatorias || []).length) {
     delete escena.dataset.slots;
     [...escena.children].forEach((nodo) => { if (nodo !== escenario && nodo.id !== 'grilla') nodo.remove(); });
+    actualizarJuego(false);
     return;
   }
   const dedicas = (dedicatorias || []).slice(0, 4);
@@ -711,6 +737,7 @@ function pintarCapas(capas, dedicatorias, avatares) {
   if (listaPintar.some((capa) => capa.tipo === 'match')) slots.push('chip');
   if (slots.length) escena.dataset.slots = slots.join(' ');
   else delete escena.dataset.slots;
+  actualizarJuego(slots.includes('escenario'));
   const pose = fx.mascota ? poseMascota(listaPintar) : '';
   if (pose) {
     const mascota = document.createElement('div');
@@ -1431,7 +1458,7 @@ function botonesRielDemo() {
     { id: 'mensajes', nombre: 'Dedicatorias', on: dedicasDemo.length > 0 },
     { sep: true },
     { id: 'piel', nombre: `Piel: ${piel.id}`, on: false, texto: piel.id.slice(0, 2).toUpperCase() },
-    { id: 'fondo', nombre: 'Fondo de la piel', on: demoAjustes.fondo === 'juego' },
+    { id: 'fondo', nombre: `Video en juegos: ${(MODOS_JUEGO.find((modo) => modo.id === modoJuego()) || { nombre: 'sin elegir' }).nombre}`, on: Boolean(modoJuego()) && modoJuego() !== 'seguir' },
     ...(piel.mascota ? [{ id: 'mascota', nombre: 'Mascota', on: mascota }] : []),
     { id: 'efectos', nombre: 'Efectos', on: ajustes.efectos },
     { id: 'sonido', nombre: 'Sonido', on: ajustes.sonido },
@@ -1507,10 +1534,8 @@ function accionRielDemo(id) {
     cambiarPielDemo(PIELES_DEMO[(PIELES_DEMO.indexOf(demoPiel) + 1) % PIELES_DEMO.length]);
     avisoDemo(`Piel: ${demoPiel}`);
   } else if (id === 'fondo') {
-    demoAjustes.fondo = demoAjustes.fondo === 'juego' ? 'actual' : 'juego';
-    for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, fondo: demoAjustes.fondo });
-    refrescarPantalla();
-    avisoDemo(demoAjustes.fondo === 'juego' ? 'Fondo de la piel' : 'Sobre el video');
+    if (modoJuegoAbierto()) ocultarModoJuego();
+    else mostrarModoJuego(true);
   } else if (id === 'mascota' || id === 'efectos' || id === 'sonido') {
     const nuevo = id === 'mascota'
       ? { ...ajustes, efectos: true, objetos: { ...ajustes.objetos, mascota: !(ajustes.efectos && ajustes.objetos.mascota !== false) } }
@@ -1560,7 +1585,7 @@ let demoDockTimer = 0;
 function htmlPielesDemo() {
   const ajustes = ajustesDe(demoPiel);
   const piel = pielDe(demoPiel);
-  const fondo = demoAjustes.fondo === 'juego' ? 'juego' : 'actual';
+  const modoActual = modoJuego();
   const objetos = [...(piel.efectos.objetos || []), ...(piel.mascota ? [{ id: 'mascota' }] : [])].map((objeto) => (
     `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
   )).join('');
@@ -1568,8 +1593,7 @@ function htmlPielesDemo() {
     `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
   )).join('') + '</div>'
     + '<div class="demo-dialog-chips">'
-    + `<button type="button" data-fondo-demo="actual" class="${fondo === 'actual' ? 'is-on' : ''}">Sobre el video</button>`
-    + `<button type="button" data-fondo-demo="juego" class="${fondo === 'juego' ? 'is-on' : ''}">Fondo de la piel</button>`
+    + MODOS_JUEGO.map((modo) => `<button type="button" data-modo-juego="${modo.id}" class="${modo.id === modoActual ? 'is-on' : ''}">${modo.nombre}</button>`).join('')
     + '</div>'
     + '<label class="demo-check" data-ajuste="sonido"><input type="checkbox"' + (ajustes.sonido ? ' checked' : '') + '> Sonido de la ruleta</label>'
     + '<label class="demo-check" data-ajuste="efectos"><input type="checkbox"' + (ajustes.efectos ? ' checked' : '') + '> Efectos y objetos</label>'
@@ -1691,14 +1715,6 @@ function montarBarraDemo() {
     const piel = evento.target.closest('[data-piel]');
     if (piel) {
       cambiarPielDemo(piel.getAttribute('data-piel'));
-      if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
-      return;
-    }
-    const fondoDemo = evento.target.closest('[data-fondo-demo]');
-    if (fondoDemo) {
-      demoAjustes.fondo = fondoDemo.getAttribute('data-fondo-demo') === 'juego' ? 'juego' : 'actual';
-      for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, fondo: demoAjustes.fondo });
-      refrescarPantalla();
       if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
       return;
     }
@@ -1935,7 +1951,7 @@ function avisoReproducir() {
   const falta = Boolean(ytPlayer) && ytEsperaToque && !sonando && !juego && !ytPausaSala;
   capa.classList.toggle('is-al-frente', falta);
   // Si quedó sonando mudo hace falta el parlante de YouTube, que está en la barra superior.
-  capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo));
+  capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo && medioCambiadoPorJuego !== 'mudo'));
   if (!falta) {
     if (aviso) aviso.remove();
     return;
@@ -1955,6 +1971,124 @@ setInterval(() => {
   if (ytPlayer) avisoReproducir();
   pintarDiagnostico();
 }, 1000);
+
+let enJuego = false;
+let medioCambiadoPorJuego = '';
+let modoChipTimer = 0;
+
+function videoLocal() {
+  return document.querySelector('#ahora-media video');
+}
+
+function medioSonando() {
+  if (ytPlayer) return ytEstado === 1 || ytEstado === 3;
+  const video = videoLocal();
+  return Boolean(video && !video.paused);
+}
+
+function hayReproduccion() {
+  const stage = document.getElementById('escenario-ahora');
+  return Boolean(stage && !stage.hidden);
+}
+
+// Silenciar o pausar sólo deshace lo que hizo el juego: una pausa pedida por la sala no se reanuda.
+function aplicarModoJuego(juego) {
+  const modo = modoJuego();
+  const video = videoLocal();
+  if (medioCambiadoPorJuego && (!juego || modo !== medioCambiadoPorJuego)) {
+    try {
+      if (medioCambiadoPorJuego === 'mudo') {
+        ytPlayer?.unMute();
+        if (video) video.muted = false;
+      } else if (medioCambiadoPorJuego === 'pausa' && !ytPausaSala) {
+        ytPlayer?.playVideo();
+        if (video) video.play().catch(() => {});
+      }
+    } catch (error) { /* el reproductor cambió */ }
+    medioCambiadoPorJuego = '';
+  }
+  if (!juego || medioCambiadoPorJuego || !medioSonando()) return;
+  try {
+    if (modo === 'mudo') {
+      ytPlayer?.mute();
+      if (video) video.muted = true;
+      medioCambiadoPorJuego = 'mudo';
+    } else if (modo === 'pausa') {
+      ytPlayer?.pauseVideo();
+      if (video) video.pause();
+      medioCambiadoPorJuego = 'pausa';
+    }
+  } catch (error) { /* el reproductor cambió */ }
+}
+
+function actualizarJuego(juego) {
+  if (juego === enJuego) return;
+  enJuego = juego;
+  aplicarModoJuego(juego);
+  if (juego && hayReproduccion()) mostrarModoJuego(!modoJuego());
+  else ocultarModoJuego();
+}
+
+function guardarModoJuego(id) {
+  try { localStorage.setItem(claveModoJuego(), id); } catch (error) { /* modo privado */ }
+  aplicarModoJuego(enJuego);
+  refrescarPantalla();
+  pintarRielDemo();
+  const modo = MODOS_JUEGO.find((item) => item.id === id);
+  if (modo) avisoDemo(modo.aviso);
+}
+
+function contenedorModoJuego() {
+  return document.getElementById('demo-capas') || document.body;
+}
+
+// Primera vez: panel con las 4 opciones. Con una elección guardada: un recordatorio corto que permite cambiarla.
+function mostrarModoJuego(completo) {
+  let caja = document.getElementById('modo-juego');
+  if (!caja) {
+    caja = document.createElement('div');
+    caja.id = 'modo-juego';
+    caja.className = 'modo-juego';
+    caja.setAttribute('role', 'dialog');
+    contenedorModoJuego().appendChild(caja);
+  }
+  clearTimeout(modoChipTimer);
+  const actual = modoJuego();
+  if (completo) {
+    caja.classList.remove('is-chip');
+    caja.innerHTML = '<p>Hay algo reproduciéndose. Durante los juegos:</p><div class="modo-juego-opciones">'
+      + MODOS_JUEGO.map((modo) => `<button type="button" data-modo-juego="${modo.id}" class="${modo.id === actual ? 'is-on' : ''}">${modo.nombre}</button>`).join('')
+      + '</div><small>Se recuerda en esta pantalla hasta que lo cambies.</small>';
+  } else {
+    const modo = MODOS_JUEGO.find((item) => item.id === actual) || MODOS_JUEGO[0];
+    caja.classList.add('is-chip');
+    caja.innerHTML = `<button type="button" data-modo-abrir>Video en juegos: <b>${modo.nombre}</b> · cambiar</button>`;
+    modoChipTimer = setTimeout(ocultarModoJuego, 7000);
+  }
+  caja.hidden = false;
+}
+
+function ocultarModoJuego() {
+  clearTimeout(modoChipTimer);
+  const caja = document.getElementById('modo-juego');
+  if (caja) caja.hidden = true;
+}
+
+function modoJuegoAbierto() {
+  const caja = document.getElementById('modo-juego');
+  return Boolean(caja && !caja.hidden && !caja.classList.contains('is-chip'));
+}
+
+document.addEventListener('click', (evento) => {
+  const opcion = evento.target.closest('[data-modo-juego]');
+  if (opcion) {
+    guardarModoJuego(opcion.getAttribute('data-modo-juego'));
+    if (opcion.closest('#modo-juego')) ocultarModoJuego();
+    else if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
+    return;
+  }
+  if (evento.target.closest('[data-modo-abrir]')) mostrarModoJuego(true);
+});
 
 function pintarDiagnostico() {
   if (new URLSearchParams(location.search).get('diag') !== '1') return;
@@ -2173,7 +2307,7 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
   }, {
     onStateChange: (event) => {
       ytEstado = event.data;
-      if (event.data === 1 && !now.mute && ytMudo()) {
+      if (event.data === 1 && !now.mute && ytMudo() && medioCambiadoPorJuego !== 'mudo') {
         // En modo toque el ▶ ya fue un toque dentro del reproductor: ahí desmutear sí se permite.
         try { event.target.unMute(); event.target.setVolume(100); } catch (error) { /* sigue mudo */ }
       }
@@ -2223,7 +2357,7 @@ function showStage(state) {
       try {
         if (state.paused) ytPlayer.pauseVideo();
         // Sólo se reanuda una pausa de la sala: un play desde afuera sin toque hace que YouTube arranque mudo.
-        else if (ytEstado === 2 && !ytEsperaToque) ytPlayer.playVideo();
+        else if (ytEstado === 2 && !ytEsperaToque && medioCambiadoPorJuego !== 'pausa') ytPlayer.playVideo();
       } catch (error) { /* sigue */ }
     }
     return;

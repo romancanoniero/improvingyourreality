@@ -1928,3 +1928,40 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   white-space: pre-wrap;
   pointer-events: none;
 }
+
+.modo-juego {
+  pointer-events: auto;
+  position: absolute;
+  top: calc(52px + env(safe-area-inset-top, 0px));
+  left: calc(clamp(30px, 4.4vh, 42px) + 18px);
+  z-index: 3;
+  max-width: min(calc(100vw - 80px), 460px);
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 14px;
+  background: rgba(14, 12, 24, .9);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+  color: #fff;
+  font: 500 14px/1.3 system-ui, sans-serif;
+  backdrop-filter: blur(8px);
+}
+.modo-juego[hidden] { display: none; }
+.modo-juego p { margin: 0 0 10px; font-weight: 650; }
+.modo-juego small { display: block; margin-top: 9px; opacity: .65; font-size: 12px; }
+.modo-juego-opciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.modo-juego button {
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .06);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.modo-juego button.is-on { border-color: #c8f04a; background: rgba(200, 240, 74, .18); color: #e9ffb0; }
+.modo-juego.is-chip { padding: 0; border: 0; background: none; box-shadow: none; backdrop-filter: none; }
+.modo-juego.is-chip button { background: rgba(14, 12, 24, .88); font-size: 13px; }
+@media (orientation: portrait) {
+  .modo-juego { left: 50%; transform: translateX(-50%); top: calc(54px + env(safe-area-inset-top, 0px)); width: max-content; }
+}
