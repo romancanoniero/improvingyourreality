@@ -2219,6 +2219,7 @@ let ytPausaSala = false;
 let ytEsperaToque = false;
 let ytTocado = false;
 let ytSonidoPendiente = false;
+let ytListo = false;
 
 function esIOS() {
   return /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
@@ -2231,18 +2232,26 @@ function sonarAlTocar(player, youtube, now, key) {
   player.mute();
   player.playVideo();
   avisoReproducir();
+  const revisar = (intentos) => {
+    if (ytPlayer !== player || stageKey !== key) return;
+    const cargando = ytEstado === -1 || ytEstado === 3;
+    if (!ytMudo() && (ytEstado === 1 || ytEstado === 3)) {
+      ytSonidoPendiente = false;
+      avisoReproducir();
+    } else if (cargando && intentos > 0) {
+      setTimeout(() => revisar(intentos - 1), 2000);
+    } else {
+      ytSonidoPendiente = false;
+      crearPlayerYoutube(youtube, now, key, true);
+    }
+  };
   const alTocar = () => {
     document.removeEventListener('pointerdown', alTocar, true);
     if (ytPlayer !== player || stageKey !== key) return;
     player.unMute();
     player.setVolume(100);
     player.playVideo();
-    setTimeout(() => {
-      if (ytPlayer !== player || stageKey !== key) return;
-      ytSonidoPendiente = false;
-      if (ytMudo() || (ytEstado !== 1 && ytEstado !== 3)) crearPlayerYoutube(youtube, now, key, true);
-      else avisoReproducir();
-    }, 2000);
+    setTimeout(() => revisar(5), 2000);
   };
   document.addEventListener('pointerdown', alTocar, true);
 }
@@ -2265,7 +2274,7 @@ function avisoReproducir() {
   const juego = String(document.getElementById('escena')?.dataset.slots || '').split(' ').includes('escenario');
   const mudo = ytMudo();
   const sonando = ytEstado === 1 && !mudo;
-  const falta = Boolean(ytPlayer) && ytEsperaToque && !sonando && !juego && !ytPausaSala;
+  const falta = Boolean(ytPlayer) && ytListo && ytEsperaToque && !sonando && !juego && !ytPausaSala;
   const pendiente = Boolean(ytPlayer) && ytSonidoPendiente && !juego && !ytPausaSala;
   capa.classList.toggle('is-al-frente', falta);
   // Si quedó sonando mudo hace falta el parlante de YouTube, que está en la barra superior.
@@ -2616,6 +2625,7 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
   media.appendChild(holder);
   ytEsperaToque = esperarToque;
   ytSonidoPendiente = false;
+  ytListo = false;
   ytTocado = false;
   ytEstado = -1;
   ytDesde = Date.now();
@@ -2630,24 +2640,29 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
   }, {
     onStateChange: (event) => {
       ytEstado = event.data;
-      if (event.data === 1 && !now.mute && ytMudo() && medioCambiadoPorJuego !== 'mudo') {
+      if (event.data === 1 && !now.mute && ytMudo() && medioCambiadoPorJuego !== 'mudo' && !ytSonidoPendiente) {
         // En modo toque el ▶ ya fue un toque dentro del reproductor: ahí desmutear sí se permite.
         try { event.target.unMute(); event.target.setVolume(100); } catch (error) { /* sigue mudo */ }
       }
       avisoReproducir();
       if (event.data === 0) postEnded(uid);
     },
+    // En una tablet el reproductor tarda varios segundos en cargar: el sonido se evalúa desde que está listo.
+    onReady: () => {
+      if (ytPlayer !== player) return;
+      ytListo = true;
+      avisoReproducir();
+      if (esperarToque || now.mute) return;
+      setTimeout(() => {
+        if (ytPlayer !== player || stageKey !== key) return;
+        const sonando = (ytEstado === 1 || ytEstado === 3) && !ytMudo();
+        if (sonando || ytPausaSala) return;
+        if (esIOS()) crearPlayerYoutube(youtube, now, key, true);
+        else sonarAlTocar(player, youtube, now, key);
+      }, 3000);
+    },
   });
   ytPlayer = player;
-  if (!esperarToque && !now.mute) {
-    setTimeout(() => {
-      if (ytPlayer !== player || stageKey !== key) return;
-      const sonando = (ytEstado === 1 || ytEstado === 3) && !ytMudo();
-      if (sonando || ytPausaSala) return;
-      if (esIOS()) crearPlayerYoutube(youtube, now, key, true);
-      else sonarAlTocar(player, youtube, now, key);
-    }, 3500);
-  }
   avisoReproducir();
 }
 
