@@ -1178,8 +1178,17 @@ let smsClavesVistas = new Set();
 const smsFraseIdx = { p01: 0, p02: 0 };
 const capasDemo = new Map();
 let dedicasDemo = [];
-let demoPiel = 'nocturna';
-let pielSinCapas = '';
+const CLAVE_PIEL = 'fonomeets.pantalla.piel';
+function pielGuardada() {
+  try {
+    const valor = localStorage.getItem(CLAVE_PIEL);
+    return ['nocturna', 'manga', 'meteoro', 'doraemon'].includes(valor) ? valor : '';
+  } catch (error) {
+    return '';
+  }
+}
+let demoPiel = pielGuardada() || 'nocturna';
+let pielSinCapas = pielGuardada();
 const demoAjustes = { cantidad: 2, rechazo: false, claseVoto: 'parejas', desde: 'Mesa 2', hacia: 'Mesa 7', texto: '¿Bailamos la próxima?', pesoMensaje: 'accesorio', fondo: 'actual' };
 let demoDialogoTipo = '';
 let demoTanda = 0;
@@ -1426,6 +1435,48 @@ async function correrDemo(tipo) {
 }
 
 const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon'];
+const PIELES_INFO = {
+  nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
+  manga: { nombre: 'Manga', estado: 'Arte pendiente' },
+  meteoro: { nombre: 'Meteoro', estado: 'Arte pendiente' },
+  doraemon: { nombre: 'Cielo', estado: 'Arte pendiente' },
+};
+
+function mostrarElegirPiel() {
+  ocultarModoJuego();
+  let caja = document.getElementById('elige-piel');
+  if (!caja) {
+    caja = document.createElement('div');
+    caja.id = 'elige-piel';
+    caja.className = 'modo-juego elige-piel';
+    caja.setAttribute('role', 'dialog');
+    contenedorModoJuego().appendChild(caja);
+  }
+  caja.innerHTML = '<p>Piel de la pantalla</p><div class="modo-juego-opciones">'
+    + PIELES_DEMO.map((id) => `<button type="button" data-elige-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}"><b>${PIELES_INFO[id].nombre}</b><small>${PIELES_INFO[id].estado}</small></button>`).join('')
+    + '</div>';
+  caja.hidden = false;
+}
+
+function ocultarElegirPiel() {
+  const caja = document.getElementById('elige-piel');
+  if (caja) caja.hidden = true;
+}
+
+function elegirPielAbierto() {
+  const caja = document.getElementById('elige-piel');
+  return Boolean(caja && !caja.hidden);
+}
+
+document.addEventListener('click', (evento) => {
+  const boton = evento.target.closest('[data-elige-piel]');
+  if (!boton) return;
+  const id = boton.getAttribute('data-elige-piel');
+  try { localStorage.setItem(CLAVE_PIEL, id); } catch (error) { /* modo privado */ }
+  cambiarPielDemo(id);
+  ocultarElegirPiel();
+  avisoDemo(`Piel: ${PIELES_INFO[id].nombre}`);
+});
 let demoAvisoTimer = 0;
 let demoSmsTurno = 0;
 
@@ -1457,7 +1508,7 @@ function botonesRielDemo() {
     { id: 'match', nombre: 'Match', on: capasDemo.has('match') },
     { id: 'mensajes', nombre: 'Dedicatorias', on: dedicasDemo.length > 0 },
     { sep: true },
-    { id: 'piel', nombre: `Piel: ${piel.id}`, on: false, texto: piel.id.slice(0, 2).toUpperCase() },
+    { id: 'piel', nombre: `Elegir piel (${PIELES_INFO[piel.id]?.nombre || piel.id})`, on: false, texto: (PIELES_INFO[piel.id]?.nombre || piel.id).slice(0, 2).toUpperCase() },
     { id: 'fondo', nombre: `Video en juegos: ${(MODOS_JUEGO.find((modo) => modo.id === modoJuego()) || { nombre: 'sin elegir' }).nombre}`, on: Boolean(modoJuego()) && modoJuego() !== 'seguir' },
     ...(piel.mascota ? [{ id: 'mascota', nombre: 'Mascota', on: mascota }] : []),
     { id: 'efectos', nombre: 'Efectos', on: ajustes.efectos },
@@ -1531,8 +1582,8 @@ function accionRielDemo(id) {
     void correrDemo('mensajes');
     avisoDemo(`Dedicatorias: ${estado(dedicasDemo.length > 0)}`);
   } else if (id === 'piel') {
-    cambiarPielDemo(PIELES_DEMO[(PIELES_DEMO.indexOf(demoPiel) + 1) % PIELES_DEMO.length]);
-    avisoDemo(`Piel: ${demoPiel}`);
+    if (elegirPielAbierto()) ocultarElegirPiel();
+    else mostrarElegirPiel();
   } else if (id === 'fondo') {
     if (modoJuegoAbierto()) ocultarModoJuego();
     else mostrarModoJuego(true);
@@ -2044,6 +2095,7 @@ function contenedorModoJuego() {
 
 // Primera vez: panel con las 4 opciones. Con una elección guardada: un recordatorio corto que permite cambiarla.
 function mostrarModoJuego(completo) {
+  ocultarElegirPiel();
   let caja = document.getElementById('modo-juego');
   if (!caja) {
     caja = document.createElement('div');
@@ -2504,6 +2556,7 @@ setInterval(calentar, 15000);
 escuchar();
 conectarPlayer();
 montarBarraDemo();
+if (pielSinCapas) refrescarPantalla();
 if (new URLSearchParams(location.search).get('grilla') === '1') ponerGrilla(true);
 pintarRielDemo();
 arrancarVideoEjemplo();
