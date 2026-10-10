@@ -2414,3 +2414,490 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
   .escena[data-piel='manga'] .fx-rechazo-tinta::after,
   .escena[data-piel='manga'] .escena-opcion.is-ganador::before { animation: none; }
 }
+
+/* Meteoro: H2, H3, H4 y H5. Asfalto, rojo de carrera, amarillo de señal y bordes blancos, todo inclinado. */
+.escena[data-piel='meteoro'] {
+  --met-titulo: 'Barlow Condensed', Impact, 'Arial Narrow', sans-serif;
+}
+.escena[data-piel='meteoro'][data-fondo='juego'] {
+  background: #1a1a1a url('./arte/meteoro/fondo.webp') center / cover no-repeat;
+}
+.escena[data-piel='meteoro'] .fx-ambiente-velocidad { display: none; }
+.escena[data-piel='meteoro'] .escena-iniciales { border: 5px solid #161616; box-shadow: 0 0 0 3px #fff; background: #3a3a3a; color: #ffd100; font-family: var(--met-titulo); font-style: italic; }
+
+.escena[data-piel='meteoro'] .fx-obj-rayas {
+  inset: auto;
+  left: 3.4cqw;
+  top: 40cqh;
+  width: 15cqw;
+  height: 11cqh;
+  background: repeating-linear-gradient(to bottom, #e31c23 0 7px, transparent 7px 13px, #ffd100 13px 19px, transparent 19px 26px);
+  clip-path: polygon(22% 0, 100% 0, 78% 100%, 0 100%);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 60%);
+  mask: linear-gradient(90deg, transparent, #000 60%);
+  opacity: .55;
+  animation: met-rayas 1.6s ease-in-out infinite alternate;
+}
+@keyframes met-rayas { from { transform: translateX(-1.2cqw); } to { transform: translateX(.6cqw); } }
+.escena[data-piel='meteoro'] .fx-obj-bandera {
+  inset: auto;
+  left: 4.4cqw;
+  top: 10cqh;
+  width: 9cqh;
+  height: 6.4cqh;
+  opacity: .95;
+  background: repeating-conic-gradient(#111 0 25%, #fff 0 50%) 0 0 / 1.6cqh 1.6cqh;
+  border: 3px solid #fff;
+  transform-origin: 0 50%;
+  animation: met-flamea 1.4s ease-in-out infinite alternate;
+}
+.escena[data-piel='meteoro'] .fx-obj-bandera::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: -6px;
+  width: 6px;
+  height: 15cqh;
+  border-radius: 3px;
+  background: #111;
+  box-shadow: 0 0 0 2px #fff;
+}
+@keyframes met-flamea { from { transform: skewY(-4deg) scaleX(.96); } to { transform: skewY(5deg) scaleX(1); } }
+.escena[data-piel='meteoro'] .fx-obj-go {
+  inset: auto;
+  right: 3cqw;
+  top: 2cqh;
+  color: #ffd100;
+  font: italic 800 clamp(30px, 6cqh, 70px)/1 var(--met-titulo);
+  opacity: 1;
+  transform: skewX(-12deg);
+  text-shadow: 4px 4px 0 #e31c23, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+}
+
+.escena[data-piel='meteoro'] .fx-sello-go,
+.escena[data-piel='meteoro'] .escena-capa[data-tipo='ruleta'] .fx-sello-go,
+.escena[data-piel='meteoro'] .escena-capa[data-tipo='votacion'] .fx-sello-go {
+  position: relative;
+  align-self: center;
+  margin: 0 auto 1.4cqh;
+  padding: .1em .6em .06em !important;
+  border: 3px solid #fff;
+  background: #e31c23;
+  color: #fff;
+  font: italic 800 clamp(24px, 4.6cqh, 54px)/1 var(--met-titulo) !important;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  box-shadow: 7px 7px 0 #ffd100 !important;
+  transform: skewX(-12deg) !important;
+}
+.escena[data-piel='meteoro'] .escena-capa[data-salon='1'] .fx-sello-go {
+  margin-bottom: 4.6cqh;
+  padding: .12em 1.9em .08em !important;
+  border-color: #111;
+  background:
+    linear-gradient(90deg, transparent 1.4em, #111 1.4em calc(100% - 1.4em), transparent calc(100% - 1.4em)),
+    repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / .46em .46em;
+  font-size: clamp(34px, 7cqh, 80px) !important;
+  box-shadow: 0 0 0 3px #fff, 8px 8px 0 3px #e31c23 !important;
+}
+.escena[data-piel='meteoro'] .escena-capa[data-salon='1'] .fx-sello-go::after {
+  content: 'Parejas de la noche';
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 2px);
+  padding: .14em .8em;
+  background: #e31c23;
+  color: #fff;
+  font: italic 700 .34em/1.1 var(--met-titulo);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  box-shadow: 4px 4px 0 #ffd100;
+}
+.escena[data-piel='meteoro'] .escena-reloj {
+  align-self: center;
+  margin: 0 auto 1cqh;
+  padding: .3em .8em;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: #111;
+  color: #ffd100;
+  font: italic 800 clamp(16px, 2.6cqh, 28px)/1 var(--met-titulo);
+  box-shadow: 0 0 0 3px #e31c23;
+}
+
+.escena[data-piel='meteoro'] .fx-ficha-carrera {
+  position: relative;
+  border: 4px solid #fff;
+  outline: 0;
+  border-radius: 10px;
+  background: #111;
+  box-shadow: 0 0 0 3px #e31c23, 8px 8px 0 3px #ffd100;
+  color: #ffd100;
+  font: italic 800 clamp(14px, 2.5cqh, 26px)/1.05 var(--met-titulo);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.escena[data-piel='meteoro'] .fx-ficha-carrera .escena-elegido img {
+  border: 6px solid #161616;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #e31c23;
+}
+.escena[data-piel='meteoro'] .escena-centro .fx-ficha-carrera,
+.escena[data-piel='meteoro'] .escena-pila.is-salon .fx-ficha-carrera {
+  gap: clamp(30px, 4.4cqw, 70px);
+  padding: clamp(16px, 2.6cqh, 28px) clamp(18px, 2.6cqw, 34px);
+}
+.escena[data-piel='meteoro'] .escena-centro .fx-ficha-carrera::after,
+.escena[data-piel='meteoro'] .escena-pila.is-salon .fx-ficha-carrera::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(clamp(16px, 2.6cqh, 28px) + min(7cqh, 4cqw));
+  width: clamp(30px, 4.6cqh, 52px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(8deg);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-3 -3 36 36'%3E%3Cpath d='M10 0h10v10h10v10h-10v10h-10v-10h-10v-10h10z' fill='%23fff' stroke='%23e31c23' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M10 0h10v10h10v10h-10v10h-10v-10h-10v-10h10z' fill='%23fff' stroke='%23fff' stroke-width='1.5'/%3E%3Cpath d='M10 0h5v5h-5zM15 5h5v5h-5zM0 10h5v5h-5zM5 15h5v5h-5zM10 10h5v5h-5zM15 15h5v5h-5zM20 10h5v5h-5zM25 15h5v5h-5zM10 20h5v5h-5zM15 25h5v5h-5z' fill='%23111'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.escena[data-piel='meteoro'] .escena-centro .fx-ficha-carrera::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: clamp(-30px, -2.6cqh, -18px);
+  width: clamp(54px, 8cqh, 90px);
+  aspect-ratio: 3 / 2;
+  transform: translateX(-50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%3Cg fill='%23f2b705' stroke='%237a5200' stroke-width='1.6'%3E%3Cellipse cx='9' cy='30' rx='3.2' ry='6.5' transform='rotate(-40 9 30)'/%3E%3Cellipse cx='7' cy='20' rx='3.2' ry='6.5' transform='rotate(-15 7 20)'/%3E%3Cellipse cx='10' cy='10' rx='3' ry='6' transform='rotate(18 10 10)'/%3E%3Cellipse cx='51' cy='30' rx='3.2' ry='6.5' transform='rotate(40 51 30)'/%3E%3Cellipse cx='53' cy='20' rx='3.2' ry='6.5' transform='rotate(15 53 20)'/%3E%3Cellipse cx='50' cy='10' rx='3' ry='6' transform='rotate(-18 50 10)'/%3E%3C/g%3E%3Cpath d='M16 37 Q6 28 9 6 M44 37 Q54 28 51 6' fill='none' stroke='%237a5200' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M22 38 h16' stroke='%23e31c23' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.escena[data-piel='meteoro'] .escena-pila.is-tira .fx-ficha-carrera {
+  padding: 4px 30px 4px 5px;
+  gap: 8px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, #111 calc(100% - 22px), transparent calc(100% - 22px)),
+    repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 8px 8px;
+  box-shadow: 0 0 0 3px #e31c23, -10px 0 0 -2px rgba(255, 209, 0, .7), -20px 0 0 -5px rgba(227, 28, 35, .5);
+  color: #fff;
+  font-size: clamp(14px, 1.7cqh, 18px);
+}
+.escena[data-piel='meteoro'] .escena-pila.is-tira .fx-ficha-carrera .escena-elegido span { font-size: clamp(14px, 1.7cqh, 18px); max-width: 9ch; }
+.escena[data-piel='meteoro'] .escena-pila.is-tira .fx-ficha-carrera .escena-elegido img {
+  width: clamp(30px, 4cqh, 44px);
+  height: clamp(30px, 4cqh, 44px);
+  border-width: 3px;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.escena[data-piel='meteoro'] .escena-rechazo { filter: none; }
+.escena[data-piel='meteoro'] .fx-rechazo-carrera .fx-ficha-carrera { filter: grayscale(1) brightness(.75); box-shadow: 0 0 0 3px #555, 8px 8px 0 3px #333; }
+.escena[data-piel='meteoro'] .fx-rechazo-carrera::before {
+  content: '';
+  position: absolute;
+  left: -36%;
+  bottom: -18%;
+  z-index: 1;
+  width: 70%;
+  aspect-ratio: 6 / 5;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cg fill='%23eee' stroke='%23111' stroke-width='4'%3E%3Ccircle cx='34' cy='68' r='18'/%3E%3Ccircle cx='58' cy='60' r='22'/%3E%3Ccircle cx='18' cy='78' r='13'/%3E%3Ccircle cx='80' cy='74' r='14'/%3E%3C/g%3E%3Cpath d='M92 82 L104 10' stroke='%23111' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M104 12 Q84 4 70 16 L66 44 Q80 34 98 44 Z' fill='%23111' stroke='%23fff' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: met-humo .6s ease-out .1s both;
+}
+.escena[data-piel='meteoro'] .fx-rechazo-carrera::after {
+  content: 'NO';
+  position: absolute;
+  right: -20%;
+  bottom: -12%;
+  z-index: 2;
+  padding: .04em .4em 0;
+  border: 4px solid #fff;
+  background: #111;
+  color: #fff;
+  font: italic 800 clamp(56px, 11cqh, 118px)/1 var(--met-titulo);
+  transform: skewX(-12deg);
+  box-shadow: 6px 6px 0 #e31c23;
+  animation: met-no .35s cubic-bezier(.1, 1.5, .3, 1) .3s both;
+}
+@keyframes met-humo { from { transform: translateX(30%) scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes met-no { from { transform: translateX(60%) skewX(-12deg); opacity: 0; } to { transform: skewX(-12deg); opacity: 1; } }
+
+.escena[data-piel='meteoro'] .escena-capa[data-tipo='votacion'] h2 {
+  color: #fff;
+  font: italic 800 clamp(26px, 4.6cqh, 52px)/1.05 var(--met-titulo);
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  -webkit-text-stroke: 0;
+  text-shadow: 4px 4px 0 #e31c23;
+}
+.escena[data-piel='meteoro'] .escena-opcion {
+  position: relative;
+  width: min(24cqw, 17rem);
+  flex-basis: min(24cqw, 17rem);
+  padding: clamp(8px, 1.4cqh, 16px);
+  border: 4px solid #fff;
+  border-radius: 10px;
+  background: #111;
+  box-shadow: 0 0 0 3px #e31c23;
+  color: #fff;
+  transition: transform .35s cubic-bezier(.1, 1.3, .3, 1), opacity .35s ease;
+}
+.escena[data-piel='meteoro'] .escena-opcion img {
+  width: min(22cqh, 14cqw);
+  height: min(22cqh, 14cqw);
+  border: 3px solid #fff;
+  border-radius: 4px;
+}
+.escena[data-piel='meteoro'] .escena-opcion strong { font: italic 800 clamp(15px, 2.2cqh, 23px)/1.1 var(--met-titulo); }
+.escena[data-piel='meteoro'] .escena-opcion.is-ganador {
+  z-index: 1;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px #e31c23, 0 0 0 9px #ffd100, 0 0 28px 10px rgba(255, 209, 0, .45);
+}
+.escena[data-piel='meteoro'] .escena-opcion.is-ganador::before {
+  content: '¡GANADOR!';
+  position: absolute;
+  right: -22px;
+  bottom: 18%;
+  padding: .12em .5em .08em 1.5em;
+  border: 3px solid #111;
+  background:
+    repeating-conic-gradient(#111 0 25%, #fff 0 50%) 0 0 / .4em .4em no-repeat,
+    #ffd100;
+  background-size: 1.2em 100%, auto;
+  color: #c4141b;
+  font: italic 800 clamp(18px, 3cqh, 32px)/1 var(--met-titulo);
+  transform: skewX(-12deg) rotate(-6deg);
+  box-shadow: 4px 4px 0 #111;
+  animation: met-no .35s cubic-bezier(.1, 1.5, .3, 1) both;
+}
+.escena[data-piel='meteoro'] .escena-opciones:has(.is-ganador) .escena-opcion:not(.is-ganador) { opacity: .45; filter: grayscale(.6); }
+
+.escena[data-piel='meteoro'] .escena-capa[data-tipo='match'] .escena-marco {
+  padding: 8px 16px;
+  border: 4px solid #fff !important;
+  outline: 0 !important;
+  border-radius: 999px;
+  background: #111 !important;
+  box-shadow: 0 0 0 3px #e31c23, 6px 6px 0 3px #ffd100 !important;
+  color: #fff;
+  transform: skewX(-6deg);
+}
+.escena[data-piel='meteoro'] .escena-capa[data-tipo='match'] .escena-marco:has(.escena-match-foto) { max-width: min(70cqw, 44rem); }
+.escena[data-piel='meteoro'] .escena-match-par { gap: 14px; }
+.escena[data-piel='meteoro'] .escena-match-foto {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(40px, 6.4cqh, 68px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #3a3a3a;
+  color: #ffd100;
+  font-weight: 800;
+  border: 5px solid #161616;
+  box-shadow: 0 0 0 3px #fff;
+}
+.escena[data-piel='meteoro'] .escena-match h2 { white-space: nowrap; color: #fff; font: italic 800 clamp(16px, 2.6cqh, 28px)/1.05 var(--met-titulo); text-transform: uppercase; }
+.escena[data-piel='meteoro'] .escena-match p {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  color: #ffd100;
+  opacity: 1;
+  font: italic 800 clamp(12px, 1.6cqh, 16px)/1 var(--met-titulo);
+  text-transform: uppercase;
+}
+.escena[data-piel='meteoro'] .escena-match p::before {
+  content: '';
+  width: 46px;
+  height: 34px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 44'%3E%3Cdefs%3E%3Cpattern id='c' width='6' height='6' patternUnits='userSpaceOnUse'%3E%3Crect width='6' height='6' fill='%23fff'/%3E%3Crect width='3' height='3' fill='%23111'/%3E%3Crect x='3' y='3' width='3' height='3' fill='%23111'/%3E%3C/pattern%3E%3C/defs%3E%3Cpath d='M12 42 L40 4 M48 42 L20 4' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M12 42 L40 4 M48 42 L20 4' stroke='%23111' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M40 4 L58 6 L52 22 L33 14 Z M20 4 L2 6 L8 22 L27 14 Z' fill='url(%23c)' stroke='%23e31c23' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: met-flamea .7s ease-in-out infinite alternate;
+}
+
+.escena[data-piel='meteoro'] .sms-marco {
+  --sms-blanco-in: #fff;
+  --sms-blanco-out: #e31c23;
+  --sms-tinta: #111;
+  --sms-tinta-out: #fff;
+  --sms-vol-in: 0 0 0 3px #e31c23, 5px 5px 0 3px #111;
+  --sms-vol-out: 0 0 0 3px #fff, 5px 5px 0 3px #ffd100;
+  --sms-fuente: 'Barlow Condensed', Impact, sans-serif;
+}
+.escena[data-piel='meteoro'] .sms-burbuja { border: 0; border-radius: 12px; font-style: italic; font-weight: 700 !important; }
+.escena[data-piel='meteoro'] .sms-burbuja::before { content: none; }
+.escena[data-piel='meteoro'] .sms-burbuja::after { bottom: -12px; width: 20px; height: 16px; filter: none; }
+.escena[data-piel='meteoro'] .sms-fila.is-in .sms-burbuja::after { background: #e31c23; }
+.escena[data-piel='meteoro'] .sms-fila.is-out .sms-burbuja::after { background: #fff; }
+.escena[data-piel='meteoro'] .sms-avatar { border: 5px solid #161616; outline: 0; box-shadow: 0 0 0 2px #fff; background: #3a3a3a; }
+.escena[data-piel='meteoro'] .sms-avatar.is-hueco { color: #ffd100; }
+.escena[data-piel='meteoro'] .escena-cuerpo .sms-meta,
+.escena[data-piel='meteoro'] .sms-meta {
+  color: #fff;
+  font-style: italic;
+  font-weight: 700 !important;
+  text-shadow: 2px 2px 0 #111;
+}
+.escena[data-piel='meteoro'] .sms-meta strong { color: #ffd100; text-transform: uppercase; }
+.escena[data-piel='meteoro'] .sms-fila.is-nuevo .sms-burbuja { animation: met-radio .4s cubic-bezier(.1, 1.4, .3, 1) both; }
+@keyframes met-radio { from { transform: translateX(calc(var(--sms-dir) * -40px)) skewX(-14deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.escena[data-piel='meteoro'] .fx-impacto-turbo {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 64cqh;
+  height: 64cqh;
+  margin: -32cqh 0 0 -32cqh;
+  background: none;
+  animation: met-estallido .8s cubic-bezier(.1, 1.2, .3, 1) both;
+}
+.escena[data-piel='meteoro'] .fx-impacto-turbo::before,
+.escena[data-piel='meteoro'] .fx-impacto-turbo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.escena[data-piel='meteoro'] .fx-impacto-turbo::before {
+  background: repeating-conic-gradient(from 3deg, #e31c23 0 5deg, transparent 5deg 10deg, #ffd100 10deg 13deg, transparent 13deg 20deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 52%, #000 54% 92%, transparent 97%);
+  mask: radial-gradient(circle closest-side, transparent 0 52%, #000 54% 92%, transparent 97%);
+}
+.escena[data-piel='meteoro'] .fx-impacto-turbo::after {
+  inset: 6%;
+  background: repeating-conic-gradient(#111 0 25%, #fff 0 50%) 0 0 / 2cqh 2cqh;
+  -webkit-mask: repeating-conic-gradient(from 20deg, #000 0 4deg, transparent 4deg 45deg), radial-gradient(circle closest-side, transparent 0 84%, #000 86% 100%);
+  -webkit-mask-composite: source-in;
+  mask: repeating-conic-gradient(from 20deg, #000 0 4deg, transparent 4deg 45deg), radial-gradient(circle closest-side, transparent 0 84%, #000 86% 100%);
+  mask-composite: intersect;
+}
+@keyframes met-estallido { 0% { transform: scale(.3) rotate(-20deg); opacity: 0; } 20% { opacity: 1; } 70% { opacity: 1; } 100% { transform: scale(1.2) rotate(8deg); opacity: 0; } }
+.escena[data-piel='meteoro'] .papel-picado i { filter: drop-shadow(1.5px 1.5px 0 #111); }
+
+.fx-mascota .turbo { width: 100%; height: 100%; overflow: visible; transform: scaleX(-1); }
+
+.escena[data-piel='meteoro'] .ahora-velo {
+  background:
+    linear-gradient(90deg, rgba(20, 20, 20, .9) 0, rgba(20, 20, 20, .66) 26%, transparent 46%),
+    linear-gradient(to top, rgba(20, 20, 20, .92), transparent 36%);
+}
+.escena[data-piel='meteoro'] .ahora-datos { color: #fff; font-family: var(--met-titulo); font-style: italic; }
+.escena[data-piel='meteoro'] .ahora-disco {
+  display: block;
+  position: relative;
+  width: clamp(92px, 17cqh, 190px);
+  aspect-ratio: 1;
+  margin: 0 0 2cqh;
+  border: 4px solid #fff;
+  border-radius: 16px;
+  background: #111;
+  box-shadow: 0 0 0 4px #e31c23, 8px 8px 0 4px #ffd100;
+}
+.escena[data-piel='meteoro'] .ahora-disco::before {
+  content: '';
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 135deg, #111 0 90deg, transparent 90deg),
+    conic-gradient(from 45deg, #e31c23 0 50deg, transparent 50deg),
+    repeating-conic-gradient(from 225deg, #fff 0 2deg, transparent 2deg 11.25deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 82%, #000 84% 100%);
+  mask: radial-gradient(closest-side, transparent 82%, #000 84% 100%);
+}
+.escena[data-piel='meteoro'] .ahora-funda {
+  position: absolute;
+  inset: 21%;
+  z-index: 1;
+  overflow: hidden;
+  border: 3px solid #fff;
+  border-radius: 4px;
+  background: #2a2a2a;
+}
+.escena[data-piel='meteoro'] .ahora-funda img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.escena[data-piel='meteoro'] .ahora-funda:empty::before {
+  content: '♪';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #ffd100;
+  font: 800 clamp(26px, 5cqh, 56px)/1 var(--met-titulo);
+}
+.escena[data-piel='meteoro'] .ahora-vinilo { display: none; }
+.escena[data-piel='meteoro'] .ahora-marca { color: #9a9a9a; font-family: system-ui, sans-serif; font-style: normal; }
+.escena[data-piel='meteoro'] .ahora-sello {
+  display: inline-block;
+  margin: 0 0 1.4cqh;
+  padding: .12em .6em .06em;
+  border: 3px solid #fff;
+  background: #e31c23;
+  color: #fff;
+  font: italic 800 clamp(18px, 3.2cqh, 36px)/1 var(--met-titulo);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  box-shadow: 6px 6px 0 #ffd100;
+  transform: skewX(-12deg);
+}
+.escena[data-piel='meteoro'] .ahora-kicker { color: #ffd100; font-family: var(--met-titulo); font-weight: 800; letter-spacing: .1em; }
+.escena[data-piel='meteoro'] .ahora-titulo { color: #fff; font: italic 800 clamp(30px, 6cqh, 70px)/1 var(--met-titulo); letter-spacing: 0; text-transform: uppercase; text-shadow: 4px 4px 0 #e31c23; }
+.escena[data-piel='meteoro'] .ahora-artista { color: #ffd100; font-weight: 700; }
+.escena[data-piel='meteoro'] .ahora-meta { color: #b5b5b5; }
+.escena[data-piel='meteoro'] .ahora-dedicatoria {
+  position: relative;
+  display: inline-block;
+  max-width: min(30ch, 100%);
+  overflow: visible;
+  white-space: normal;
+  margin: 1.6cqh 0 0;
+  padding: .45em 1em;
+  border: 4px solid #ffd100;
+  border-radius: 12px;
+  background: #fff;
+  color: #111;
+  font-weight: 700;
+  transform: skewX(-6deg);
+  box-shadow: 6px 6px 0 #e31c23;
+}
+.escena[data-piel='meteoro'] .ahora-dedicatoria::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: -15px;
+  width: 20px;
+  height: 14px;
+  background: #ffd100;
+  clip-path: polygon(0 0, 100% 0, 10% 100%);
+}
+.escena[data-piel='meteoro'] .ahora-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(4px, .45cqw, 9px);
+  height: clamp(30px, 6.4cqh, 74px);
+  margin: 2cqh 0 0;
+}
+.escena[data-piel='meteoro'] .ahora-eq i {
+  --eq-relleno: #1a1a1a;
+  width: clamp(9px, 1cqw, 19px);
+  height: 100%;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(to top, transparent 0 6px, #1a1a1a 6px 9px),
+    linear-gradient(to top, #2bd45a 0 50%, #ffd100 50% 78%, #e31c23 78%);
+}
+.escena[data-piel='meteoro'] .ahora-eq i::before { animation-name: met-eq; }
+@keyframes met-eq { 0% { transform: translateY(-22%); } 45% { transform: translateY(-78%); } 70% { transform: translateY(-45%); } 100% { transform: translateY(-92%); } }
+.escena[data-piel='meteoro'] .ahora-eq.is-pausa i { opacity: .5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .escena[data-piel='meteoro'] .fx-obj-rayas,
+  .escena[data-piel='meteoro'] .fx-obj-bandera,
+  .escena[data-piel='meteoro'] .escena-match p::before,
+  .escena[data-piel='meteoro'] .sms-fila.is-nuevo .sms-burbuja,
+  .escena[data-piel='meteoro'] .fx-rechazo-carrera::before,
+  .escena[data-piel='meteoro'] .fx-rechazo-carrera::after,
+  .escena[data-piel='meteoro'] .escena-opcion.is-ganador::before { animation: none; }
+}

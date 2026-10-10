@@ -47,8 +47,10 @@ const PIELES = {
     id: 'meteoro',
     fondo: '#1A1A1A', sectorA: '#E31C23', sectorB: '#FFD100', acento: '#E31C23',
     info: '#FFFFFF', texto: '#111111', colores: ['#FFFFFF', '#1E4B9C', '#FFFFFF', '#111111'],
-    fotoHueco: '#3a3a3a', fuente: '800 14px Impact, "Arial Black", sans-serif',
-    sellos: { ruleta: 'GO!', votacion: 'GRID', mensaje: 'RADIO', match: 'FINISH' },
+    fotoHueco: '#3a3a3a', fuente: 'italic 800 23px "Barlow Condensed", Impact, sans-serif',
+    sellos: { ruleta: 'GO!', votacion: 'GRID', mensaje: 'RADIO', match: 'FINISH', cierre: 'FINISH' },
+    rueda: 'llanta',
+    mascota: 'turbo',
     efectos: {
       fondo: 'fx-fondo-pista', ambiente: 'fx-ambiente-velocidad', marco: 'fx-marco-carrera',
       sello: 'fx-sello-go', foto: 'fx-foto-circulo', globo: 'fx-globo-carrera',
@@ -449,7 +451,7 @@ function htmlCapa(capa) {
   const marco = tipo === 'mensaje'
     ? 'escena-marco sms-marco'
     : `escena-marco ${escapar(fx.marco)} ${escapar(fx.entrada)}`;
-  const sello = tipo === 'mensaje' ? '' : `<p class="escena-sello ${escapar(fx.sello)}">${escapar(piel.sellos[tipo] || tipo)}</p>`;
+  const sello = tipo === 'mensaje' ? '' : `<p class="escena-sello ${escapar(fx.sello)}">${escapar((cierre && piel.sellos.cierre) || piel.sellos[tipo] || tipo)}</p>`;
   const relojCapa = tipo === 'mensaje' ? '' : reloj;
   return `<section class="escena-capa" data-tipo="${escapar(tipo)}" data-peso="${escapar(peso)}" data-salon="${cierre ? '1' : '0'}">${ambiente}${objetosCapa}${impacto}<div class="${marco}">${sello}${relojCapa}<div class="escena-cuerpo${cuerpo}" style="--n:${pilaN || 1}">${interior}</div></div></section>`;
 }
@@ -727,8 +729,90 @@ function svgSumi(pose) {
     + `</g><g stroke="#111" stroke-width="4">${p.extra || ''}</g></g></svg>`;
 }
 
+const TURBO_POSES = {
+  reposo: {
+    brazos: 'M76 178 Q58 196 48 214',
+    manos: [[44, 218]],
+    piernas: 'M112 188 Q140 206 164 200 M128 184 Q160 194 186 182',
+    zapas: [[170, 200, -20], [192, 180, -30]],
+    ojos: 'abiertos',
+    boca: '<path d="M140 160 Q152 170 166 158" fill="none"/>',
+  },
+  festeja: {
+    brazos: 'M50 146 Q20 118 16 82 M186 132 Q214 100 214 64',
+    manos: [[14, 74], [214, 56]],
+    piernas: 'M104 188 Q96 212 110 232 M136 186 Q146 210 138 232',
+    zapas: [[112, 238, 10], [140, 238, -10]],
+    ojos: 'felices',
+    boca: '<path d="M138 156 Q154 180 172 154 Z" fill="#7a1010"/><path d="M146 166 Q154 174 164 166 Z" fill="#ff7a7a" stroke="none"/>',
+    lineas: 'M30 214 l26 -6 M40 228 l22 -4',
+  },
+  decepcion: {
+    brazos: 'M80 182 Q62 202 56 222',
+    manos: [[52, 226]],
+    piernas: 'M112 192 Q138 212 160 210 M128 190 Q156 202 180 194',
+    zapas: [[166, 210, -12], [186, 192, -24]],
+    ojos: 'tristes',
+    boca: '<path d="M142 168 Q153 158 166 168" fill="none"/>',
+    cejas: '<path d="M112 108 L130 116 M178 112 L160 118" fill="none"/>',
+    cabeza: 'rotate(-7 112 120)',
+  },
+  senala: {
+    brazos: 'M76 176 Q60 196 58 214 M186 140 L204 134',
+    manos: [[56, 218]],
+    dedo: [204, 132],
+    piernas: 'M104 190 L100 228 M134 188 L142 228',
+    zapas: [[100, 234, 0], [146, 234, 0]],
+    ojos: 'abiertos',
+    boca: '<path d="M140 154 Q154 174 170 152 Z" fill="#7a1010"/>',
+  },
+};
+
+function svgTurbo(pose) {
+  const p = TURBO_POSES[pose] || TURBO_POSES.reposo;
+  const casco = 'M112 30 C162 30 194 66 194 112 C194 158 160 190 112 190 C64 190 32 158 32 110 C32 64 66 30 112 30 Z';
+  const linea = (d, ancho) => `<path d="${d}" stroke="#fff" stroke-width="${ancho + 8}"/><path d="${d}" stroke="#111" stroke-width="${ancho}"/>`;
+  const guante = ([x, y]) => `<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#111" stroke-width="4"/><path d="M${x - 6} ${y - 2} q6 -5 12 0" stroke="#111" stroke-width="2.5"/>`;
+  const zapa = ([x, y, giro]) => `<g transform="translate(${x} ${y}) rotate(${giro})"><path d="M-14 -4 Q-14 -14 -2 -14 L6 -12 Q16 -6 18 2 L18 6 L-14 6 Z" fill="#e31c23" stroke="#111" stroke-width="4"/><path d="M-14 6 L18 6" stroke="#fff" stroke-width="5"/><path d="M-4 -10 l6 5 M2 -11 l5 5" stroke="#fff" stroke-width="2.5"/></g>`;
+  const ojo = (x, y) => {
+    if (p.ojos === 'felices') return `<path d="M${x - 9} ${y + 3} Q${x} ${y - 9} ${x + 9} ${y + 3}" fill="none" stroke="#111" stroke-width="4.5"/>`;
+    const cae = p.ojos === 'tristes' ? 3 : 0;
+    return `<circle cx="${x + 2}" cy="${y + 2 + cae}" r="7" fill="#111" stroke="none"/><circle cx="${x}" cy="${y - 1 + cae}" r="2.6" fill="#fff" stroke="none"/>`;
+  };
+  const dedo = p.dedo ? `<g transform="translate(${p.dedo[0]} ${p.dedo[1]}) scale(1.5)"><path d="M-8 -9 Q4 -10 6 -4 L22 -6 Q28 -4 22 0 L6 2 Q8 10 -4 10 Q-12 8 -10 0 Z" fill="#fff" stroke="#111" stroke-width="4" stroke-linejoin="round"/></g>` : '';
+  return `<svg class="turbo" viewBox="0 0 230 250" role="presentation"><defs>`
+    + `<pattern id="turbo-cuadros" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(-14)"><rect width="16" height="16" fill="#fff"/><rect width="8" height="8" fill="#111"/><rect x="8" y="8" width="8" height="8" fill="#111"/></pattern>`
+    + `<clipPath id="turbo-casco"><path d="${casco}"/></clipPath></defs>`
+    + `<g fill="none" stroke-linecap="round" stroke-linejoin="round">`
+    + `<path d="M6 96 h30 M2 112 h24 ${p.lineas || ''}" stroke="#111" stroke-width="4"/>`
+    + `<path d="M66 124 C40 102 18 128 -10 108 L-2 166 C22 182 44 150 72 170 Z" fill="#e31c23" stroke="#e31c23" stroke-width="14"/>`
+    + `<path d="M66 124 C40 102 18 128 -10 108 L-2 166 C22 182 44 150 72 170 Z" fill="url(#turbo-cuadros)" stroke="#fff" stroke-width="5"/>`
+    + linea(p.brazos, 7) + linea(p.piernas, 8)
+    + p.manos.map(guante).join('') + dedo + p.zapas.map(zapa).join('')
+    + `<g transform="${p.cabeza || ''}">`
+    + `<path d="${casco}" stroke="#e31c23" stroke-width="20"/><path d="${casco}" stroke="#fff" stroke-width="12"/>`
+    + `<path d="${casco}" fill="#e31c23"/>`
+    + `<g clip-path="url(#turbo-casco)"><path d="M88 22 L158 22 Q176 90 234 140 L204 214 Q110 128 88 22 Z" fill="#ffd100"/>`
+    + `<path d="M32 150 Q112 210 194 150 L194 200 L32 200 Z" fill="#a8121a"/></g>`
+    + `<path d="${casco}" stroke="#7a0c12" stroke-width="4"/>`
+    + `<path d="M58 78 Q72 50 102 40" stroke="#fff" stroke-width="8" opacity=".85"/><path d="M50 98 l2 -8" stroke="#fff" stroke-width="7" opacity=".85"/>`
+    + `<ellipse cx="148" cy="134" rx="46" ry="44" fill="#ffc21a" stroke="#7a0c12" stroke-width="5"/>`
+    + `<path d="M118 160 Q150 182 182 156" stroke="#f0a000" stroke-width="5" opacity=".7"/>`
+    + `<path d="M40 128 Q70 112 104 116" stroke="#3a1c0c" stroke-width="18"/><path d="M40 128 Q70 112 104 116" stroke="#8a4a22" stroke-width="11"/>`
+    + `<g stroke="#3a1c0c" stroke-width="4"><rect x="104" y="104" width="40" height="34" rx="11" fill="#8a4a22"/><rect x="152" y="102" width="40" height="34" rx="11" fill="#8a4a22"/></g>`
+    + `<rect x="110" y="109" width="28" height="24" rx="8" fill="#ffe680"/><rect x="158" y="107" width="28" height="24" rx="8" fill="#ffe680"/>`
+    + `<path d="M144 120 L152 119" stroke="#3a1c0c" stroke-width="6"/>`
+    + `<path d="M114 113 l8 -2" stroke="#fff" stroke-width="3" opacity=".8"/><path d="M162 111 l8 -2" stroke="#fff" stroke-width="3" opacity=".8"/>`
+    + ojo(124, 121) + ojo(172, 119)
+    + `<path d="M88 86 Q142 62 202 86" stroke="#3a1c0c" stroke-width="24"/><path d="M88 86 Q142 62 202 86" stroke="#fff" stroke-width="16"/>`
+    + `<path d="M100 82 Q142 68 190 80" stroke="#d9d9d9" stroke-width="3"/><circle cx="102" cy="84" r="4.5" fill="#bbb" stroke="#3a1c0c" stroke-width="2"/>`
+    + `<g stroke="#111" stroke-width="4.5">${p.boca}${p.cejas || ''}</g>`
+    + `</g></g></svg>`;
+}
+
 function svgMascota(id, pose) {
   if (id === 'sumi') return svgSumi(pose);
+  if (id === 'turbo') return svgTurbo(pose);
   if (id !== 'voltio') return '';
   const p = VOLTIO_POSES[pose] || VOLTIO_POSES.reposo;
   const manos = p.manos.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="8"/>`).join('');
@@ -1092,7 +1176,11 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const slice = (Math.PI * 2) / opciones.length;
   const neon = pal.rueda === 'neon';
   const tinta = pal.rueda === 'tinta';
+  const llanta = pal.rueda === 'llanta';
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
+  if (document.fonts && document.fonts.load) {
+    await Promise.race([document.fonts.load(pal.fuente).catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1200))]);
+  }
   const cx = canvas.width / 2;
   const cy = canvas.height / 2;
   const r = Math.min(cx, cy) * 0.86;
@@ -1135,6 +1223,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     c.restore();
     if (neon) decorarRuedaNeon(c, cx, cy, r, 0, slice, opciones.length, 0, 'cara');
     else if (tinta) decorarRuedaTinta(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+    else if (llanta) decorarRuedaLlanta(c, cx, cy, r, 0, slice, opciones.length, 'cara');
   };
   const pintarFoto = (i) => {
     const t = (radio + margenFoto) * 2;
@@ -1169,6 +1258,14 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.arc(x, y, radio + 5, 0, Math.PI * 2);
       c.strokeStyle = '#C41E3A';
       c.lineWidth = 3;
+    } else if (llanta) {
+      c.strokeStyle = '#111';
+      c.lineWidth = 7;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 1, 0, Math.PI * 2);
+      c.strokeStyle = '#fff';
+      c.lineWidth = 3;
     } else {
       c.strokeStyle = pal.texto;
       c.lineWidth = 2;
@@ -1178,7 +1275,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   };
   const pintarNombre = (i) => {
     const opcion = opciones[i];
-    const nombre = neon || tinta ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const nombre = neon || tinta || llanta ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
     const medida = canvas.getContext('2d');
     medida.font = pal.fuente;
     const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
@@ -1194,10 +1291,10 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.shadowColor = 'rgba(0, 0, 0, .85)';
       c.shadowBlur = 4;
     }
-    if (tinta) {
+    if (tinta || llanta) {
       c.lineJoin = 'round';
       c.lineWidth = 6;
-      c.strokeStyle = '#FFF6DC';
+      c.strokeStyle = tinta ? '#FFF6DC' : '#111';
       c.strokeText(nombre, nx, ny);
     }
     c.fillStyle = pal.texto;
@@ -1209,6 +1306,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     const c = sprite.getContext('2d');
     if (neon) decorarRuedaNeon(c, cx, cy, r, 0, slice, opciones.length, variante === 'reposo' ? 0 : 1, 'fijo', variante === 'impar' ? 1 : 0);
     else if (tinta) decorarRuedaTinta(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else if (llanta) decorarRuedaLlanta(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else {
       c.beginPath();
       c.moveTo(cx, cy - r - 2);
@@ -1298,6 +1396,128 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     }
   };
   requestAnimationFrame(paso);
+}
+
+// Meteoro (H5): neumático con dibujo y anillo amarillo, tapa de rueda cromada con espiral y puntero rojo
+// con punta a cuadros.
+function decorarRuedaLlanta(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
+  const TAU = Math.PI * 2;
+  ctx.save();
+  if (parte !== 'fijo') {
+    ctx.lineCap = 'butt';
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 4;
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * r * 0.15, cy + Math.sin(a) * r * 0.15);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 40, 0, TAU);
+    ctx.arc(cx, cy, r + 30, 0, TAU, true);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 36, 0, TAU);
+    ctx.arc(cx, cy, r, 0, TAU, true);
+    ctx.fillStyle = '#161616';
+    ctx.fill();
+    ctx.strokeStyle = '#2e2e2e';
+    ctx.lineWidth = 7;
+    const tacos = 56;
+    for (let k = 0; k < tacos; k += 1) {
+      const a = angulo + (k / tacos) * TAU;
+      const b = a + 0.05;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * (r + 12), cy + Math.sin(a) * (r + 12));
+      ctx.lineTo(cx + Math.cos(b) * (r + 22), cy + Math.sin(b) * (r + 22));
+      ctx.lineTo(cx + Math.cos(a) * (r + 32), cy + Math.sin(a) * (r + 32));
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 4, 0, TAU);
+    ctx.strokeStyle = '#FFD100';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, TAU);
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    const hub = r * 0.16;
+    const cromo = ctx.createRadialGradient(cx - hub * 0.4, cy - hub * 0.4, hub * 0.1, cx, cy, hub);
+    cromo.addColorStop(0, '#ffffff');
+    cromo.addColorStop(0.55, '#c9c9c9');
+    cromo.addColorStop(1, '#6d6d6d');
+    ctx.beginPath();
+    ctx.arc(cx, cy, hub, 0, TAU);
+    ctx.fillStyle = cromo;
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#111';
+    ctx.stroke();
+    const interior = hub * 0.72;
+    ctx.beginPath();
+    ctx.arc(cx, cy, interior, 0, TAU);
+    ctx.fillStyle = '#E31C23';
+    ctx.fill();
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, interior, 0, TAU);
+    ctx.clip();
+    ctx.strokeStyle = '#FFD100';
+    ctx.lineWidth = interior * 0.22;
+    ctx.beginPath();
+    for (let t = 0; t <= 1; t += 0.02) {
+      const a = angulo + t * Math.PI * 4;
+      const rr = interior * t;
+      const x = cx + Math.cos(a) * rr;
+      const y = cy + Math.sin(a) * rr;
+      if (t === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+    ctx.beginPath();
+    ctx.arc(cx, cy, interior, 0, TAU);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#111';
+    ctx.stroke();
+  }
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
+  const top = cy - r - 48;
+  const casilla = 9;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx - 9, top + 18);
+  ctx.lineTo(cx - 9, top + 34);
+  ctx.lineTo(cx - 25, top + 34);
+  ctx.lineTo(cx, top + 66);
+  ctx.lineTo(cx + 25, top + 34);
+  ctx.lineTo(cx + 9, top + 34);
+  ctx.lineTo(cx + 9, top + 18);
+  ctx.closePath();
+  ctx.fillStyle = '#E31C23';
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#fff';
+  ctx.stroke();
+  for (let fila = 0; fila < 2; fila += 1) {
+    for (let col = 0; col < 4; col += 1) {
+      ctx.fillStyle = (fila + col) % 2 ? '#fff' : '#111';
+      ctx.fillRect(cx - 2 * casilla + col * casilla, top + fila * casilla, casilla, casilla);
+    }
+  }
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(cx - 2 * casilla, top, casilla * 4, casilla * 2);
+  ctx.restore();
 }
 
 function decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
@@ -1676,7 +1896,7 @@ const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon'];
 const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
   manga: { nombre: 'Manga', estado: 'Arte parcial' },
-  meteoro: { nombre: 'Meteoro', estado: 'Arte pendiente' },
+  meteoro: { nombre: 'Meteoro', estado: 'Arte parcial' },
   doraemon: { nombre: 'Cielo', estado: 'Arte pendiente' },
 };
 
