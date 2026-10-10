@@ -2,7 +2,7 @@
 
 Documento para el agente de diseño. Enumera **las plantillas (skins) que existen hoy** y **cada elemento gráfico de la pantalla del salón**, con lo que hace, cuándo aparece, dónde va, qué estados tiene y cómo se ve hoy en cada plantilla. Al final está la lista de archivos a entregar por plantilla.
 
-Inventario general de todos los módulos: [`fonomusic-inventario-grafico.md`](./fonomusic-inventario-grafico.md).
+Inventario general de todos los módulos: [`fonomusic-inventario-grafico.md`](./fonomusic-inventario-grafico.md). Prompts listos para Gemini: [`fonomusic-prompts-gemini.md`](./fonomusic-prompts-gemini.md).
 
 ## Regla de oro
 
