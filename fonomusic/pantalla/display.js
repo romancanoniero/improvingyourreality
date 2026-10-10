@@ -1639,7 +1639,7 @@ let dedicasDemo = [];
 const CLAVE_PIEL = 'fonomeets.pantalla.piel';
 function pielGuardada() {
   try {
-    const valor = localStorage.getItem(CLAVE_PIEL);
+    const valor = new URLSearchParams(location.search).get('piel') || localStorage.getItem(CLAVE_PIEL);
     return ['nocturna', 'manga', 'meteoro', 'doraemon'].includes(valor) ? valor : '';
   } catch (error) {
     return '';
