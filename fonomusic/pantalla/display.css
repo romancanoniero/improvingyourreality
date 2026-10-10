@@ -1440,9 +1440,10 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   animation: fx-neon-titila 1.1s steps(1, end) both;
 }
 @keyframes fx-neon-apaga { 0%, 30%, 52% { opacity: 1; filter: none; } 18%, 42%, 64% { opacity: .35; } 100% { opacity: .55; filter: grayscale(.8) brightness(.7); } }
-@keyframes fx-neon-titila { 0%, 12% { opacity: 0; } 14%, 26%, 46%, 100% { opacity: 1; } 20%, 38% { opacity: .2; } }
+@keyframes fx-neon-titila { 0%, 8% { opacity: 0; } 10%, 20%, 100% { opacity: 1; } 15% { opacity: .25; } }
 
 .escena[data-piel='nocturna'] .escena-capa[data-tipo='votacion'] h2 {
+  font-size: clamp(18px, 3.6cqh, 40px);
   color: #fff;
   text-shadow: 0 0 14px rgba(34, 224, 230, .55), 0 2px 4px rgba(0, 0, 0, .7);
 }
@@ -1455,10 +1456,18 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   color: #fff;
   transition: transform .35s cubic-bezier(.2, 1.2, .4, 1), opacity .35s ease;
 }
+.escena[data-piel='nocturna'] .escena-opcion {
+  width: min(24cqw, 17rem);
+  flex-basis: min(24cqw, 17rem);
+  padding: clamp(8px, 1.4cqh, 16px);
+}
 .escena[data-piel='nocturna'] .escena-opcion img {
+  width: min(22cqh, 14cqw);
+  height: min(22cqh, 14cqw);
   border: 0;
   border-radius: 10px;
 }
+.escena[data-piel='nocturna'] .escena-opcion strong { font-size: clamp(13px, 2cqh, 20px); }
 .escena[data-piel='nocturna'] .escena-opcion.is-ganador {
   z-index: 1;
   border: 3px solid #ff3d8b;
@@ -1485,7 +1494,7 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   box-shadow: 0 0 18px rgba(255, 61, 139, .6), inset 0 0 0 2px rgba(34, 224, 230, .35), 0 0 34px rgba(34, 224, 230, .25) !important;
 }
 .escena[data-piel='nocturna'] .escena-match-par { gap: 16px; }
-.escena[data-piel='nocturna'] .escena-match h2 { color: #fff; text-shadow: 0 0 10px rgba(255, 61, 139, .5); }
+.escena[data-piel='nocturna'] .escena-match h2 { white-space: nowrap; color: #fff; text-shadow: 0 0 10px rgba(255, 61, 139, .5); }
 .escena[data-piel='nocturna'] .escena-match p {
   display: grid;
   justify-items: center;
