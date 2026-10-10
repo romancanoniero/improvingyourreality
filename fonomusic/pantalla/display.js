@@ -5,6 +5,8 @@ const PIELES = {
     info: '#22E0E6', texto: '#F5F6FA', colores: ['#FF3D8B', '#22E0E6', '#9BE85A', '#FFB648'],
     fotoHueco: '#2c3142', fuente: '700 13px system-ui, sans-serif',
     sellos: { ruleta: 'Ruleta', votacion: 'Votación', mensaje: 'Mensaje', match: 'Match' },
+    rueda: 'neon',
+    mascota: 'voltio',
     efectos: {
       fondo: 'fx-fondo-neon', ambiente: 'fx-ambiente-neon', marco: 'fx-marco-neon',
       sello: 'fx-sello-neon', foto: 'fx-foto-circulo', globo: 'fx-globo-neon',
@@ -92,11 +94,13 @@ const AJUSTES_CLAVE = 'fonobar_entretenimiento_ajustes_piel';
 const OBJETO_NOMBRES = {
   destello: 'Destello', halo: 'Halo', onoma: 'Don', trama: 'Trama', bandera: 'Bandera',
   go: 'GO!', rayas: 'Rayas', nubesfx: 'Nubes', helice: 'Hélice', gatoazul: 'Gadget', estrellas: 'Estrellas',
+  mascota: 'Mascota',
 };
 
 function ajustesPorDefecto(id) {
   const objetos = {};
   for (const objeto of pielDe(id).efectos.objetos || []) objetos[objeto.id] = true;
+  if (pielDe(id).mascota) objetos.mascota = true;
   return { sonido: true, efectos: true, objetos };
 }
 
@@ -143,6 +147,7 @@ function fxDeCapa(capa) {
       objetos: ajustes.efectos
         ? (piel.efectos.objetos || []).filter((objeto) => ajustes.objetos[objeto.id] !== false)
         : [],
+      mascota: ajustes.efectos && piel.mascota && ajustes.objetos.mascota !== false ? piel.mascota : '',
       ambiente: ajustes.efectos ? piel.efectos.ambiente : '',
       impacto: ajustes.efectos ? piel.efectos.impacto : '',
       particulas: ajustes.efectos ? piel.efectos.particulas : { ...(piel.efectos.particulas || {}), cantidad: 0 },
@@ -536,6 +541,65 @@ function mediaAhora() {
   return stage ? stage.querySelector('#ahora-media') : null;
 }
 
+function poseMascota(capas) {
+  if (capas.some((capa) => capa.tipo === 'match')) return 'festeja';
+  const juego = capas.find((capa) => capa.tipo === 'ruleta' || capa.tipo === 'votacion');
+  if (!juego) return '';
+  if (juego.tipo === 'votacion') return juego.ganador ? 'festeja' : 'senala';
+  if (juego.rechazo && juego.rechazo.id) return 'decepcion';
+  const ruedas = (juego.ruedas || []).filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0);
+  const pila = Array.isArray(juego.pila) ? juego.pila.length : 0;
+  if (juego.cierre || (pila > 0 && ruedas.length === 0)) return 'festeja';
+  if (Array.isArray(juego.centro) && juego.centro.length > 0) return 'festeja';
+  const gira = ruedas.some((rueda) => (rueda.animar !== undefined ? rueda.animar : juego.animar) !== false);
+  return gira ? 'senala' : 'reposo';
+}
+
+const VOLTIO_POSES = {
+  reposo: {
+    brazos: 'M74 150 Q54 168 58 196 M126 150 Q146 168 142 196',
+    manos: [[58, 202], [142, 202]],
+    piernas: 'M88 186 L86 234 L72 237 M112 186 L114 234 L128 237',
+    cara: '<circle cx="93" cy="74" r="4"/><circle cx="107" cy="74" r="4"/><path d="M90 84 Q100 93 110 84" fill="none"/>',
+  },
+  festeja: {
+    brazos: 'M74 148 Q46 132 42 100 M126 148 Q154 132 158 100',
+    manos: [[40, 92], [160, 92]],
+    piernas: 'M88 186 Q72 204 84 224 L72 230 M112 186 Q128 204 116 224 L128 230',
+    cara: '<path d="M89 75 Q93 69 97 75 M103 75 Q107 69 111 75" fill="none"/><path d="M88 82 Q100 100 112 82 Z"/>',
+  },
+  decepcion: {
+    brazos: 'M76 152 Q68 178 72 206 M124 152 Q132 178 128 206',
+    manos: [[72, 212], [128, 212]],
+    piernas: 'M90 186 L95 234 L83 237 M110 186 L105 234 L117 237',
+    cara: '<circle cx="93" cy="77" r="3.5"/><circle cx="107" cy="77" r="3.5"/><path d="M90 92 Q100 84 110 92" fill="none"/><path class="voltio-lagrima" d="M113 82 q4 7 0 10 q-4 -3 0 -10z"/>',
+    cabeza: 'rotate(-9 100 80)',
+  },
+  senala: {
+    brazos: 'M126 150 L178 134 M74 150 Q50 160 60 178 Q68 186 76 174',
+    manos: [[184, 132]],
+    dedo: 'M184 132 L198 128',
+    piernas: 'M88 186 L86 234 L72 237 M112 186 L114 234 L128 237',
+    cara: '<circle cx="97" cy="73" r="4"/><circle cx="111" cy="73" r="4"/><path d="M93 84 Q103 92 113 83" fill="none"/>',
+    extra: '<path class="voltio-chispa" d="M186 112 l6 -10 M198 118 l10 -6 M200 134 l11 2" fill="none"/>',
+  },
+};
+
+function svgMascota(id, pose) {
+  if (id !== 'voltio') return '';
+  const p = VOLTIO_POSES[pose] || VOLTIO_POSES.reposo;
+  const manos = p.manos.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="8"/>`).join('');
+  return `<svg class="voltio" viewBox="0 0 220 250" role="presentation">`
+    + `<g class="voltio-tubo-rosa" fill="none"><path d="${p.brazos}"/><path d="${p.piernas}"/>${p.dedo ? `<path d="${p.dedo}"/>` : ''}<g fill="#1a1430">${manos}</g></g>`
+    + `<rect class="voltio-torso" x="74" y="140" width="52" height="46" rx="12"/>`
+    + `<g transform="${p.cabeza || ''}">`
+    + `<circle class="voltio-disco" cx="100" cy="80" r="60"/>`
+    + `<g class="voltio-surcos" fill="none"><circle cx="100" cy="80" r="50"/><circle cx="100" cy="80" r="42"/><path d="M58 62 A46 46 0 0 1 82 36"/><path d="M142 98 A46 46 0 0 1 118 124"/></g>`
+    + `<circle class="voltio-etiqueta" cx="100" cy="80" r="24"/>`
+    + `<g class="voltio-cara">${p.cara}</g>`
+    + `</g>${p.extra || ''}</svg>`;
+}
+
 function pintarCapas(capas, dedicatorias, avatares) {
   const escena = document.getElementById('escena');
   const escenario = escenarioAhora();
@@ -589,6 +653,15 @@ function pintarCapas(capas, dedicatorias, avatares) {
   if (listaPintar.some((capa) => capa.tipo === 'match')) slots.push('chip');
   if (slots.length) escena.dataset.slots = slots.join(' ');
   else delete escena.dataset.slots;
+  const pose = fx.mascota ? poseMascota(listaPintar) : '';
+  if (pose) {
+    const mascota = document.createElement('div');
+    mascota.className = `fx-mascota fx-mascota-${fx.mascota}`;
+    mascota.dataset.pose = pose;
+    mascota.setAttribute('aria-hidden', 'true');
+    mascota.innerHTML = svgMascota(fx.mascota, pose);
+    escena.appendChild(mascota);
+  }
   revelarSmsNuevo();
   if (cierre) return;
   escena.querySelectorAll('canvas.escena-ruleta').forEach((canvas, indice) => {
@@ -720,6 +793,114 @@ function pintarLineasVelocidad(ctx, cx, cy, r, fuerza, estilo) {
   ctx.restore();
 }
 
+function decorarRuedaNeon(ctx, cx, cy, r, angulo, slice, n, fuerza) {
+  const ROSA = '#FF3D8B';
+  const CIAN = '#22E0E6';
+  const TAU = Math.PI * 2;
+  ctx.save();
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, TAU);
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(34, 224, 230, .6)';
+  ctx.shadowColor = CIAN;
+  ctx.shadowBlur = 8;
+  ctx.lineWidth = 2;
+  for (let i = 0; i < n; i += 1) {
+    const a = angulo + i * slice - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * r * 0.2, cy + Math.sin(a) * r * 0.2);
+    ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  ctx.lineWidth = 12;
+  ctx.strokeStyle = ROSA;
+  ctx.shadowColor = ROSA;
+  ctx.shadowBlur = 26;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r + 4, 0, TAU);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = 'rgba(255, 220, 236, .75)';
+  ctx.stroke();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(34, 224, 230, .75)';
+  ctx.shadowColor = CIAN;
+  ctx.shadowBlur = 10;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r - 9, 0, TAU);
+  ctx.stroke();
+
+  const bombitas = 20;
+  const paso = fuerza > 0.05 ? Math.floor(performance.now() / 110) : 0;
+  for (let k = 0; k < bombitas; k += 1) {
+    const a = (k / bombitas) * TAU;
+    const prendida = fuerza > 0.05 ? (k + paso) % 2 === 0 : true;
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * (r + 4), cy + Math.sin(a) * (r + 4), 5.5, 0, TAU);
+    ctx.fillStyle = prendida ? '#E9FEFF' : 'rgba(34, 224, 230, .35)';
+    ctx.shadowColor = CIAN;
+    ctx.shadowBlur = prendida ? 16 : 0;
+    ctx.fill();
+  }
+
+  const rc = r * 0.21;
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#0c0a16';
+  ctx.beginPath();
+  ctx.arc(cx, cy, rc, 0, TAU);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, .08)';
+  ctx.lineWidth = 1.5;
+  for (let j = 0; j < 5; j += 1) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, rc * (0.48 + j * 0.11), 0, TAU);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = 'rgba(34, 224, 230, .45)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rc * 0.78, angulo * 1.6, angulo * 1.6 + 1.1);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, rc * 0.78, angulo * 1.6 + Math.PI, angulo * 1.6 + Math.PI + 1.1);
+  ctx.stroke();
+  ctx.strokeStyle = CIAN;
+  ctx.shadowColor = CIAN;
+  ctx.shadowBlur = 16;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rc, 0, TAU);
+  ctx.stroke();
+  ctx.fillStyle = CIAN;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rc * 0.34, 0, TAU);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#0c0a16';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 5, 0, TAU);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(cx - 22, cy - r - 30);
+  ctx.lineTo(cx + 22, cy - r - 30);
+  ctx.lineTo(cx, cy - r + 22);
+  ctx.closePath();
+  ctx.fillStyle = '#1a1430';
+  ctx.fill();
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = ROSA;
+  ctx.shadowColor = ROSA;
+  ctx.shadowBlur = 18;
+  ctx.stroke();
+  ctx.restore();
+}
+
 async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const ctx = canvas.getContext('2d');
   if (!ctx || opciones.length === 0) {
@@ -747,6 +928,8 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   let angulo = 0;
   let fuerzaGiro = 0;
   const slice = (Math.PI * 2) / opciones.length;
+  const neon = pal.rueda === 'neon';
+  if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   const dibujar = () => {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
@@ -789,18 +972,37 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
         ctx.fill();
       }
       ctx.restore();
+      ctx.save();
       ctx.beginPath();
       ctx.arc(x, y, radio, 0, Math.PI * 2);
-      ctx.strokeStyle = pal.texto;
-      ctx.lineWidth = 2;
+      if (neon) {
+        ctx.strokeStyle = i % 2 === 0 ? '#FF3D8B' : '#22E0E6';
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.shadowBlur = 10;
+        ctx.lineWidth = 3;
+      } else {
+        ctx.strokeStyle = pal.texto;
+        ctx.lineWidth = 2;
+      }
       ctx.stroke();
+      ctx.restore();
+      ctx.save();
+      if (neon) {
+        ctx.shadowColor = 'rgba(0, 0, 0, .85)';
+        ctx.shadowBlur = 4;
+      }
       ctx.fillStyle = pal.texto;
       ctx.font = pal.fuente;
       ctx.textAlign = 'center';
-      ctx.fillText(opcion.titulo || '', cx + Math.cos(mid) * r * 0.82, cy + Math.sin(mid) * r * 0.82);
+      ctx.fillText(neon ? nombreFicha(opcion.titulo, true) : (opcion.titulo || ''), cx + Math.cos(mid) * r * 0.82, cy + Math.sin(mid) * r * 0.82);
+      ctx.restore();
     });
     if (giro.lineas && ajustesDe(pal.id).efectos && fuerzaGiro > 0.05) pintarLineasVelocidad(ctx, cx, cy, r, fuerzaGiro, pal.id);
     ctx.restore();
+    if (neon) {
+      decorarRuedaNeon(ctx, cx, cy, r, angulo, slice, opciones.length, fuerzaGiro);
+      return;
+    }
     ctx.beginPath();
     ctx.moveTo(cx, cy - r - 2);
     ctx.lineTo(cx - 10, cy - r + 16);
@@ -892,7 +1094,7 @@ const smsFraseIdx = { p01: 0, p02: 0 };
 const capasDemo = new Map();
 let dedicasDemo = [];
 let demoPiel = 'nocturna';
-const demoAjustes = { cantidad: 2, rechazo: false, claseVoto: 'parejas', desde: 'Mesa 2', hacia: 'Mesa 7', texto: '¿Bailamos la próxima?', pesoMensaje: 'accesorio' };
+const demoAjustes = { cantidad: 2, rechazo: false, claseVoto: 'parejas', desde: 'Mesa 2', hacia: 'Mesa 7', texto: '¿Bailamos la próxima?', pesoMensaje: 'accesorio', fondo: 'actual' };
 let demoDialogoTipo = '';
 let demoTanda = 0;
 const demoEsperas = [];
@@ -930,7 +1132,7 @@ function esperarDemo(ms, id) {
 }
 
 function ponerCapaDemo(capa) {
-  const pedido = { fondo: 'actual', piel: demoPiel, ajustes: ajustesDe(demoPiel), ...capa };
+  const pedido = { fondo: demoAjustes.fondo === 'juego' ? 'juego' : 'actual', piel: demoPiel, ajustes: ajustesDe(demoPiel), ...capa };
   capasDemo.set(pedido.tipo, pedido);
   refrescarPantalla();
 }
@@ -1176,12 +1378,18 @@ let demoDockTimer = 0;
 
 function htmlPielesDemo() {
   const ajustes = ajustesDe(demoPiel);
-  const objetos = (pielDe(demoPiel).efectos.objetos || []).map((objeto) => (
+  const piel = pielDe(demoPiel);
+  const fondo = demoAjustes.fondo === 'juego' ? 'juego' : 'actual';
+  const objetos = [...(piel.efectos.objetos || []), ...(piel.mascota ? [{ id: 'mascota' }] : [])].map((objeto) => (
     `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
   )).join('');
   return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon'].map((id) => (
     `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
   )).join('') + '</div>'
+    + '<div class="demo-dialog-chips">'
+    + `<button type="button" data-fondo-demo="actual" class="${fondo === 'actual' ? 'is-on' : ''}">Sobre el video</button>`
+    + `<button type="button" data-fondo-demo="juego" class="${fondo === 'juego' ? 'is-on' : ''}">Fondo de la piel</button>`
+    + '</div>'
     + '<label class="demo-check" data-ajuste="sonido"><input type="checkbox"' + (ajustes.sonido ? ' checked' : '') + '> Sonido de la ruleta</label>'
     + '<label class="demo-check" data-ajuste="efectos"><input type="checkbox"' + (ajustes.efectos ? ' checked' : '') + '> Efectos y objetos</label>'
     + (objetos ? '<div class="demo-dialog-chips">' + objetos + '</div>' : '');
@@ -1297,6 +1505,14 @@ function montarBarraDemo() {
     if (piel) {
       demoPiel = piel.getAttribute('data-piel');
       for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, piel: demoPiel, ajustes: ajustesDe(demoPiel) });
+      refrescarPantalla();
+      if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
+      return;
+    }
+    const fondoDemo = evento.target.closest('[data-fondo-demo]');
+    if (fondoDemo) {
+      demoAjustes.fondo = fondoDemo.getAttribute('data-fondo-demo') === 'juego' ? 'juego' : 'actual';
+      for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, fondo: demoAjustes.fondo });
       refrescarPantalla();
       if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
       return;
