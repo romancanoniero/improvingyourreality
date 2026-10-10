@@ -1828,13 +1828,16 @@ let stageKey = '';
 let ytPlayer = null;
 let ytEstado = -1;
 let ytDesde = 0;
+let ytPausaSala = false;
 
-// Algunos teléfonos (iOS en ahorro de batería, por ejemplo) no dejan arrancar el video solo.
+// Los navegadores sólo dejan sonar un video si el toque cae dentro del reproductor de YouTube:
+// mientras no arranca, la capa del video pasa delante de la escena para recibir ese toque.
 function avisoReproducir() {
   const capa = document.getElementById('ahora-video');
   if (!capa) return;
   let aviso = capa.querySelector('.ahora-tocar');
-  const falta = Boolean(ytPlayer) && (ytEstado === -1 || ytEstado === 5) && Date.now() - ytDesde > 3500;
+  const falta = Boolean(ytPlayer) && !ytPausaSala && ![0, 1, 3].includes(ytEstado) && Date.now() - ytDesde > 1500;
+  capa.classList.toggle('is-al-frente', falta);
   if (!falta) {
     if (aviso) aviso.remove();
     return;
@@ -1842,7 +1845,7 @@ function avisoReproducir() {
   if (!aviso) {
     aviso = document.createElement('p');
     aviso.className = 'ahora-tocar';
-    aviso.textContent = 'Tocá la pantalla para reproducir el video';
+    aviso.textContent = 'Tocá el video para reproducirlo con sonido';
     capa.appendChild(aviso);
   }
 }
@@ -1863,9 +1866,14 @@ const datosYoutubeCache = new Map();
 
 function limpiarTituloYoutube(texto) {
   let t = String(texto || '');
-  t = t.replace(/\s*[\(\[][^\)\]]*(official|oficial|video|vídeo|clip|lyric|letra|audio|hd|4k|visuali[sz]er|מתורגם|קליפ|רשמי)[^\)\]]*[\)\]]/gi, '');
+  t = t.replace(/[\p{Extended_Pictographic}\p{Regional_Indicator}\u200d\ufe0f]/gu, '');
+  t = t.replace(/\s*[\(\[][^\)\]]*(official|oficial|video|vídeo|clip|lyric|letra|audio|hd|4k|visuali[sz]er|subt[ií]tul|subbed|sub esp|traduc|translat|release|מתורגם|קליפ|רשמי)[^\)\]]*[\)\]]/giu, '');
   t = t.replace(/\s*\|.*$/, '');
   return t.replace(/\s{2,}/g, ' ').trim();
+}
+
+function normalizarNombre(texto) {
+  return String(texto || '').toLowerCase().normalize('NFD').replace(/[^\p{L}\p{N}]/gu, '');
 }
 
 function separarTituloYoutube(titulo, canal) {
@@ -1874,8 +1882,12 @@ function separarTituloYoutube(titulo, canal) {
   if (partes.length >= 2 && partes[0] && partes[1]) {
     return { artista: partes[0].trim(), titulo: partes.slice(1).join(' - ').trim() };
   }
-  const autor = String(canal || '').replace(/\s*-\s*Topic$/i, '').replace(/VEVO$/i, '').trim();
-  return { artista: autor, titulo: limpio || String(titulo || '') };
+  // Sin "Artista - Tema" el canal sólo es el artista si parece oficial: en subidas de fans es el usuario.
+  const crudo = String(canal || '');
+  const autor = crudo.replace(/\s*-\s*Topic$/i, '').replace(/VEVO$/i, '').replace(/\s*(official|oficial)\s*$/i, '').trim();
+  const oficial = /-\s*Topic$|VEVO$|official|oficial/i.test(crudo)
+    || (normalizarNombre(autor).length > 2 && normalizarNombre(limpio).includes(normalizarNombre(autor)));
+  return { artista: oficial ? autor : '', titulo: limpio || String(titulo || '') };
 }
 
 function datosYoutube(id) {
@@ -2011,6 +2023,7 @@ function showStage(state) {
     return;
   }
   stage.hidden = false;
+  ytPausaSala = Boolean(state.paused);
   pintarDatosAhora(now, Boolean(state.paused));
   const youtube = String(now.trackUid || '').indexOf('yt_') === 0 ? now.trackUid.slice(3) : '';
   if (/^[A-Za-z0-9_-]{11}$/.test(youtube)) {
@@ -2031,6 +2044,7 @@ function showStage(state) {
         if (stageKey !== key || !window.YT || !window.YT.Player) return;
         ytEstado = -1;
         ytDesde = Date.now();
+        setTimeout(avisoReproducir, 1600);
         setTimeout(avisoReproducir, 4000);
         ytPlayer = new window.YT.Player('yt-frame', {
           host: 'https://www.youtube.com',
@@ -2040,7 +2054,8 @@ function showStage(state) {
           playerVars: {
             autoplay: 1, controls: 0, rel: 0, modestbranding: 1, playsinline: 1, fs: 0,
             origin: location.origin, widget_referrer: location.origin,
-            ...(now.mute ? { mute: 1, loop: 1, playlist: youtube } : {}),
+            ...(now.mute ? { mute: 1 } : {}),
+            ...(now.repetir ? { loop: 1, playlist: youtube } : {}),
           },
           events: {
             onReady: (event) => {
@@ -2051,6 +2066,22 @@ function showStage(state) {
             },
             onStateChange: (event) => {
               ytEstado = event.data;
+              if (event.data === 1 && !now.mute) {
+                try {
+                  if (event.target.isMuted()) {
+                    event.target.unMute();
+                    event.target.setVolume(100);
+                    // YouTube a veces arranca mudo cuando el navegador bloquea el sonido: se pausa para pedir el toque.
+                    setTimeout(() => {
+                      try {
+                        if (ytPlayer === event.target && event.target.isMuted() && event.target.getPlayerState() === 1) {
+                          event.target.pauseVideo();
+                        }
+                      } catch (error) { /* sigue mudo */ }
+                    }, 700);
+                  }
+                } catch (error) { /* reproductor recién creado */ }
+              }
               avisoReproducir();
               if (event.data === 0) postEnded(uid);
             },
@@ -2152,7 +2183,7 @@ function urlVideoEjemplo() {
   return `${location.origin}/descargas/pieles/pieles-16x9.mp4`;
 }
 
-const YT_DEMO_ID = 'aYGd4HOend4';
+const YT_DEMO_ID = 'BFOLLBUoxf8';
 
 function arrancarVideoEjemplo() {
   if (playerBase()) return;
@@ -2166,8 +2197,7 @@ function arrancarVideoEjemplo() {
         artist: '',
         autoDatos: true,
         origin: 'MODERATOR',
-        // Los navegadores sólo permiten arrancar solo sin sonido; el primer toque lo activa.
-        mute: true,
+        repetir: true,
       },
       paused: false,
     });

@@ -1033,6 +1033,7 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   overflow: hidden;
   background: #0e0e12;
 }
+.ahora-video-capa.is-al-frente { z-index: 10; }
 .escena.con-video { background: transparent !important; }
 .escena.con-video::before { content: none !important; }
 #ahora-media {
