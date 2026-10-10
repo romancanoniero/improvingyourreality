@@ -681,6 +681,19 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 .escena-pareja { display: flex; gap: clamp(8px, 1.4cqw, 16px); align-items: center; padding: clamp(6px, 1.2cqh, 14px) clamp(8px, 1.6cqw, 16px); }
 .escena-elegido { display: grid; justify-items: center; gap: clamp(4px, 1cqh, 10px); color: inherit; font: inherit; }
 .escena-elegido img { width: min(14cqh, 8cqw); height: min(14cqh, 8cqw); object-fit: cover; border-radius: 50%; border: 3px solid var(--sello); }
+.escena-iniciales {
+  display: grid;
+  place-items: center;
+  width: min(14cqh, 8cqw);
+  height: min(14cqh, 8cqw);
+  border-radius: 50%;
+  border: 3px solid var(--sello);
+  background: #2c3142;
+  color: #fff;
+  font: 800 clamp(16px, 4cqh, 40px)/1 system-ui, sans-serif;
+}
+.escena-pila.is-tira .escena-iniciales { width: clamp(30px, 4cqh, 44px); height: clamp(30px, 4cqh, 44px); border-width: 2px; font-size: 13px; }
+.escena[data-piel='manga'] .escena-iniciales { border: 4px solid #111; background: #c4a86a; color: #111; }
 .escena-elegido span { color: inherit; font: inherit; text-align: center; }
 .fx-ficha-neon { --sello: #ff3d8b; padding: clamp(8px, 1.6cqh, 16px) clamp(10px, 1.8cqw, 20px); border: 1px solid rgba(255, 61, 139, .55); border-radius: 18px; background: rgba(20, 16, 40, .88); box-shadow: 0 0 24px rgba(255, 61, 139, .28); color: #f5f6fa; font: 700 clamp(11px, 2.2cqh, 22px)/1.15 system-ui, sans-serif; }
 .fx-ficha-tinta { --sello: #c41e3a; padding: clamp(6px, 1.4cqh, 14px) clamp(8px, 1.6cqw, 18px); border: 4px solid #111; background: #fff6dc; box-shadow: 6px 7px 0 #c41e3a; color: #111; font: 800 clamp(12px, 2.4cqh, 24px)/1.1 'Zen Maru Gothic', Impact, sans-serif; }
@@ -1870,21 +1883,31 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   height: clamp(28px, 6cqh, 70px);
   margin: 1.8cqh 0 0;
 }
-.escena[data-piel='nocturna'] .ahora-eq i {
-  width: clamp(6px, .75cqw, 15px);
-  height: 100%;
-  background: repeating-linear-gradient(to top, #22e0e6 0 4px, transparent 4px 6px);
-  filter: drop-shadow(0 0 4px #22e0e6);
+/* Cada barra recorta un relleno que sube y baja con transform: no repinta en cada cuadro. */
+.ahora-eq i { position: relative; overflow: hidden; }
+.ahora-eq i::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--eq-relleno);
   animation: fx-eq calc(.7s + var(--i) * 37ms) ease-in-out calc(var(--i) * -173ms) infinite alternate;
 }
-.escena[data-piel='nocturna'] .ahora-eq i:nth-child(3n) { animation-duration: 1.05s; }
-.escena[data-piel='nocturna'] .ahora-eq.is-pausa i { animation-play-state: paused; opacity: .5; }
-@keyframes fx-eq { 0% { clip-path: inset(78% 0 0 0); } 45% { clip-path: inset(22% 0 0 0); } 70% { clip-path: inset(55% 0 0 0); } 100% { clip-path: inset(8% 0 0 0); } }
+.ahora-eq.is-pausa i::before { animation-play-state: paused; }
+.escena[data-piel='nocturna'] .ahora-eq i {
+  --eq-relleno: repeating-linear-gradient(to top, #22e0e6 0 4px, transparent 4px 6px);
+  width: clamp(6px, .75cqw, 15px);
+  height: 100%;
+  filter: drop-shadow(0 0 4px #22e0e6);
+}
+.escena[data-piel='nocturna'] .ahora-eq i:nth-child(3n)::before { animation-duration: 1.05s; }
+.escena[data-piel='nocturna'] .ahora-eq.is-pausa i { opacity: .5; }
+@keyframes fx-eq { 0% { transform: translateY(78%); } 45% { transform: translateY(22%); } 70% { transform: translateY(55%); } 100% { transform: translateY(8%); } }
 
 @media (prefers-reduced-motion: reduce) {
   .escena[data-piel='nocturna'] .ahora-vinilo,
   .escena[data-piel='nocturna'] .ahora-sello,
   .escena[data-piel='nocturna'] .ahora-eq i,
+  .ahora-eq i::before,
   .fx-mascota, .voltio-chispa,
   .escena[data-piel='nocturna'] .escena-centro .fx-ficha-neon::before,
   .escena[data-piel='nocturna'] .escena-match p::before,
@@ -2358,15 +2381,14 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
   margin: 2cqh 0 0;
 }
 .escena[data-piel='manga'] .ahora-eq i {
+  --eq-relleno: repeating-linear-gradient(to top, #111 0 6px, transparent 6px 9px);
   width: clamp(8px, .95cqw, 18px);
   height: 100%;
   border-radius: 2px 6px 1px 4px;
-  background: repeating-linear-gradient(to top, #111 0 6px, transparent 6px 9px);
   transform: skewX(-6deg);
-  animation: fx-eq calc(.7s + var(--i) * 37ms) ease-in-out calc(var(--i) * -173ms) infinite alternate;
 }
-.escena[data-piel='manga'] .ahora-eq i:nth-child(4n) { background: repeating-linear-gradient(to top, #c41e3a 0 6px, transparent 6px 9px); }
-.escena[data-piel='manga'] .ahora-eq.is-pausa i { animation-play-state: paused; opacity: .5; }
+.escena[data-piel='manga'] .ahora-eq i:nth-child(4n) { --eq-relleno: repeating-linear-gradient(to top, #c41e3a 0 6px, transparent 6px 9px); }
+.escena[data-piel='manga'] .ahora-eq.is-pausa i { opacity: .5; }
 
 @media (prefers-reduced-motion: reduce) {
   .escena[data-piel='manga'] .ahora-vinilo,

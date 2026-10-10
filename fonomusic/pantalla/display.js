@@ -844,8 +844,22 @@ function nombreFicha(titulo, corto) {
 
 function htmlElegido(persona, fx, corto) {
   const vista = personaVista(persona);
-  return `<div class="escena-elegido ${escapar(fx.foto)}">${vista.foto ? `<img src="${escapar(vista.foto)}" alt="">` : ''}<span>${escapar(nombreFicha(vista.titulo, corto))}</span></div>`;
+  const foto = vista.foto
+    ? `<img src="${escapar(vista.foto)}" alt="" decoding="async">`
+    : `<b class="escena-iniciales" aria-hidden="true">${escapar(inicialesSms(vista.titulo))}</b>`;
+  return `<div class="escena-elegido ${escapar(fx.foto)}">${foto}<span>${escapar(nombreFicha(vista.titulo, corto))}</span></div>`;
 }
+
+document.addEventListener('error', (evento) => {
+  const img = evento.target;
+  const elegido = img instanceof HTMLImageElement ? img.closest('.escena-elegido') : null;
+  if (!elegido) return;
+  const iniciales = document.createElement('b');
+  iniciales.className = 'escena-iniciales';
+  iniciales.setAttribute('aria-hidden', 'true');
+  iniciales.textContent = inicialesSms(elegido.querySelector('span')?.textContent);
+  img.replaceWith(iniciales);
+}, true);
 
 function htmlPareja(grupo, fx, extra, corto) {
   if (!Array.isArray(grupo) || grupo.length === 0) return '';
@@ -938,111 +952,114 @@ function pintarLineasVelocidad(ctx, cx, cy, r, fuerza, estilo) {
   ctx.restore();
 }
 
-function decorarRuedaNeon(ctx, cx, cy, r, angulo, slice, n, fuerza) {
+function decorarRuedaNeon(ctx, cx, cy, r, angulo, slice, n, fuerza, parte = 'todo', paridad = 0) {
   const ROSA = '#FF3D8B';
   const CIAN = '#22E0E6';
   const TAU = Math.PI * 2;
   ctx.save();
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, TAU);
-  ctx.clip();
-  ctx.strokeStyle = 'rgba(34, 224, 230, .6)';
-  ctx.shadowColor = CIAN;
-  ctx.shadowBlur = 8;
-  ctx.lineWidth = 2;
-  for (let i = 0; i < n; i += 1) {
-    const a = angulo + i * slice - Math.PI / 2;
+  if (parte !== 'fijo') {
+    ctx.save();
     ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(a) * r * 0.2, cy + Math.sin(a) * r * 0.2);
-    ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  ctx.lineWidth = 12;
-  ctx.strokeStyle = ROSA;
-  ctx.shadowColor = ROSA;
-  ctx.shadowBlur = 26;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r + 4, 0, TAU);
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-  ctx.lineWidth = 2.5;
-  ctx.strokeStyle = 'rgba(255, 220, 236, .75)';
-  ctx.stroke();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(34, 224, 230, .75)';
-  ctx.shadowColor = CIAN;
-  ctx.shadowBlur = 10;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r - 9, 0, TAU);
-  ctx.stroke();
-
-  const bombitas = 20;
-  const paso = fuerza > 0.05 ? Math.floor(performance.now() / 110) : 0;
-  for (let k = 0; k < bombitas; k += 1) {
-    const a = (k / bombitas) * TAU;
-    const prendida = fuerza > 0.05 ? (k + paso) % 2 === 0 : true;
-    ctx.beginPath();
-    ctx.arc(cx + Math.cos(a) * (r + 4), cy + Math.sin(a) * (r + 4), 5.5, 0, TAU);
-    ctx.fillStyle = prendida ? '#E9FEFF' : 'rgba(34, 224, 230, .35)';
+    ctx.arc(cx, cy, r, 0, TAU);
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(34, 224, 230, .6)';
     ctx.shadowColor = CIAN;
-    ctx.shadowBlur = prendida ? 16 : 0;
+    ctx.shadowBlur = 8;
+    ctx.lineWidth = 2;
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * r * 0.2, cy + Math.sin(a) * r * 0.2);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.lineWidth = 12;
+    ctx.strokeStyle = ROSA;
+    ctx.shadowColor = ROSA;
+    ctx.shadowBlur = 26;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 4, 0, TAU);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = 'rgba(255, 220, 236, .75)';
+    ctx.stroke();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(34, 224, 230, .75)';
+    ctx.shadowColor = CIAN;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 9, 0, TAU);
+    ctx.stroke();
+
+    const rc = r * 0.21;
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#0c0a16';
+    ctx.beginPath();
+    ctx.arc(cx, cy, rc, 0, TAU);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, .08)';
+    ctx.lineWidth = 1.5;
+    for (let j = 0; j < 5; j += 1) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, rc * (0.48 + j * 0.11), 0, TAU);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(34, 224, 230, .45)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rc * 0.78, angulo * 1.6, angulo * 1.6 + 1.1);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, rc * 0.78, angulo * 1.6 + Math.PI, angulo * 1.6 + Math.PI + 1.1);
+    ctx.stroke();
+    ctx.strokeStyle = CIAN;
+    ctx.shadowColor = CIAN;
+    ctx.shadowBlur = 16;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rc, 0, TAU);
+    ctx.stroke();
+    ctx.fillStyle = CIAN;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rc * 0.34, 0, TAU);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#0c0a16';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, TAU);
     ctx.fill();
   }
 
-  const rc = r * 0.21;
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#0c0a16';
-  ctx.beginPath();
-  ctx.arc(cx, cy, rc, 0, TAU);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255, 255, 255, .08)';
-  ctx.lineWidth = 1.5;
-  for (let j = 0; j < 5; j += 1) {
+  if (parte !== 'cara') {
+    const bombitas = 20;
+    for (let k = 0; k < bombitas; k += 1) {
+      const a = (k / bombitas) * TAU;
+      const prendida = fuerza > 0.05 ? (k + paridad) % 2 === 0 : true;
+      ctx.beginPath();
+      ctx.arc(cx + Math.cos(a) * (r + 4), cy + Math.sin(a) * (r + 4), 5.5, 0, TAU);
+      ctx.fillStyle = prendida ? '#E9FEFF' : 'rgba(34, 224, 230, .35)';
+      ctx.shadowColor = CIAN;
+      ctx.shadowBlur = prendida ? 16 : 0;
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
     ctx.beginPath();
-    ctx.arc(cx, cy, rc * (0.48 + j * 0.11), 0, TAU);
+    ctx.moveTo(cx - 22, cy - r - 30);
+    ctx.lineTo(cx + 22, cy - r - 30);
+    ctx.lineTo(cx, cy - r + 22);
+    ctx.closePath();
+    ctx.fillStyle = '#1a1430';
+    ctx.fill();
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = ROSA;
+    ctx.shadowColor = ROSA;
+    ctx.shadowBlur = 18;
     ctx.stroke();
   }
-  ctx.strokeStyle = 'rgba(34, 224, 230, .45)';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.arc(cx, cy, rc * 0.78, angulo * 1.6, angulo * 1.6 + 1.1);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(cx, cy, rc * 0.78, angulo * 1.6 + Math.PI, angulo * 1.6 + Math.PI + 1.1);
-  ctx.stroke();
-  ctx.strokeStyle = CIAN;
-  ctx.shadowColor = CIAN;
-  ctx.shadowBlur = 16;
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(cx, cy, rc, 0, TAU);
-  ctx.stroke();
-  ctx.fillStyle = CIAN;
-  ctx.beginPath();
-  ctx.arc(cx, cy, rc * 0.34, 0, TAU);
-  ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#0c0a16';
-  ctx.beginPath();
-  ctx.arc(cx, cy, 5, 0, TAU);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(cx - 22, cy - r - 30);
-  ctx.lineTo(cx + 22, cy - r - 30);
-  ctx.lineTo(cx, cy - r + 22);
-  ctx.closePath();
-  ctx.fillStyle = '#1a1430';
-  ctx.fill();
-  ctx.lineJoin = 'round';
-  ctx.lineWidth = 5;
-  ctx.strokeStyle = ROSA;
-  ctx.shadowColor = ROSA;
-  ctx.shadowBlur = 18;
-  ctx.stroke();
   ctx.restore();
 }
 
@@ -1076,107 +1093,167 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const neon = pal.rueda === 'neon';
   const tinta = pal.rueda === 'tinta';
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
-  const dibujar = () => {
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    const r = Math.min(cx, cy) * 0.86;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.clip();
-    if (giro.papel) pintarPapel(ctx, canvas.width, canvas.height);
-    ctx.fillStyle = pal.fondo;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fill();
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const r = Math.min(cx, cy) * 0.86;
+  const lienzo = (w, h) => {
+    const c = document.createElement('canvas');
+    c.width = Math.ceil(w);
+    c.height = Math.ceil(h);
+    return c;
+  };
+  const radio = 28;
+  const lado = 56;
+  const margenFoto = 12;
+  let cara = null;
+  let lineas = null;
+  const fotos = [];
+  const nombres = [];
+  const fijos = new Map();
+  const pintarCara = () => {
+    cara = lienzo(canvas.width, canvas.height);
+    const c = cara.getContext('2d');
+    c.save();
+    c.beginPath();
+    c.arc(cx, cy, r, 0, Math.PI * 2);
+    c.clip();
+    if (giro.papel) pintarPapel(c, canvas.width, canvas.height);
+    c.fillStyle = pal.fondo;
+    c.beginPath();
+    c.arc(cx, cy, r, 0, Math.PI * 2);
+    c.fill();
     opciones.forEach((opcion, i) => {
-      const a0 = angulo + i * slice - Math.PI / 2;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, r, a0, a0 + slice);
-      ctx.closePath();
-      ctx.fillStyle = i % 2 === 0 ? pal.sectorA : pal.sectorB;
-      ctx.fill();
-      if (giro.trama && i % 2 === 1) pintarTrama(ctx, cx, cy, r, a0, a0 + slice);
-      const mid = a0 + slice / 2;
-      const x = cx + Math.cos(mid) * r * 0.52;
-      const y = cy + Math.sin(mid) * r * 0.52;
-      const lado = 56;
-      const radio = 28;
-      const foto = opciones[i].foto || (opciones[i].fotos && opciones[i].fotos[0]) || '';
-      const imagen = imagenes[i] || imagenLista(foto);
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(x, y, radio, 0, Math.PI * 2);
-      ctx.clip();
-      if (imagen && imagen.naturalWidth > 0) ctx.drawImage(imagen, x - lado / 2, y - lado / 2, lado, lado);
-      else {
-        ctx.fillStyle = pal.fotoHueco;
-        ctx.beginPath();
-        ctx.arc(x, y, radio, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(x, y, radio, 0, Math.PI * 2);
-      if (neon) {
-        ctx.strokeStyle = i % 2 === 0 ? '#FF3D8B' : '#22E0E6';
-        ctx.shadowColor = ctx.strokeStyle;
-        ctx.shadowBlur = 10;
-        ctx.lineWidth = 3;
-      } else if (tinta) {
-        ctx.strokeStyle = '#111';
-        ctx.lineWidth = 5;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(x, y, radio + 5, 0, Math.PI * 2);
-        ctx.strokeStyle = '#C41E3A';
-        ctx.lineWidth = 3;
-      } else {
-        ctx.strokeStyle = pal.texto;
-        ctx.lineWidth = 2;
-      }
-      ctx.stroke();
-      ctx.restore();
-      ctx.save();
-      if (neon) {
-        ctx.shadowColor = 'rgba(0, 0, 0, .85)';
-        ctx.shadowBlur = 4;
-      }
-      ctx.fillStyle = pal.texto;
-      ctx.font = pal.fuente;
-      ctx.textAlign = 'center';
-      const nombre = neon || tinta ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
-      const nx = cx + Math.cos(mid) * r * 0.8;
-      const ny = cy + Math.sin(mid) * r * 0.8;
-      if (tinta) {
-        ctx.lineJoin = 'round';
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = '#FFF6DC';
-        ctx.strokeText(nombre, nx, ny);
-      }
-      ctx.fillText(nombre, nx, ny);
-      ctx.restore();
+      const a0 = i * slice - Math.PI / 2;
+      c.beginPath();
+      c.moveTo(cx, cy);
+      c.arc(cx, cy, r, a0, a0 + slice);
+      c.closePath();
+      c.fillStyle = i % 2 === 0 ? pal.sectorA : pal.sectorB;
+      c.fill();
+      if (giro.trama && i % 2 === 1) pintarTrama(c, cx, cy, r, a0, a0 + slice);
     });
-    if (giro.lineas && ajustesDe(pal.id).efectos && fuerzaGiro > 0.05) pintarLineasVelocidad(ctx, cx, cy, r, fuerzaGiro, pal.id);
-    ctx.restore();
+    c.restore();
+    if (neon) decorarRuedaNeon(c, cx, cy, r, 0, slice, opciones.length, 0, 'cara');
+    else if (tinta) decorarRuedaTinta(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+  };
+  const pintarFoto = (i) => {
+    const t = (radio + margenFoto) * 2;
+    const sprite = lienzo(t, t);
+    const c = sprite.getContext('2d');
+    const x = t / 2;
+    const y = t / 2;
+    const foto = opciones[i].foto || (opciones[i].fotos && opciones[i].fotos[0]) || '';
+    const imagen = imagenes[i] || imagenLista(foto);
+    c.save();
+    c.beginPath();
+    c.arc(x, y, radio, 0, Math.PI * 2);
+    c.clip();
+    if (imagen && imagen.naturalWidth > 0) c.drawImage(imagen, x - lado / 2, y - lado / 2, lado, lado);
+    else {
+      c.fillStyle = pal.fotoHueco;
+      c.fill();
+    }
+    c.restore();
+    c.beginPath();
+    c.arc(x, y, radio, 0, Math.PI * 2);
     if (neon) {
-      decorarRuedaNeon(ctx, cx, cy, r, angulo, slice, opciones.length, fuerzaGiro);
-      return;
+      c.strokeStyle = i % 2 === 0 ? '#FF3D8B' : '#22E0E6';
+      c.shadowColor = c.strokeStyle;
+      c.shadowBlur = 10;
+      c.lineWidth = 3;
+    } else if (tinta) {
+      c.strokeStyle = '#111';
+      c.lineWidth = 5;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 5, 0, Math.PI * 2);
+      c.strokeStyle = '#C41E3A';
+      c.lineWidth = 3;
+    } else {
+      c.strokeStyle = pal.texto;
+      c.lineWidth = 2;
+    }
+    c.stroke();
+    fotos[i] = sprite;
+  };
+  const pintarNombre = (i) => {
+    const opcion = opciones[i];
+    const nombre = neon || tinta ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const medida = canvas.getContext('2d');
+    medida.font = pal.fuente;
+    const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
+    const ancho = medida.measureText(nombre).width;
+    const sprite = lienzo(ancho + 24, alto * 2 + 16);
+    const c = sprite.getContext('2d');
+    c.font = pal.fuente;
+    c.textAlign = 'center';
+    c.textBaseline = 'alphabetic';
+    const nx = sprite.width / 2;
+    const ny = sprite.height / 2 + alto * 0.35;
+    if (neon) {
+      c.shadowColor = 'rgba(0, 0, 0, .85)';
+      c.shadowBlur = 4;
     }
     if (tinta) {
-      decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, opciones.length);
-      return;
+      c.lineJoin = 'round';
+      c.lineWidth = 6;
+      c.strokeStyle = '#FFF6DC';
+      c.strokeText(nombre, nx, ny);
     }
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - r - 2);
-    ctx.lineTo(cx - 10, cy - r + 16);
-    ctx.lineTo(cx + 10, cy - r + 16);
-    ctx.closePath();
-    ctx.fillStyle = pal.acento;
-    ctx.fill();
+    c.fillStyle = pal.texto;
+    c.fillText(nombre, nx, ny);
+    nombres[i] = { sprite, dy: alto * 0.35 };
+  };
+  const pintarFijo = (variante) => {
+    const sprite = lienzo(canvas.width, canvas.height);
+    const c = sprite.getContext('2d');
+    if (neon) decorarRuedaNeon(c, cx, cy, r, 0, slice, opciones.length, variante === 'reposo' ? 0 : 1, 'fijo', variante === 'impar' ? 1 : 0);
+    else if (tinta) decorarRuedaTinta(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else {
+      c.beginPath();
+      c.moveTo(cx, cy - r - 2);
+      c.lineTo(cx - 10, cy - r + 16);
+      c.lineTo(cx + 10, cy - r + 16);
+      c.closePath();
+      c.fillStyle = pal.acento;
+      c.fill();
+    }
+    fijos.set(variante, sprite);
+    return sprite;
+  };
+  const dibujar = () => {
+    if (!cara) pintarCara();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angulo);
+    ctx.drawImage(cara, -cx, -cy);
+    ctx.restore();
+    opciones.forEach((opcion, i) => {
+      const mid = angulo + i * slice - Math.PI / 2 + slice / 2;
+      if (!fotos[i]) pintarFoto(i);
+      if (!nombres[i]) pintarNombre(i);
+      const foto = fotos[i];
+      ctx.drawImage(foto, cx + Math.cos(mid) * r * 0.52 - foto.width / 2, cy + Math.sin(mid) * r * 0.52 - foto.height / 2);
+      const { sprite, dy } = nombres[i];
+      ctx.drawImage(sprite, cx + Math.cos(mid) * r * 0.8 - sprite.width / 2, cy + Math.sin(mid) * r * 0.8 - sprite.height / 2 - dy);
+    });
+    if (giro.lineas && ajustesDe(pal.id).efectos && fuerzaGiro > 0.05) {
+      if (!lineas) {
+        lineas = lienzo(canvas.width, canvas.height);
+        const c = lineas.getContext('2d');
+        c.beginPath();
+        c.arc(cx, cy, r, 0, Math.PI * 2);
+        c.clip();
+        pintarLineasVelocidad(c, cx, cy, r, 1, pal.id);
+      }
+      ctx.save();
+      ctx.globalAlpha = 0.35 + fuerzaGiro * 0.65;
+      ctx.drawImage(lineas, 0, 0);
+      ctx.restore();
+    }
+    const variante = neon && fuerzaGiro > 0.05 ? (Math.floor(performance.now() / 110) % 2 ? 'impar' : 'par') : 'reposo';
+    ctx.drawImage(fijos.get(variante) || pintarFijo(variante), 0, 0);
   };
   opciones.forEach((opcion, i) => {
     const src = opcion.foto || (opcion.fotos && opcion.fotos[0]);
@@ -1184,6 +1261,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     void decodificarFoto(src).then((imagen) => {
       if (!imagen) return;
       imagenes[i] = imagen;
+      fotos[i] = null;
       dibujar();
     });
   });
@@ -1222,58 +1300,64 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   requestAnimationFrame(paso);
 }
 
-function decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, n) {
+function decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   ctx.save();
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = '#111';
-  ctx.lineWidth = 4;
-  for (let i = 0; i < n; i += 1) {
-    const a = angulo + i * slice - Math.PI / 2;
+  if (parte !== 'fijo') {
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 4;
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * r * 0.16, cy + Math.sin(a) * r * 0.16);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
     ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(a) * r * 0.16, cy + Math.sin(a) * r * 0.16);
-    ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
+    ctx.strokeStyle = '#C41E3A';
+    ctx.lineWidth = 3;
     ctx.stroke();
-  }
-  ctx.beginPath();
-  ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
-  ctx.strokeStyle = '#C41E3A';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(cx + 7, cy + 8, r + 9, 0, Math.PI * 2);
-  ctx.strokeStyle = '#C41E3A';
-  ctx.lineWidth = 16;
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(cx, cy, r + 9, 0, Math.PI * 2);
-  ctx.strokeStyle = '#111';
-  ctx.lineWidth = 16;
-  ctx.stroke();
-  for (let i = 0; i < n; i += 1) {
-    const a = angulo + i * slice - Math.PI / 2;
-    ctx.save();
-    ctx.translate(cx + Math.cos(a) * (r + 9), cy + Math.sin(a) * (r + 9));
-    ctx.rotate(a);
+    ctx.beginPath();
+    ctx.arc(cx + 7, cy + 8, r + 9, 0, Math.PI * 2);
+    ctx.strokeStyle = '#C41E3A';
+    ctx.lineWidth = 16;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 9, 0, Math.PI * 2);
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 16;
+    ctx.stroke();
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.save();
+      ctx.translate(cx + Math.cos(a) * (r + 9), cy + Math.sin(a) * (r + 9));
+      ctx.rotate(a);
+      ctx.fillStyle = '#C41E3A';
+      ctx.fillRect(-6, -6, 12, 12);
+      ctx.restore();
+    }
+    const hub = r * 0.16;
+    ctx.beginPath();
+    ctx.arc(cx, cy, hub, 0, Math.PI * 2);
     ctx.fillStyle = '#C41E3A';
-    ctx.fillRect(-6, -6, 12, 12);
+    ctx.fill();
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = '#111';
+    ctx.stroke();
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-0.14);
+    ctx.strokeStyle = '#FFF6DC';
+    ctx.lineWidth = 3.5;
+    ctx.strokeRect(-hub * 0.52, -hub * 0.52, hub * 1.04, hub * 1.04);
+    ctx.strokeRect(-hub * 0.22, -hub * 0.22, hub * 0.44, hub * 0.44);
     ctx.restore();
   }
-  const hub = r * 0.16;
-  ctx.beginPath();
-  ctx.arc(cx, cy, hub, 0, Math.PI * 2);
-  ctx.fillStyle = '#C41E3A';
-  ctx.fill();
-  ctx.lineWidth = 6;
-  ctx.strokeStyle = '#111';
-  ctx.stroke();
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(-0.14);
-  ctx.strokeStyle = '#FFF6DC';
-  ctx.lineWidth = 3.5;
-  ctx.strokeRect(-hub * 0.52, -hub * 0.52, hub * 1.04, hub * 1.04);
-  ctx.strokeRect(-hub * 0.22, -hub * 0.22, hub * 0.44, hub * 0.44);
-  ctx.restore();
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
   const top = cy - r - 30;
   ctx.beginPath();
   ctx.moveTo(cx - 22, top);
@@ -1295,14 +1379,14 @@ function decorarRuedaTinta(ctx, cx, cy, r, angulo, slice, n) {
 }
 
 const JUGADORES_DEMO = [
-  { id: 'p01', titulo: 'Martina López', foto: 'https://i.pravatar.cc/300?img=5', mesa: '2', genero: 'mujer' },
-  { id: 'p02', titulo: 'Santiago Ruiz', foto: 'https://i.pravatar.cc/300?img=12', mesa: '2', genero: 'hombre' },
-  { id: 'p03', titulo: 'Valentina Gómez', foto: 'https://i.pravatar.cc/300?img=9', mesa: '4', genero: 'mujer' },
-  { id: 'p04', titulo: 'Joaquín Fernández', foto: 'https://i.pravatar.cc/300?img=15', mesa: '4', genero: 'hombre' },
-  { id: 'p05', titulo: 'Camila Torres', foto: 'https://i.pravatar.cc/300?img=25', mesa: '7', genero: 'mujer' },
-  { id: 'p06', titulo: 'Mateo Herrera', foto: 'https://i.pravatar.cc/300?img=33', mesa: '7', genero: 'hombre' },
-  { id: 'p07', titulo: 'Lucía Romero', foto: 'https://i.pravatar.cc/300?img=47', mesa: '9', genero: 'mujer' },
-  { id: 'p08', titulo: 'Benjamín Díaz', foto: 'https://i.pravatar.cc/300?img=52', mesa: '9', genero: 'hombre' },
+  { id: 'p01', titulo: 'Martina López', foto: './arte/demo/avatar-5.webp', mesa: '2', genero: 'mujer' },
+  { id: 'p02', titulo: 'Santiago Ruiz', foto: './arte/demo/avatar-12.webp', mesa: '2', genero: 'hombre' },
+  { id: 'p03', titulo: 'Valentina Gómez', foto: './arte/demo/avatar-9.webp', mesa: '4', genero: 'mujer' },
+  { id: 'p04', titulo: 'Joaquín Fernández', foto: './arte/demo/avatar-15.webp', mesa: '4', genero: 'hombre' },
+  { id: 'p05', titulo: 'Camila Torres', foto: './arte/demo/avatar-25.webp', mesa: '7', genero: 'mujer' },
+  { id: 'p06', titulo: 'Mateo Herrera', foto: './arte/demo/avatar-33.webp', mesa: '7', genero: 'hombre' },
+  { id: 'p07', titulo: 'Lucía Romero', foto: './arte/demo/avatar-47.webp', mesa: '9', genero: 'mujer' },
+  { id: 'p08', titulo: 'Benjamín Díaz', foto: './arte/demo/avatar-52.webp', mesa: '9', genero: 'hombre' },
 ];
 const DEDICAS_DEMO = [
   { autor: 'Mesa 4', destinatario: 'El salón', texto: '¡Qué noche!' },
@@ -1312,14 +1396,14 @@ const USUARIOS_SMS = [
   {
     id: 'p01',
     titulo: 'Martina López',
-    foto: 'https://i.pravatar.cc/300?img=5',
+    foto: './arte/demo/avatar-5.webp',
     lado: 'in',
     frases: ['¿Bailamos la próxima?', 'Estoy en la mesa 2', 'Te veo en la pista'],
   },
   {
     id: 'p02',
     titulo: 'Santiago Ruiz',
-    foto: 'https://i.pravatar.cc/300?img=12',
+    foto: './arte/demo/avatar-12.webp',
     lado: 'out',
     frases: ['Dale, nos vemos', 'Ya voy para allá', 'Te espero en la barra'],
   },
@@ -2134,6 +2218,34 @@ let ytDesde = 0;
 let ytPausaSala = false;
 let ytEsperaToque = false;
 let ytTocado = false;
+let ytSonidoPendiente = false;
+
+function esIOS() {
+  return /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+}
+
+// Fuera de iOS el toque en la página habilita el sonido del iframe (allow="autoplay"): se evita recrear
+// el reproductor, que en una tablet es volver a bajar más de 1 MB.
+function sonarAlTocar(player, youtube, now, key) {
+  ytSonidoPendiente = true;
+  player.mute();
+  player.playVideo();
+  avisoReproducir();
+  const alTocar = () => {
+    document.removeEventListener('pointerdown', alTocar, true);
+    if (ytPlayer !== player || stageKey !== key) return;
+    player.unMute();
+    player.setVolume(100);
+    player.playVideo();
+    setTimeout(() => {
+      if (ytPlayer !== player || stageKey !== key) return;
+      ytSonidoPendiente = false;
+      if (ytMudo() || ytEstado !== 1) crearPlayerYoutube(youtube, now, key, true);
+      else avisoReproducir();
+    }, 1500);
+  };
+  document.addEventListener('pointerdown', alTocar, true);
+}
 
 // Un toque dentro del iframe le da el foco: sirve para saber que se tocó aunque YouTube no informe su estado.
 window.addEventListener('blur', () => {
@@ -2154,10 +2266,11 @@ function avisoReproducir() {
   const mudo = ytMudo();
   const sonando = ytEstado === 1 && !mudo;
   const falta = Boolean(ytPlayer) && ytEsperaToque && !sonando && !juego && !ytPausaSala;
+  const pendiente = Boolean(ytPlayer) && ytSonidoPendiente && !juego && !ytPausaSala;
   capa.classList.toggle('is-al-frente', falta);
   // Si quedó sonando mudo hace falta el parlante de YouTube, que está en la barra superior.
-  capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo && medioCambiadoPorJuego !== 'mudo'));
-  if (!falta) {
+  capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo && medioCambiadoPorJuego !== 'mudo' && !ytSonidoPendiente));
+  if (!falta && !pendiente) {
     if (aviso) aviso.remove();
     return;
   }
@@ -2167,7 +2280,9 @@ function avisoReproducir() {
     capa.appendChild(aviso);
   }
   aviso.hidden = ytTocado && ytMensajes === 0;
-  aviso.textContent = ytEstado === 1 && mudo
+  aviso.textContent = pendiente
+    ? 'Tocá la pantalla para activar el sonido'
+    : ytEstado === 1 && mudo
     ? 'Tocá el parlante del video para activar el sonido'
     : 'Tocá ▶ en el video para reproducirlo con sonido';
 }
@@ -2477,6 +2592,7 @@ function vaciarMedia() {
   if (media) media.innerHTML = '';
   ytPlayer = null;
   ytEsperaToque = false;
+  ytSonidoPendiente = false;
   avisoReproducir();
 }
 
@@ -2499,6 +2615,7 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
   holder.id = 'yt-frame';
   media.appendChild(holder);
   ytEsperaToque = esperarToque;
+  ytSonidoPendiente = false;
   ytTocado = false;
   ytEstado = -1;
   ytDesde = Date.now();
@@ -2526,7 +2643,9 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
     setTimeout(() => {
       if (ytPlayer !== player || stageKey !== key) return;
       const sonando = (ytEstado === 1 || ytEstado === 3) && !ytMudo();
-      if (!sonando && !ytPausaSala) crearPlayerYoutube(youtube, now, key, true);
+      if (sonando || ytPausaSala) return;
+      if (esIOS()) crearPlayerYoutube(youtube, now, key, true);
+      else sonarAlTocar(player, youtube, now, key);
     }, 3500);
   }
   avisoReproducir();
