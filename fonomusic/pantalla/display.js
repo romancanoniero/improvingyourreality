@@ -147,6 +147,32 @@ const PIELES = {
       ],
     },
   },
+  trazo: {
+    id: 'trazo',
+    fondo: '#F1E6D2', sectorA: '#C0563B', sectorB: '#3F5A73', acento: '#C0563B',
+    info: '#1C1C1C', texto: '#FBF5E8', colores: ['#C0563B', '#3F5A73', '#D9A441', '#1C1C1C'],
+    fotoHueco: '#d8c7a6', fuente: '700 20px "Comic Neue", Kalam, sans-serif',
+    sellos: { ruleta: 'Ruleta', votacion: 'Encuesta', mensaje: 'Correo', match: 'Flechazo', cierre: 'Última edición' },
+    rueda: 'pluma',
+    mascota: 'cronista',
+    celebracion: true,
+    lemasPareja: ['¡Exclusiva: estas mesas se unieron!', '¡Exclusiva: el Cronista los unió!'],
+    efectos: {
+      fondo: 'fx-fondo-trazo', ambiente: 'fx-ambiente-trazo', marco: 'fx-marco-trazo',
+      sello: 'fx-sello-trazo', foto: 'fx-foto-circulo', globo: 'fx-globo-trazo',
+      impacto: 'fx-impacto-trazo', entrada: 'fx-entrada-trazo',
+      apila: 'fx-apila-trazo', rechazo: 'fx-rechazo-trazo', ficha: 'fx-ficha-trazo', lienzo: 'fx-lienzo-trazo',
+      sonidos: { clic: 'trazo-clic', exito: 'trazo-exito', decepcion: 'trazo-decepcion' },
+      particulas: { formas: ['recorte', 'gota', 'avion'], colores: ['#F1E6D2', '#1C1C1C', '#C0563B', '#3F5A73', '#D9A441'], cantidad: 40 },
+      giro: { papel: false, trama: false, lineas: false, vineta: false },
+      objetos: [
+        { id: 'lluvia', clase: 'fx-obj-lluvia', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+        { id: 'maquina', clase: 'fx-obj-maquina', en: ['ruleta', 'votacion'] },
+        { id: 'trompeta', clase: 'fx-obj-trompeta', en: ['ruleta', 'votacion'] },
+        { id: 'extra', clase: 'fx-obj-extra', texto: '¡EXTRA!', en: ['match'] },
+      ],
+    },
+  },
 };
 
 function pielDe(id) {
@@ -159,6 +185,7 @@ const OBJETO_NOMBRES = {
   go: 'GO!', rayas: 'Rayas', nubesfx: 'Nubes', helice: 'Hélice', cometa: 'Cometa', estrellas: 'Estrellas',
   candado: 'Candado', etiqueta: 'Etiqueta', notas: 'Notas',
   destellos: 'Destellos', fugaz: 'Estrella fugaz', kya: '¡KYA!',
+  lluvia: 'Lluvia', maquina: 'Máquina de escribir', trompeta: 'Trompeta', extra: '¡EXTRA!',
   mascota: 'Mascota',
 };
 
@@ -343,6 +370,19 @@ function tocarSonido(motor, fuerza = 1) {
   }
   if (motor === 'kira-decepcion') {
     [523, 415, 330].forEach((frecuencia, indice) => notaFx(frecuencia, 'triangle', 0.07, cuando + indice * 0.16, 0.26));
+    return;
+  }
+  if (motor === 'trazo-exito') {
+    [0, 0.07, 0.15, 0.22].forEach((t) => ruidoFx(0.03, 0.26, 2600, 3.5, cuando + t));
+    notaFx(2093, 'sine', 0.07, cuando + 0.34, 1.1);
+    notaFx(4186, 'sine', 0.02, cuando + 0.34, 0.5);
+    return;
+  }
+  if (motor === 'trazo-decepcion') {
+    [392, 370, 349, 294].forEach((frecuencia, indice) => {
+      notaFx(frecuencia, 'triangle', 0.07, cuando + indice * 0.22, indice === 3 ? 0.7 : 0.2);
+      notaFx(frecuencia, 'sawtooth', 0.018, cuando + indice * 0.22, indice === 3 ? 0.6 : 0.18);
+    });
     return;
   }
   if (motor === 'campana-decepcion') {
@@ -1118,8 +1158,101 @@ function svgKira(pose) {
     + `</g>` + chispas + `</g></svg>`;
 }
 
+const CRONISTA_POSES = {
+  reposo: {
+    brazos: ['M70 104 Q60 134 70 162', 'M130 104 Q140 134 130 162'],
+    piernas: ['M90 204 L88 276', 'M110 204 L112 276'],
+    zapatos: [[84, 280, -1], [116, 280, 1]],
+    ojos: 'abiertos',
+    boca: '<path d="M93 80 Q100 83 107 80" fill="none"/>',
+    bolsillos: true,
+  },
+  festeja: {
+    brazos: ['M70 102 Q50 76 44 40', 'M130 102 Q150 76 156 40'],
+    manos: [[42, 34], [158, 34]],
+    piernas: ['M92 202 Q72 226 60 244', 'M108 202 Q132 232 156 230'],
+    zapatos: [[54, 250, -1], [162, 232, 1]],
+    ojos: 'felices',
+    boca: '<path d="M90 78 Q100 94 110 78 Z" fill="#7a2a1a"/>',
+    cuerpo: 'translate(0 -10)',
+    libreta: 'translate(166 116) rotate(24)',
+    papeles: true,
+  },
+  decepcion: {
+    brazos: ['M72 108 Q64 138 72 164', 'M128 108 Q136 138 128 164'],
+    piernas: ['M90 206 L90 276', 'M110 206 L110 276'],
+    zapatos: [[86, 280, -1], [114, 280, 1]],
+    ojos: 'tristes',
+    boca: '<path d="M94 84 Q100 80 106 84" fill="none"/>',
+    cabeza: 'rotate(10 100 92) translate(0 6)',
+    hombros: 'translate(0 4)',
+    bolsillos: true,
+    suspiro: true,
+  },
+  senala: {
+    brazos: ['M70 104 Q58 132 84 140', 'M130 104 Q158 98 182 90'],
+    piernas: ['M90 204 L86 276', 'M110 204 L114 276'],
+    zapatos: [[82, 280, -1], [118, 280, 1]],
+    ojos: 'abiertos',
+    boca: '<path d="M91 78 Q100 90 109 78 Z" fill="#7a2a1a"/>',
+    dedo: [184, 89],
+    libreta: 'translate(84 132) rotate(-8)',
+  },
+};
+
+function svgCronista(pose) {
+  const p = CRONISTA_POSES[pose] || CRONISTA_POSES.reposo;
+  const tinta = '#1C1C1C';
+  const piel = '#F0C9A0';
+  const gabardina = '#C9965A';
+  const sombra = '#A8743E';
+  const pantalon = '#4A5A6E';
+  const trazo = (d, ancho, color) => `<path d="${d}" stroke="${tinta}" stroke-width="${ancho + 5}" fill="none"/><path d="${d}" stroke="${color}" stroke-width="${ancho}" fill="none"/>`;
+  const zapato = ([x, y, lado]) => `<path d="M${x - 11 * lado - (lado < 0 ? 0 : 0)} ${y - 6} Q${x + 2 * lado} ${y - 9} ${x + 13 * lado} ${y - 2} Q${x + 15 * lado} ${y + 4} ${x} ${y + 4} L${x - 11 * lado} ${y + 4} Z" fill="#6B3A22" stroke="${tinta}" stroke-width="3"/>`;
+  const mano = ([x, y]) => `<circle cx="${x}" cy="${y}" r="8" fill="${piel}" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M${x - 6} ${y - 5} l-4 -8 M${x - 1} ${y - 8} l-1 -9 M${x + 4} ${y - 7} l3 -8 M${x + 7} ${y - 2} l7 -4" stroke="${tinta}" stroke-width="3"/>`;
+  const dedo = p.dedo ? `<g transform="translate(${p.dedo[0]} ${p.dedo[1]}) rotate(-10)"><circle r="7.5" fill="${piel}" stroke="${tinta}" stroke-width="3"/><path d="M4 -4 H17 Q20 -1 17 2 H4" fill="${piel}" stroke="${tinta}" stroke-width="3" stroke-linejoin="round"/></g>` : '';
+  const libreta = p.libreta ? `<g transform="${p.libreta}"><rect x="-11" y="-14" width="22" height="28" rx="2" fill="#FBF5E8" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M-11 -9 H11 M-6 -3 H7 M-6 3 H7 M-6 9 H3" stroke="${tinta}" stroke-width="1.6"/><path d="M-9 -16 v4 M-3 -16 v4 M3 -16 v4 M9 -16 v4" stroke="${tinta}" stroke-width="2"/></g>` : '';
+  let ojos;
+  if (p.ojos === 'felices') ojos = `<path d="M86 64 Q90 58 94 64 M106 64 Q110 58 114 64" fill="none" stroke-width="3"/>`;
+  else if (p.ojos === 'tristes') ojos = `<path d="M86 66 Q90 70 94 66 M106 66 Q110 70 114 66" fill="none" stroke-width="2.6"/><path d="M85 58 L94 61 M115 58 L106 61" stroke-width="2.6"/>`;
+  else ojos = `<ellipse cx="90" cy="64" rx="2.6" ry="3.4" fill="${tinta}"/><ellipse cx="110" cy="64" rx="2.6" ry="3.4" fill="${tinta}"/><path d="M84 56 Q90 53 95 56 M105 56 Q110 53 116 56" fill="none" stroke-width="2.6"/>`;
+  const papeles = p.papeles ? [[24, 120, -18], [176, 60, 22], [34, 200, 12]].map(([x, y, a]) => `<g transform="translate(${x} ${y}) rotate(${a})"><rect x="-10" y="-13" width="20" height="26" fill="#FBF5E8" stroke="${tinta}" stroke-width="2"/><path d="M-6 -7 H6 M-6 -2 H6 M-6 3 H6 M-6 8 H2" stroke="${tinta}" stroke-width="1.4"/></g>`).join('') : '';
+  const suspiro = p.suspiro ? `<path d="M128 70 q6 -4 12 0 t12 0" fill="none" stroke="${tinta}" stroke-width="2.4"/><path d="M60 52 q-4 7 0 11 q4 -4 0 -11 Z" fill="#9cc3e0" stroke="${tinta}" stroke-width="2"/>` : '';
+  const bolsillos = p.bolsillos ? `<path d="M60 160 Q70 156 80 160 M120 160 Q130 156 140 160" stroke="${tinta}" stroke-width="3" fill="none"/>` : '';
+  return `<svg class="cronista" viewBox="0 0 200 300" role="presentation"><g stroke-linecap="round" stroke-linejoin="round">`
+    + `<g transform="${p.cuerpo || ''}">`
+    + p.piernas.map((d) => trazo(d, 15, pantalon)).join('') + p.zapatos.map(zapato).join('')
+    + `<g transform="${p.hombros || ''}">`
+    + `<path d="M66 96 Q100 86 134 96 L148 214 Q100 224 52 214 Z" fill="${gabardina}" stroke="${tinta}" stroke-width="3.5"/>`
+    + `<path d="M126 104 L140 210 Q130 214 122 214 Z" fill="${sombra}" opacity=".7"/>`
+    + `<g stroke="${tinta}" stroke-width="1.2" opacity=".55"><path d="M128 120 l10 -8 M129 134 l11 -9 M131 148 l11 -9 M132 162 l11 -9 M134 176 l10 -8 M135 190 l9 -7"/></g>`
+    + `<path d="M88 92 L100 140 L112 92 Z" fill="#FBF5E8" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M97 98 L103 98 L105 132 L100 140 L95 132 Z" fill="#3F5A73" stroke="${tinta}" stroke-width="2.4"/>`
+    + `<path d="M80 92 L100 142 L88 150 L70 100 Z M120 92 L100 142 L112 150 L130 100 Z" fill="${gabardina}" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M58 150 Q100 160 142 150 L143 160 Q100 170 57 160 Z" fill="${sombra}" stroke="${tinta}" stroke-width="3"/><rect x="94" y="152" width="12" height="12" rx="2" fill="none" stroke="${tinta}" stroke-width="2.4"/>`
+    + `<circle cx="92" cy="178" r="2.6" fill="${tinta}"/><circle cx="92" cy="196" r="2.6" fill="${tinta}"/>` + bolsillos
+    + p.brazos.map((d) => trazo(d, 17, gabardina)).join('') + (p.manos || []).map(mano).join('') + dedo + libreta
+    + `</g><g transform="${p.cabeza || ''}">`
+    + `<path d="M94 84 L94 96 L106 96 L106 84 Z" fill="${piel}" stroke="${tinta}" stroke-width="3"/>`
+    + `<ellipse cx="81" cy="66" rx="5" ry="8" fill="${piel}" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M100 38 C116 38 121 52 120 68 C119 82 111 92 100 92 C89 92 81 82 80 68 C79 52 84 38 100 38 Z" fill="${piel}" stroke="${tinta}" stroke-width="3.2"/>`
+    + `<g stroke="${tinta}" stroke-width="2.6">${ojos}`
+    + `<path d="M100 62 Q98 70 96 74 Q99 76 102 75" fill="none"/>`
+    + `<path d="M88 78 Q94 74 100 77 Q106 74 112 78 Q106 77 100 79 Q94 77 88 78 Z" fill="${tinta}" stroke-width="1.6"/>${p.boca}</g>`
+    + `<path d="M71 68 L88 49" stroke="${tinta}" stroke-width="7.5"/><path d="M71 68 L88 49" stroke="#D9A441" stroke-width="4"/><path d="M71 68 l-3 4" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M50 48 Q100 30 150 44 Q156 52 142 54 Q100 44 58 58 Q44 56 50 48 Z" fill="#6E7F8F" stroke="${tinta}" stroke-width="3.2"/>`
+    + `<path d="M74 46 Q74 26 82 16 Q92 22 100 18 Q108 22 118 14 Q126 24 126 42 Q100 36 74 46 Z" fill="#7F909F" stroke="${tinta}" stroke-width="3.2"/>`
+    + `<path d="M92 22 Q100 30 110 20" stroke="${tinta}" stroke-width="2" fill="none"/><path d="M114 22 Q120 30 120 38" stroke="${tinta}" stroke-width="1.4" fill="none" opacity=".6"/>`
+    + `<path d="M75 38 Q100 31 126 35 L126 43 Q100 37 74 46 Z" fill="${tinta}"/>`
+    + `<g transform="rotate(-8 86 37)"><rect x="75" y="31" width="23" height="11" fill="#FBF5E8" stroke="${tinta}" stroke-width="1.6"/><text x="86.5" y="39.4" font-size="6" font-family="Arial, sans-serif" font-weight="700" text-anchor="middle" fill="${tinta}">PRESS</text></g>`
+    + `</g></g>` + papeles + suspiro + `</g></svg>`;
+}
+
 function svgMascota(id, pose) {
   if (id === 'sumi') return svgSumi(pose);
+  if (id === 'cronista') return svgCronista(pose);
   if (id === 'kira') return svgKira(pose);
   if (id === 'bauli') return svgBauli(pose);
   if (id === 'nubi') return svgNubi(pose);
@@ -1571,6 +1704,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const nube = pal.rueda === 'nube';
   const baul = pal.rueda === 'baul';
   const kira = pal.rueda === 'kira';
+  const pluma = pal.rueda === 'pluma';
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   if (document.fonts && document.fonts.load) {
     await Promise.race([document.fonts.load(pal.fuente).catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1200))]);
@@ -1621,6 +1755,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (nube) decorarRuedaNube(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (baul) decorarRuedaBaul(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (kira) decorarRuedaKira(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+    else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'cara');
   };
   const pintarFoto = (i) => {
     const t = (radio + margenFoto) * 2;
@@ -1687,6 +1822,14 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.arc(x, y, radio + 1, 0, Math.PI * 2);
       c.strokeStyle = i % 2 === 0 ? '#FFD23F' : '#FF6FB5';
       c.lineWidth = 4.5;
+    } else if (pluma) {
+      c.strokeStyle = '#1C1C1C';
+      c.lineWidth = 8;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
+      c.strokeStyle = '#FBF5E8';
+      c.lineWidth = 3.5;
     } else {
       c.strokeStyle = pal.texto;
       c.lineWidth = 2;
@@ -1696,7 +1839,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   };
   const pintarNombre = (i) => {
     const opcion = opciones[i];
-    const nombre = neon || tinta || llanta || nube || baul || kira ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const nombre = neon || tinta || llanta || nube || baul || kira || pluma ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
     const medida = canvas.getContext('2d');
     medida.font = pal.fuente;
     const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
@@ -1712,10 +1855,10 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.shadowColor = 'rgba(0, 0, 0, .85)';
       c.shadowBlur = 4;
     }
-    if (tinta || llanta || nube || baul || kira) {
+    if (tinta || llanta || nube || baul || kira || pluma) {
       c.lineJoin = 'round';
-      c.lineWidth = nube || kira ? 7 : 6;
-      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : '#111';
+      c.lineWidth = nube || kira || pluma ? 7 : 6;
+      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : pluma ? '#1C1C1C' : '#111';
       c.strokeText(nombre, nx, ny);
     }
     c.fillStyle = pal.texto;
@@ -1731,6 +1874,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (nube) decorarRuedaNube(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (baul) decorarRuedaBaul(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (kira) decorarRuedaKira(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else {
       c.beginPath();
       c.moveTo(cx, cy - r - 2);
@@ -2219,6 +2363,172 @@ function decorarRuedaKira(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   ctx.restore();
 }
 
+function decorarRuedaPluma(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
+  const TAU = Math.PI * 2;
+  const tinta = '#1C1C1C';
+  const papel = '#FBF5E8';
+  ctx.save();
+  if (parte !== 'fijo') {
+    let semilla = 7;
+    const azar = () => {
+      semilla = (semilla * 9301 + 49297) % 233280;
+      return semilla / 233280;
+    };
+    for (let i = 0; i < n; i += 1) {
+      const a0 = angulo + i * slice - Math.PI / 2;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, a0, a0 + slice);
+      ctx.closePath();
+      ctx.clip();
+      for (let k = 0; k < 5; k += 1) {
+        const a = a0 + slice * (0.15 + azar() * 0.7);
+        const d = r * (0.3 + azar() * 0.65);
+        const x = cx + Math.cos(a) * d;
+        const y = cy + Math.sin(a) * d;
+        const radio = r * (0.12 + azar() * 0.22);
+        const mancha = ctx.createRadialGradient(x, y, 0, x, y, radio);
+        const claro = k % 2 === 0;
+        mancha.addColorStop(0, claro ? 'rgba(255, 245, 225, .22)' : 'rgba(20, 16, 12, .16)');
+        mancha.addColorStop(0.75, claro ? 'rgba(255, 245, 225, .08)' : 'rgba(20, 16, 12, .06)');
+        mancha.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = mancha;
+        ctx.fillRect(x - radio, y - radio, radio * 2, radio * 2);
+      }
+      const borde = ctx.createRadialGradient(cx, cy, r * 0.55, cx, cy, r);
+      borde.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      borde.addColorStop(1, 'rgba(30, 20, 10, .22)');
+      ctx.fillStyle = borde;
+      ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+      if (i % 2 === 1) {
+        ctx.strokeStyle = 'rgba(20, 20, 20, .14)';
+        ctx.lineWidth = 1.2;
+        for (let t = -r; t < r; t += 7) {
+          ctx.beginPath();
+          ctx.moveTo(cx + t, cy - r);
+          ctx.lineTo(cx + t + r, cy + r);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+    ctx.strokeStyle = tinta;
+    ctx.lineWidth = 3;
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 30, 0, TAU);
+    ctx.arc(cx, cy, r, 0, TAU, true);
+    ctx.fillStyle = '#1f1f1f';
+    ctx.fill();
+    ctx.lineWidth = 1;
+    for (let radio = r + 5; radio < r + 28; radio += 3) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, radio, 0, TAU);
+      ctx.strokeStyle = radio % 2 ? 'rgba(255, 255, 255, .1)' : 'rgba(255, 255, 255, .05)';
+      ctx.stroke();
+    }
+    [[-2.4, -1.7], [0.7, 1.4]].forEach(([desde, hasta]) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + 15, desde, hasta);
+      ctx.strokeStyle = 'rgba(255, 255, 255, .22)';
+      ctx.lineWidth = 16;
+      ctx.stroke();
+    });
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 30, 0, TAU);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = tinta;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 1.5, 0, TAU);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = papel;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 1, 0, TAU);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = tinta;
+    ctx.stroke();
+  }
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
+  const c = r * 0.17;
+  ctx.beginPath();
+  ctx.arc(cx, cy, c + 5, 0, TAU);
+  const metal = ctx.createLinearGradient(cx - c, cy - c, cx + c, cy + c);
+  metal.addColorStop(0, '#f2f2f2');
+  metal.addColorStop(0.5, '#a9a9a9');
+  metal.addColorStop(1, '#6d6d6d');
+  ctx.fillStyle = metal;
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = tinta;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, c * 0.82, 0, TAU);
+  ctx.fillStyle = papel;
+  ctx.fill();
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  ctx.fillStyle = tinta;
+  ctx.font = `800 ${Math.round(c * 1.05)}px "Playfair Display", Georgia, serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('F', cx, cy + c * 0.06);
+
+  const top = cy - r - 50;
+  const fin = cy - r + 20;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx - 11, top - 4);
+  ctx.lineTo(cx + 11, top - 4);
+  ctx.lineTo(cx + 12, top + 14);
+  ctx.lineTo(cx - 12, top + 14);
+  ctx.closePath();
+  ctx.fillStyle = tinta;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx - 6, top - 2);
+  ctx.lineTo(cx - 5, top + 12);
+  ctx.strokeStyle = 'rgba(255, 255, 255, .35)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - 13, top + 14);
+  ctx.lineTo(cx + 13, top + 14);
+  ctx.bezierCurveTo(cx + 18, top + 32, cx + 10, top + 48, cx, fin);
+  ctx.bezierCurveTo(cx - 10, top + 48, cx - 18, top + 32, cx - 13, top + 14);
+  ctx.closePath();
+  const oro = ctx.createLinearGradient(cx - 14, 0, cx + 14, 0);
+  oro.addColorStop(0, '#f6dc94');
+  oro.addColorStop(0.45, '#D9A441');
+  oro.addColorStop(1, '#8a6420');
+  ctx.fillStyle = oro;
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = tinta;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, top + 30, 3.4, 0, TAU);
+  ctx.fillStyle = tinta;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx, top + 33);
+  ctx.lineTo(cx, fin - 1);
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+}
+
 function nubeCanvas(ctx, x, y, s) {
   const bolas = [[-1, 0.25, 0.5], [-0.4, -0.2, 0.68], [0.35, -0.3, 0.74], [1, 0.15, 0.52], [0, 0.35, 0.6]];
   ctx.fillStyle = '#F5C518';
@@ -2460,7 +2770,7 @@ const CLAVE_PIEL = 'fonomeets.pantalla.piel';
 function pielGuardada() {
   try {
     const valor = new URLSearchParams(location.search).get('piel') || localStorage.getItem(CLAVE_PIEL);
-    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki'].includes(valor) ? valor : '';
+    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo'].includes(valor) ? valor : '';
   } catch (error) {
     return '';
   }
@@ -2714,7 +3024,7 @@ async function correrDemo(tipo) {
   await demoRuleta(id, tipo === 'rechazo');
 }
 
-const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki'];
+const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo'];
 const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
   manga: { nombre: 'Manga', estado: 'Arte parcial' },
@@ -2722,6 +3032,7 @@ const PIELES_INFO = {
   doraemon: { nombre: 'Cielo', estado: 'Arte parcial' },
   maison: { nombre: 'Maison', estado: 'Arte parcial' },
   kirameki: { nombre: 'Kirameki', estado: 'Arte parcial' },
+  trazo: { nombre: 'Trazo', estado: 'Arte final' },
 };
 
 function mostrarElegirPiel() {
@@ -2933,7 +3244,7 @@ function htmlPielesDemo() {
   const objetos = [...(piel.efectos.objetos || []), ...(piel.mascota ? [{ id: 'mascota' }] : [])].map((objeto) => (
     `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
   )).join('');
-  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki'].map((id) => (
+  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo'].map((id) => (
     `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
   )).join('') + '</div>'
     + '<div class="demo-dialog-chips">'
