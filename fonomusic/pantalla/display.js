@@ -2042,6 +2042,16 @@ function arrancarVideoEjemplo() {
   });
 }
 
+function escalarEscena() {
+  const escena = document.getElementById('escena');
+  if (!escena) return;
+  const raiz = document.documentElement;
+  escena.style.setProperty('--escala', String(Math.min(raiz.clientWidth / 1920, raiz.clientHeight / 1080)));
+}
+
+escalarEscena();
+window.addEventListener('resize', escalarEscena);
+window.addEventListener('orientationchange', escalarEscena);
 leer();
 setInterval(leer, 4000);
 calentar();
