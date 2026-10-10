@@ -234,6 +234,11 @@ h2 {
 .screens img:nth-child(2) {
   transform: translateY(20px);
 }
+.screens img:only-child {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+}
 .project-info {
   padding-top: 28px;
 }

@@ -1,0 +1,1819 @@
+# Fonomusic: prompts para Gemini
+
+Prompts para generar en Gemini el arte de la pantalla del salón. Las pieles nuevas (Maison, Kirameki, Trazo, Revista y Fileteado) tienen su prompt integral en [Pieles nuevas](#pieles-nuevas-t5t9-prompts-integrales). Para las cuatro primeras hay dos formas de usarlos: el **modo rápido**, con un prompt maestro por plantilla que genera todo en 5 imágenes, o un **prompt por elemento y por plantilla** para rehacer una pieza puntual. Los códigos P01–P20 son los del [brief por plantilla](./fonomusic-brief-plantillas.md).
+
+## Cómo usarlos
+
+1. **Cada prompt es autónomo:** ya incluye qué es el elemento, cómo tiene que verse en esa plantilla, la paleta, la mascota y las reglas. Se puede pegar suelto.
+2. **Igual conviene un chat por plantilla.** Si en ese chat pegás primero el ancla de estilo (sección "Anclas"), Gemini mantiene la misma mano en todas las piezas.
+3. **Los prompts están en inglés** porque los modelos de imagen responden con más precisión. Los textos que aparecen en pantalla quedan en castellano o japonés según la plantilla.
+4. **Formato:** en Google AI Studio elegí 16:9 (o 1:1 para P02). En la app de Gemini ya va pedido dentro del prompt.
+5. **Fondo para recortar:** Gemini no entrega transparencia. Las piezas sueltas se piden sobre **verde liso `#00FF00`**, que después se quita.
+6. **Si algo sale mal**, corregí en el mismo chat: "same image, but make the pointer bigger and remove the text at the bottom".
+7. **Aprobación:** en el modo rápido, primero se aprueban las imágenes 1 y 3 de cada plantilla (fondo y kit A); con prompts sueltos, el ancla y P05 (marco). Con eso aprobado se generan las demás piezas, y nada se anima sin tu aprobación.
+8. **Nombres de archivo:** `<plantilla>-<código>.png`, por ejemplo `manga-P05.png` o `meteoro-P03.png`.
+
+P07 (animación de entrada) y P18 (movimiento de la escena) no llevan prompt de imagen: son especificaciones de animación que hago yo.
+
+## Modo rápido: un prompt maestro por plantilla
+
+Un solo prompt por plantilla genera todo el kit en **5 imágenes**, así que son 20 corridas en total en lugar de 80.
+
+| Imagen | Contenido | Elementos |
+|---|---|---|
+| 1 | Fondo de escena | P01 |
+| 2 | Mascota en 4 poses, objetos decorativos, confeti, impacto y rechazo | P03, P03b, P12, P04, P11 |
+| 3 | Kit A: marco, títulos de juego, ficha del elegido, píldora de pareja, cierre de ronda | P05, P06, P09, P10, P13 |
+| 4 | Kit B: globo de dedicatoria, chat, match, franja superior y placa del logo | P15, P16, P17, P19 |
+| 5 | Ruleta, votación y piezas de "Ahora suena" | P08, P14, P20 |
+
+**Cómo se usa:**
+1. Abrí un chat nuevo de Gemini y pegá el prompt maestro de la plantilla.
+2. Si Gemini devuelve una sola imagen, escribí `siguiente` para cada una de las demás. Como todo queda en el mismo chat, mantiene el estilo y la mascota.
+3. Guardá las imágenes como `<plantilla>-H1.png` a `<plantilla>-H5.png`, por ejemplo `manga-H3.png`.
+
+**La contra:** al entrar muchas piezas en una sola imagen, cada pieza sale más chica y con menos detalle. Para aprobar el estilo y para la mayoría de las piezas alcanza. Si alguna sale chica o confusa, se rehace sola con su prompt individual de la sección "Elementos".
+
+No hace falta pedir el velo (P01b) ni el ambiente animado (P02): los saco yo del fondo con degradés.
+
+### T1 Nocturna
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Mascot (original, identical in every image): "Voltio", a small friendly robot built from bent neon tubes, with a vinyl-record face, two dot eyes and a smile drawn in cyan light, and pink tube arms.
+
+Generate 5 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Deep violet night with a soft radial glow in the center fading to #1A1430 at the edges; neon tube lines in pink and cyan and blurred bokeh lights along the borders; a faint reflective floor at the bottom.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). The mascot glows softly like real neon, pink and cyan tubes.
+- Middle row, decorative side objects: 1) a cyan lens flare, 2) a pink glowing halo ring, 3) a neon music note, 4) a small neon disco ball.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: thin neon strips, glowing dots, four-point sparkles.
+- Bottom center, a celebration burst radiating from an empty central circle: Pink and cyan neon light rays with sparkles and a bloom ring.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: A neon tube flickering off and cracking, dim pink; the "NO" in broken flickering neon.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Thin pink neon tube border with soft glow, 22 px rounded corners, dark translucent violet interior #141028, small cyan accents on the corners.
+- Five game title labels with the same base shape: "RULETA", "VOTACIÓN", "MENSAJE", "MATCH" and one empty. Glowing pink neon uppercase lettering with wide spacing inside a thin neon-tube capsule outline.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Dark violet card with 18 px radius and pink neon glow; pink neon photo ring; separator a neon heart; adornment a cyan neon star.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Dark pill with a thin pink neon outline; trail a pink light streak.
+- End-of-round title "PAREJAS DE LA NOCHE" and one small grid cell with two avatars ("Ana", "Juan"): The title is a neon sign; the cell is a dark card with thin pink neon outline.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Translucent cyan glass balloon with a cyan neon edge glow and near-white text.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming bubble dark violet with a cyan edge; outgoing bubble a glowing pink gradient with white text; badge in pink neon; panel a dark glass column.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: A pink and a cyan neon tube meeting to form a heart; chip dark with neon outline.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Thin dark band with a pink neon line underneath; plate a neon-outlined rounded rectangle.
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating #241C3D and #141028 with thin pink and cyan dividers, each with a generic avatar and a short name like "Mesa 3". Rim of pink neon with small cyan light bulbs; hub shaped like a glowing vinyl record; pointer a pink glowing triangle.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Dark cards with thin cyan neon outline; the winner gets a thicker pink neon border and bloom; badge a neon crown; bar filled with cyan light; countdown ring in pink neon.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a glowing vinyl sleeve with a record peeking out; label a pink neon sign; equalizer bars in cyan neon.
+
+Rules for all five images: no third-party characters, logos or brands; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all five images; no extra text except the one requested.
+```
+
+### T2 Manga
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Mascot (original, identical in every image): "Sumi", a chubby round ink-drop character with big expressive manga eyes, a red hachimaki headband and a small brush-tip tail, drawn with thick ink lines and screentone shading.
+
+Generate 5 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Aged cream manga paper with fine diagonal hatching, screentone dot gradients in the corners, very faint radial speed lines toward the edges, a soft red ink wash in one corner and rough panel borders around the frame.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Drawn in black ink with screentone shading and red accents, like a manga sticker.
+- Middle row, decorative side objects: 1) a giant "ドン" sound-effect lettering in black ink with red outline, 2) a patch of screentone dots, 3) an ink splash, 4) a small red paper lantern.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: sakura petals, tiny round red stamps, ink splats.
+- Bottom center, a celebration burst radiating from an empty central circle: Red concentric shock rings with black ink concentration lines and small "ドン" marks.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: A black ink splat with a big red ×; the "NO" as a red hanko stamp.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Thick black ink comic-panel border, cream interior #FFF6DC, hard red offset shadow to the bottom-right, screentone dots in the corners.
+- Five game title labels with the same base shape: "ルーレット", "投票", "伝言", "ドン" and one empty. Red round hanko stamps rotated -8°, with ink texture and a small black offset shadow.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Cream card with thick ink border and hard red shadow; ink photo ring with a red stamp ring; separator a red ink heart with action lines; adornment a small ink-drawn crown.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Cream pill with black ink border and red shadow; trail black ink brush speed lines.
+- End-of-round title "完" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is a brush-lettered ink banner on a paper scroll; the cell an ink-bordered cream panel.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Classic manga fukidashi: white, 3 px black ink border, hard black offset shadow, sharp tail.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming a white fukidashi with ink border; outgoing cream with red hard shadow; badge a red stamp; panel a vertical manga page strip.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: A big "ドン" with the two avatars bumping together and a red ink heart; chip cream with ink border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Ink-bordered band with screentone; plate a cream paper tag with a red stamp in one corner.
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating #FFF6DC and #C4A86A with screentone texture, each with a generic avatar and a short name like "Mesa 3". Rim as a thick black ink circle with red hanko marks; hub a red hanko seal; pointer a black brush-stroke arrow with a red tip.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Cream cards with ink borders; the winner gets a red border, red hard shadow and a red "勝" stamp badge; bar filled with red screentone; countdown ring a brush-stroke circle.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a manga panel with ink border and speed lines; label a hand-lettered ink banner; equalizer bars as ink brush strokes.
+
+Rules for all five images: no third-party characters, logos or brands; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all five images; no extra text except the one requested.
+```
+
+### T3 Meteoro
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Mascot (original, identical in every image): "Turbo", a cheerful round racing helmet with goggles, a white visor stripe, a red and yellow paint job, a checkered scarf flying behind it and tiny sneakers.
+
+Generate 5 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Dark asphalt race track, checkered bands along the top and bottom edges, red and white curb stripes on the sides and faint horizontal speed streaks.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Glossy red and yellow paint with white highlights, motion lines behind it.
+- Middle row, decorative side objects: 1) a block of speed stripes, 2) a waving checkered flag, 3) a giant skewed yellow "GO!", 4) a vertical race start light with five red lamps.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: small checkered flags, long thin speed streaks, sparks.
+- Bottom center, a celebration burst radiating from an empty central circle: Red and yellow radial speed bursts with checkered fragments flying out.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: A puff of tire smoke and a black flag; the "NO" on a black skewed plate with white text.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Thick white border with a red outline and a yellow outer ring, near-black interior, checkered corner pieces.
+- Five game title labels with the same base shape: "GO!", "GRID", "RADIO", "FINISH" and one empty. Red plates skewed -12° with heavy white italic text and a yellow offset shadow.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Black card with white border and red outline, name in yellow heavy italic; photo ring like a tire; separator a checkered plus sign; adornment a golden laurel.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Black pill with white border, red outline and a checkered end cap; trail red and yellow skid marks.
+- End-of-round title "FINISH" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is a checkered finish banner; the cell a black card with white border and red outline.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": White balloon with a thick yellow border, skewed -6°, red offset shadow, like a radio callout.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming white with black text and red outline; outgoing red with white italic text; badge a yellow skewed plate; panel like a pit-radio display.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two racing helmets crossing a checkered finish line side by side; chip black with white border and red outline.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Thin checkered band; plate like a race sponsor plate, white with red outline.
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating red #E31C23 and yellow #FFD100, each with a generic avatar and a short name like "Mesa 3". Rim like a racing tire with a yellow ring (no brand text); hub like a chrome hubcap; pointer red with a checkered tip.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Black cards with white border; the winner gets a yellow ring and a checkered flag badge; bar like a red-to-yellow rev gauge; countdown ring like a stopwatch.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover inside a speedometer dial; label on a red skewed plate; equalizer like tachometer LED segments.
+
+Rules for all five images: no third-party characters, logos or brands; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all five images; no extra text except the one requested.
+```
+
+### T4 Cielo (reemplaza a Doraemon)
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Mascot (original, identical in every image): "Nubi", a small smiling white cloud with rosy cheeks, a golden bell on a red ribbon and a tiny yellow propeller on top (not a cat, not a robot).
+
+Generate 5 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Bright sky gradient from #7EC8E8 at the top to white at the bottom, big puffy white clouds along the edges and the bottom, a few small twinkling stars.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Puffy, soft, with a golden yellow shadow underneath and rosy cheeks.
+- Middle row, decorative side objects: 1) a puffy cloud, 2) a small yellow propeller, 3) a group of twinkling stars, 4) a small red kite.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: little clouds, five-point stars, small golden bells.
+- Bottom center, a celebration burst radiating from an empty central circle: A golden starburst with little stars and cloud puffs flying out.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: A small gray rain cloud dripping; the "NO" inside a gray cloud pill.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Thick rounded blue #2BA4D9 border with 48 px radius, white interior, golden yellow shadow underneath, small cloud puffs on the corners.
+- Five game title labels with the same base shape: "ポン", "どちら", "もしもし", "大好き" and one empty. Golden yellow pills with a red bottom edge like a bell, with navy rounded text.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: White card with 36 px radius, blue border and yellow shadow; puffy blue photo ring; separator a pink heart-shaped cloud; adornment a crown made of golden bells.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: White pill with blue border and yellow shadow; trail a line of cloud puffs.
+- End-of-round title "¡Listo!" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is a cloud banner with golden bells; the cell a white puffy card with blue border.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Round puffy cloud-like balloon with blue border and yellow shadow, navy text.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming a white cloud bubble; outgoing blue with white text; badge a yellow star; panel a soft sky column with clouds.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two little clouds merging into a heart-shaped cloud with stars; chip white with blue border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Band of small clouds; plate a white pill with blue border and yellow shadow.
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating blue #2BA4D9 and white, each with a generic avatar and a short name like "Mesa 3". Rim as a puffy blue ring with white cloud puffs and small yellow lights; hub a golden bell; pointer a rounded red drop.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. White puffy cards with blue border; the winner gets a yellow glow and a star badge; bar a blue fill with a cloud at the tip; countdown ring a smiling sun.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover inside a puffy cloud frame with a small propeller on top; label a yellow bell pill; equalizer as bouncing little clouds.
+
+Rules for all five images: no third-party characters, logos or brands; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all five images; no extra text except the one requested.
+```
+
+## Pieles nuevas (T5–T9): prompts integrales
+
+Cada prompt genera **la piel completa en 8 imágenes**, en el mismo chat: las 5 de siempre (fondo, mascota y efectos, kit A, kit B, juegos y "Ahora suena") más las 3 pantallas que en Nocturna, Manga, Meteoro y Cielo llegaron después: la **bienvenida con QR** (6), la celebración **"¡Hay pareja!"** (7) y la hoja de **estados de la app del celular** (8).
+
+**Cómo se usa:** chat nuevo de Gemini por piel, pegar el prompt entero y escribir `siguiente` después de cada imagen. Guardá los archivos como `<piel>-H1.png` a `<piel>-H8.png`, por ejemplo `fileteado-H3.png`.
+
+**Marcas, autores y personajes:** los prompts describen cada estética en lugar de nombrar marcas, dibujantes o historietas. Si se nombran, Gemini se niega o copia logos, monogramas y personajes protegidos, y eso no se puede usar en la pantalla de un bar.
+
+| Piel | Inspiración | Mascota | Archivos |
+|---|---|---|---|
+| T5 Maison | lujo de marroquinería | Bauli | `maison-H1.png` … `maison-H8.png` |
+| T6 Kirameki | anime | Kira | `kirameki-H1.png` … `kirameki-H8.png` |
+| T7 Trazo | historieta para adultos de los 80 | El Cronista | `trazo-H1.png` … `trazo-H8.png` |
+| T8 Revista | humor gráfico argentino de los 40 | Gramo | `revista-H1.png` … `revista-H8.png` |
+| T9 Fileteado | cultura argentina | Matecito | `fileteado-H1.png` … `fileteado-H8.png` |
+
+### T5 Maison (lujo de marroquinería)
+
+Lujo de marroquinería clásica: lona color coñac con un monograma propio de Fonomusic, cuero, costuras, herrajes dorados y baúles de viaje. **El prompt no nombra la marca a propósito**: si se la nombra, Gemini se niega o copia el monograma y el logo, que están registrados. Se describe el estilo y se pide un monograma inventado.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+MAISON style: a heritage luxury leather-goods house and its vintage travel trunks. Coated canvas in cognac brown #6B3E1F with an ORIGINAL tone-on-tone Fonomusic monogram (a stylized "F", a music note and a four-petal flower, repeated in a diagonal grid, color #C8A27A), dark chocolate leather #2B1A10, cream #F3E7D3, oxblood red #6E1423 accents and polished brass gold #C9A24B hardware. Saddle stitching, brass corner protectors, rivets, buckles, leather straps, embossed tags and gold foil. High-contrast Didone serif lettering in spaced small caps, gold foil on leather. Quiet, elegant, expensive. Do not reproduce any existing brand monogram, logo, flower pattern or checkerboard canvas.
+
+Mascot (original, identical in every image): "Bauli", a small vintage steamer trunk with brass corners, a leather handle on top like a little tuft, two round friendly eyes on the front plate, rosy cheeks, a tiny oxblood bow tie and short leather-strap legs, covered in the original Fonomusic monogram.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Cognac canvas with the original Fonomusic monogram, very subtle in the center and clearer toward the edges, a frame of dark leather with saddle stitching, brass corner protectors in the four corners and a soft warm spotlight from the top.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Leather texture, gold stitching, brass shine, soft warm shadow.
+- Middle row, decorative side objects: 1) a stack of two small travel trunks, 2) a brass padlock with a key, 3) a leather luggage tag with a gold "F", 4) a golden music note with a ribbon.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: tiny brass rivets, monogram flowers in gold, small leather tassels.
+- Bottom center, a celebration burst radiating from an empty central circle: Gold foil rays and spinning monogram flowers, with a thin brass ring.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: The card gets a strap buckled across it and a brass padlock; the "NO" embossed in gold on a dark leather tag.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Dark chocolate leather border with saddle stitching, brass corner protectors, cognac monogram canvas interior very subtle, a thin gold inner line.
+- Five game title labels with the same base shape: "RULETA", "VOTO", "CORREO", "PAREJA" and one empty. Embossed gold foil Didone small caps on a leather tag with a brass rivet on each side.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Cream leather card with stitched border and gold edge; photo ring a brass ring with tiny rivets; separator a gold monogram flower; adornment a small gold crown with a key.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Dark leather pill with saddle stitching and a brass buckle at the end; trail a thin gold ribbon.
+- End-of-round title "Colección de la noche" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is gold foil on a leather banner held by two brass buckles; the cell a cream leather card with stitching.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Cream leather luggage tag shaped balloon with stitched border and a brass eyelet, serif text in chocolate.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming cream leather tag with chocolate text; outgoing cognac monogram canvas with gold text; badge a small gold foil seal; panel a tall dark leather strip with stitching.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two luggage tags tied together with a gold ribbon into a bow, with a gold monogram heart; chip dark leather with gold stitching.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Dark leather band with a gold stitched line; plate a brass plaque engraved "BAR LUNA".
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating cognac monogram canvas and dark chocolate leather, each with a generic avatar and a short name like "Mesa 3". Rim of stitched leather with brass rivets; hub a brass lock with a keyhole; pointer a brass key pointing down.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Cream leather cards with stitching; the winner gets a gold foil border, a soft gold glow and a brass seal badge "¡GANADORA!"; bar a leather strap with gold fill; countdown ring an elegant brass watch face.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a small open trunk with brass corners; label "AHORA SUENA" in gold foil on a leather tag; equalizer bars as gold bars like stacked brass ingots.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Dark leather and cognac monogram background; QR framed inside an open trunk lid with brass corners; icons as round brass medallions.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Pareja de colección!". Gold foil and monogram flowers raining down, photo frames as brass rings, the match icon a gold heart padlock, the ribbon a gold-trimmed leather banner.
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Buttons in gold foil on leather; spinner a turning brass dial; the reaction icon of the style a small trunk.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+### T6 Kirameki (anime)
+
+Anime de TV a color: cel shading, ojos brillantes, destellos, degradés de atardecer, líneas de acción de colores y letras de efecto. Es distinta de Manga (que es papel y tinta en blanco y negro con rojo). No copia ninguna serie.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+KIRAMEKI style: a colorful modern TV anime opening at sunset turning into night. Deep indigo #2A1B5C, magenta pink #FF4FA3, sky cyan #4FD8FF, sunshine yellow #FFE45C and white. Clean cel shading with two-tone shadows, glossy highlights, sparkles and lens flares, colorful speed lines, big bold anime sound-effect lettering with white outlines and colored drop shadows. Rounded heavy display font. Do not copy any existing anime, character or logo.
+
+Mascot (original, identical in every image): "Kira", an original chibi fox spirit with big glossy anime eyes with star highlights, cream and orange fur, a fluffy tail with a glowing star at the tip, pink headphones and a tiny magenta scarf.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Sunset sky fading from magenta and orange at the bottom to deep indigo at the top, a city skyline silhouette with lit windows along the bottom edge, floating sparkles and a few cel-shaded clouds in the corners.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Cel shading with crisp two-tone shadows, white outline sticker style and sparkles around.
+- Middle row, decorative side objects: 1) a burst of colorful speed lines, 2) a cluster of star sparkles, 3) a big "¡KYA!" sound-effect lettering, 4) a floating paper charm with a star.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: stars, hearts, four-point sparkles.
+- Bottom center, a celebration burst radiating from an empty central circle: A magical-girl transformation burst: pink and cyan rays, ribbons and sparkles from the center.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: The card shatters into glass shards with blue sweat-drop marks; the "NO" in big anime sound-effect lettering, cyan with a dark outline.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Glossy indigo card with a magenta-to-cyan gradient border, white outline and sparkles in two corners.
+- Five game title labels with the same base shape: "¡GIRA!", "¡VOTA!", "CHAT", "¡MATCH!" and one empty. Bold anime title lettering in yellow with a magenta outline and white outer stroke, tilted, with sparkles.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: White card with a magenta outline and cel shadow; photo ring a gradient ring with a star; separator a pink heart with sparkles; adornment a small golden tiara.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Indigo pill with a pink outline; trail colorful speed lines and sparkles.
+- End-of-round title "¡Fin del episodio!" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is anime episode-card lettering with a star; the cell an indigo card with a pink outline.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": White rounded anime speech bubble with a magenta outline and a pink cel shadow.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming white bubble with indigo text; outgoing magenta gradient with white text; badge a yellow star "NUEVO"; panel a translucent indigo column with sparkles.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two avatars with a pink heart and a red string of fate tying their little fingers; chip indigo with a gradient outline.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Indigo band with a thin magenta-to-cyan gradient line; plate a glossy pill with sparkles.
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating magenta and cyan, each with a generic avatar and a short name like "Mesa 3". Rim a glossy ring with small star lights; hub the mascot's glowing star; pointer a pink crystal.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. White cards with a cyan outline; the winner gets a golden glow, sparkles and a "¡GANADORA!" star badge; bar a gradient fill with sparkles; countdown ring a glowing magic circle.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as an anime episode card with a gradient border; label "AHORA SUENA" in anime title lettering; equalizer bars as gradient bars topped with stars.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Sunset city background; QR inside a glowing magic circle; icons as glossy round buttons.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡El destino los unió!". Pink and cyan transformation rays, a red string of fate between the two photo frames, hearts and stars as confetti.
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Glossy gradient buttons; spinner a spinning star; the reaction icon of the style a fox face.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+### T7 Trazo (historieta para adultos de los 80)
+
+La historieta para adultos europea y rioplatense de los años 80, la de las revistas de la época: línea de pluma fina y elegante, tramado, acuarela suave y personajes sensuales pero vestidos, en la noche porteña de esa década. **El prompt no nombra al dibujante ni a la historieta a propósito**: Gemini no imita a autores vivos ni personajes con derechos, así que se describen los rasgos del estilo. Todo queda apto para un bar: nada explícito.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+TRAZO style: a 1980s European and Rioplatense adult graphic novel, printed in a comics magazine of the era. Fine, elegant and very expressive pen-and-ink line, delicate cross-hatching, soft watercolor washes. Warm paper #F1E6D2, black ink #1C1C1C, washes of terracotta #C0563B, smoky blue #3F5A73 and ochre #D9A441. Setting: Buenos Aires at night in the 80s: a newsroom with typewriters, rain on cobblestones, neon reflections on wet streets, jazz clubs. Elegant, stylish adults with a sensual but fully clothed, tasteful look. Hand-lettered comic captions and newspaper headline typography. Do not copy any existing comic, author or character.
+
+Mascot (original, identical in every image): "El Cronista", an original lanky night reporter with a thin mustache, a rumpled trench coat, a fedora with a press card in the band, a notebook and a pencil behind the ear, drawn with fine expressive pen lines.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: A rainy Buenos Aires street at night in watercolor and ink: wet cobblestones reflecting warm neon at the bottom, building facades and a newsstand along the edges, falling rain lines, the center a soft calm wash.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Fine ink line with cross-hatching and watercolor washes, like a panel cut-out.
+- Middle row, decorative side objects: 1) a typewriter, 2) a stack of newspapers tied with string, 3) a trumpet with a curl of music notes, 4) a street lamp with rain.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: newspaper scraps, ink drops, small paper airplanes.
+- Bottom center, a celebration burst radiating from an empty central circle: Ink splash rays with flying newspaper pages and a watercolor bloom.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: The card gets torn like a newspaper page with a red pencil cross; the "NO" as a stamped red "RECHAZADO" newspaper mark with "NO" big.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Comic panel with a fine double ink border, warm paper interior with a very faint wash, a hand-lettered caption box in one corner.
+- Five game title labels with the same base shape: "RULETA", "ENCUESTA", "CORREO", "FLECHAZO" and one empty. Newspaper headline lettering in black on a cream caption box with a terracotta underline.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Paper card with an ink border and a watercolor shadow; photo ring an ink circle with hatching; separator a red ink heart pierced by a pencil; adornment a small press badge.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Cream caption pill with an ink border; trail ink motion lines.
+- End-of-round title "Última edición" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is a newspaper front-page headline; the cell a small comic panel.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Classic comic speech balloon with a fine ink outline and hand lettering, a soft ochre wash inside.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming white balloon with ink outline; outgoing smoky blue wash with white hand lettering; badge a red "NUEVO" stamp; panel a tall comic strip column.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two silhouettes sharing an umbrella in the rain with a small red heart; chip a paper caption box with an ink border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": A thin band like a newspaper masthead rule; plate a cream newspaper masthead with "BAR LUNA".
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating terracotta and smoky blue watercolor washes, each with a generic avatar and a short name like "Mesa 3". Rim like a vinyl record in ink and hatching; hub a typewriter key; pointer a fountain-pen nib pointing down.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Paper cards with ink borders; the winner gets a red pencil circle around it and a "¡GANADORA!" headline badge; bar a watercolor fill; countdown ring a wall clock drawn in ink.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a comic panel with a caption box; label "AHORA SUENA" as a newspaper headline; equalizer bars as hatched ink bars.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Rainy night street background; QR pinned on a corkboard like a newsroom note; icons drawn in ink inside circles.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Exclusiva: estas mesas se unieron!". A front page with the headline, two photo frames like newspaper portraits, flying newspaper pages and ink splashes.
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Buttons as hand-lettered caption boxes; spinner a rolling typewriter carriage; the reaction icon of the style a fedora.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+### T8 Revista (humor gráfico argentino de los 40)
+
+Las revistas de humor porteñas de los años 40: tapas a dos o tres tintas, trama de puntos, registro corrido, títulos art déco y caricaturas exageradas de tipos porteños (señores bajitos con sombrero y bigote, damas altísimas de cintura de avispa con vestidos de la época). Se describe el estilo sin copiar ningún personaje ni dibujante. Todo vestido y nada provocativo.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+REVISTA style: a 1940s Buenos Aires humor magazine cover. Cream newsprint #F4E9CF, tomato red #D7392B, mustard #E3A82B, teal #2F7F86 and black ink, printed in two or three spot colors with halftone dots and slightly off-register printing. Art Deco headline lettering with drop shadows. Exaggerated caricature style with bold brush outlines: short round gentlemen with hats and mustaches, very tall elegant ladies with tiny waists in 1940s dresses and hats, all fully clothed and tasteful. Do not copy any existing character, artist or magazine logo.
+
+Mascot (original, identical in every image): "Gramo", an original round gramophone with a black bowler hat, a big curly mustache, a bow tie, little legs with spats, and the horn on top like a tuft of hair, drawn as a 1940s caricature.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Cream newsprint with a large halftone sunburst in mustard and red from the center, an Art Deco frame along the edges, small caricature city rooftops at the bottom.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Bold brush outline, flat spot colors with halftone shading and a slightly off-register print look.
+- Middle row, decorative side objects: 1) a bandoneon, 2) a bowler hat with a cane, 3) a 1940s radio, 4) a vintage microphone.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: halftone dots, small musical notes, paper streamers.
+- Bottom center, a celebration burst radiating from an empty central circle: A halftone sunburst in red and mustard with Art Deco rays and stars.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: A caricature hat flying off with "¡PLAF!" lines; the "NO" in Art Deco letters on a red ribbon.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: An Art Deco frame in black and mustard with stepped corners, cream newsprint interior with a very faint halftone.
+- Five game title labels with the same base shape: "¡LA RULETA!", "¡A VOTAR!", "CHISMES", "¡FLECHAZO!" and one empty. Art Deco headline lettering in red with a black drop shadow on a mustard banner.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Cream card with a black brush border and a red offset shadow; photo ring an Art Deco ring; separator a red heart with an arrow; adornment a small golden bowler hat.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Mustard pill with a black border; trail halftone dots.
+- End-of-round title "¡Se acabó el baile!" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title is a magazine cover headline on a red ribbon; the cell an Art Deco framed card.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Comic balloon with a black brush outline and a halftone shadow, hand-lettered text.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming cream balloon; outgoing teal with cream text; badge a red starburst "NUEVO"; panel a magazine column with an Art Deco header.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Cupid's arrow piercing two hats; chip mustard with a black border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Band like a magazine masthead with a thin double rule; plate an Art Deco nameplate "BAR LUNA".
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating tomato red and mustard with halftone, each with a generic avatar and a short name like "Mesa 3". Rim an Art Deco ring with studs; hub a gramophone record; pointer a cane handle pointing down.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Cream cards with black brush borders; the winner gets a red starburst "¡GANADORA!" and a mustard glow; bar a halftone fill; countdown ring an Art Deco clock.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a 1940s magazine cover; label "AHORA SUENA" in Art Deco letters; equalizer bars as halftone bars.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Halftone sunburst background; QR framed as a magazine cover inset; icons as round Art Deco badges.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Flechazo en el salón!". A magazine cover headline, a halftone sunburst, Cupid arrows, hats flying and streamers.
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Buttons as Art Deco plates; spinner a spinning record; the reaction icon of the style a bowler hat.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+### T9 Fileteado (cultura argentina)
+
+Cultura argentina con el fileteado porteño como lenguaje gráfico: filetes, hojas de acanto, flores, cintas y letras con sombra, más íconos que se reconocen enseguida: el mate, el termo, el asado, las empanadas, los alfajores, el bandoneón, el colectivo y el Obelisco. Los textos van en castellano rioplatense.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+FILETEADO style: Argentine popular culture painted in the traditional Buenos Aires "fileteado" sign-painting style. Glossy black background #111111, ornamental scrolls with acanthus leaves, flowers, ribbons, little birds and shaded lettering, painted in red #D52B1E, green #1E8C45, yellow #F6C700, light blue #6CACE4 and white, with fine white highlights and dark shading lines. Iconic Argentine elements: mate gourd with a silver straw (bombilla), thermos, asado grill, empanadas, alfajores, bandoneon, a colectivo bus, the Obelisco silhouette, tango shoes and a gaucho beret. Hand-painted shaded lettering in Rioplatense Spanish. No logos, brands or real people.
+
+Mascot (original, identical in every image): "Matecito", an original round mate gourd with a silver bombilla sticking up like an antenna, big friendly eyes, rosy cheeks, a black gaucho beret, a red neckerchief and tiny espadrilles, painted in fileteado style with white highlights.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: Glossy black with fileteado scrolls, acanthus leaves and flowers growing from the four corners, a ribbon banner border, a small Obelisco and colectivo silhouette along the bottom.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Glossy painted look with fileteado highlights and shading lines.
+- Middle row, decorative side objects: 1) a thermos and mate set, 2) an asado grill with chorizos, 3) a bandoneon, 4) a fileteado flower with a little bird.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: small fileteado flowers, alfajores, ribbon pieces in light blue and white.
+- Bottom center, a celebration burst radiating from an empty central circle: Fileteado scrolls bursting outward with flowers and golden rays.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: The card wrapped by a red ribbon with the mascot spilling the mate; the "NO" in shaded fileteado lettering on a ribbon.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Black card with a fileteado scroll border in red, green and yellow, acanthus leaves in the corners and a thin white line inside.
+- Five game title labels with the same base shape: "RULETA", "¡VOTÁ!", "CHAMUYO", "FLECHAZO" and one empty. Shaded fileteado lettering in yellow and white on a light blue ribbon with curled ends.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Black card with fileteado corners; photo ring a scroll ring with small flowers; separator a fileteado heart with ribbons; adornment a small golden crown of flowers.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Black pill with a red fileteado line; trail light blue and white ribbon.
+- End-of-round title "¡Qué noche, che!" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title painted on a fileteado ribbon with scrolls; the cell a black card with fileteado corners.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Fileteado-framed speech balloon, cream inside, ornamental scrolls at the corners.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming cream balloon with red scroll border; outgoing light blue with white text; badge a yellow ribbon "NUEVO"; panel a tall black column with fileteado border.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two mates toasting with a heart of scrolls; chip black with fileteado border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Black band with a fileteado ribbon line; plate a fileteado sign "BAR LUNA".
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating red and green with fileteado details, each with a generic avatar and a short name like "Mesa 3". Rim a scroll ring with small flowers; hub a mate gourd seen from above; pointer a bombilla pointing down.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Black cards with fileteado borders; the winner gets a golden scroll frame and a ribbon badge "¡GANADORA!"; bar filled in light blue and white; countdown ring a fileteado clock.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed with fileteado scrolls; label "AHORA SUENA" on a ribbon; equalizer bars as stacked painted flowers.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Black fileteado background with flowers; QR inside a painted frame; icons inside fileteado medallions.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Matecito unió a estas mesas!". Fileteado scrolls and flowers bursting, two mates toasting, light blue and white ribbons, small fireworks.
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Buttons painted as fileteado signs; spinner a spinning mate; the reaction icon of the style a mate.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+---
+
+## Índice
+
+| Código | Elemento | Formato |
+|---|---|---|
+| P01 | Fondo de escena | 16:9 — pantalla completa |
+| P01b | Velo sobre portada, logo o foto | 16:9 — pantalla completa |
+| P02 | Ambiente animado | 1:1 — textura repetible |
+| P03 | Mascota (4 poses) | 16:9 — hoja de personaje |
+| P03b | Objetos decorativos de los costados | 16:9 — hoja |
+| P04 | Impacto | 16:9 — pantalla completa |
+| P05 | Marco del juego | 16:9 — pieza 9-slice |
+| P06 | Títulos de juego (sellos) | 16:9 — hoja |
+| P08 | Ruleta | 16:9 — hoja |
+| P09 | Participante elegido y pareja | 16:9 — hoja |
+| P10 | Tira de parejas formadas | 16:9 — hoja |
+| P11 | Rechazo | 16:9 — hoja |
+| P12 | Confeti | 16:9 — hoja |
+| P13 | Cierre de la ronda | 16:9 — hoja |
+| P14 | Votación de la próxima canción | 16:9 — hoja |
+| P15 | Globo de dedicatoria | 16:9 — hoja |
+| P16 | Chat en pantalla | 16:9 — hoja |
+| P17 | Match | 16:9 — hoja |
+| P19 | Franja superior y placa del logo | 16:9 — hoja |
+| P20 | Pantalla "Ahora suena" (piezas) | 16:9 — hoja |
+
+---
+
+## Anclas de estilo (opcional, una por plantilla)
+
+### T1. Nocturna
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a dark bar. Guests play games from their phones: a prize wheel, song voting, table-to-table chat and matches. I will ask you for several images; ALL of them must follow this exact style, which we call "NOCTURNA".
+
+Style NOCTURNA: elegant late-night bar with neon lights. Deep violet-black background (#1A1430, panels #241C3D and #141028). Neon tubes in hot pink (#FF3D8B) as the main accent and electric cyan (#22E0E6) as the secondary color; small touches of lime (#9BE85A) and amber (#FFB648). Text is near-white (#F5F6FA) in a bold, clean geometric sans-serif, uppercase with wide letter spacing for titles. Thin glowing outlines, soft bloom, subtle reflections, no clutter.
+
+Game title labels in this style read: "RULETA", "VOTACIÓN", "MENSAJE", "MATCH".
+Confetti shapes: thin neon strips, glowing dots, four-point sparkles.
+Decorative objects: a cyan light flare, a pink halo glow.
+
+Mascot (original character, must stay identical in every image): "Voltio", a small friendly robot built from bent neon tubes, with a vinyl-record face, two dot eyes and a smile drawn in cyan light, pink tube arms. Cute, simple silhouette readable from far away.
+
+Rules for every image: no third-party characters, logos or brands; no photos of real people (participants are generic illustrated avatars in circles); high contrast readable from 10 meters; no tiny details; keep the center of the screen calm for content.
+
+First image: a 16:9 style board showing the palette swatches, the title font sample with the four labels, Voltio front view, the confetti shapes and the two decorative objects, on the NOCTURNA background.
+```
+
+### T2. Manga
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar. Guests play games from their phones: a prize wheel, song voting, table-to-table chat and matches. I will ask you for several images; ALL of them must follow this exact style, which we call "MANGA".
+
+Style MANGA: a printed Japanese manga page. Aged cream paper (#E8D4A8, light panels #FFF6DC, toasted panels #C4A86A), thick black ink lines (#111111), hanko-stamp red (#C41E3A) as the only accent. Screentone dot patterns, speed lines, hard offset shadows in red, panel borders like comic frames. Bold rounded Japanese-style display lettering, heavy weight.
+
+Game title labels in this style are red hanko stamps reading: "ルーレット" (wheel), "投票" (vote), "伝言" (message), "ドン" (match).
+Confetti shapes: sakura petals, tiny round red stamps, ink splats.
+Decorative objects: a giant "ドン" sound effect, screentone dot texture.
+
+Mascot (original character, must stay identical in every image): "Sumi", a chubby round ink-drop character with big expressive manga eyes, a red hachimaki headband and a small brush tail. Drawn with thick ink lines and screentone shading.
+
+Rules for every image: no third-party characters, logos or brands; no copying any existing manga or anime; no photos of real people (participants are generic illustrated avatars in circles); high contrast readable from 10 meters; no tiny details; keep the center of the screen calm for content.
+
+First image: a 16:9 style board showing the palette swatches, the lettering sample with the four stamps, Sumi front view, the confetti shapes and the two decorative objects, on the MANGA paper background.
+```
+
+### T3. Meteoro
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar. Guests play games from their phones: a prize wheel, song voting, table-to-table chat and matches. I will ask you for several images; ALL of them must follow this exact style, which we call "METEORO".
+
+Style METEORO: retro 1960s motor racing poster. Dark asphalt background (#1A1A1A), racing red (#E31C23) and signal yellow (#FFD100) as main colors, white (#FFFFFF) outlines, checkered flag patterns, speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy uppercase display font, italic.
+
+Game title labels in this style are skewed red plates with white text: "GO!" (wheel), "GRID" (vote), "RADIO" (message), "FINISH" (match).
+Confetti shapes: small checkered flags, speed streaks, sparks.
+Decorative objects: speed stripes, a checkered flag, a giant "GO!".
+
+Mascot (original character, must stay identical in every image): "Turbo", a cheerful round racing helmet with goggles, a white visor stripe, a red and yellow paint job, a checkered scarf flying behind and tiny sneakers. No cars or characters from any existing anime or brand.
+
+Rules for every image: no third-party characters, logos, car designs or brands; no photos of real people (participants are generic illustrated avatars in circles); high contrast readable from 10 meters; no tiny details; keep the center of the screen calm for content.
+
+First image: a 16:9 style board showing the palette swatches, the font sample with the four plates, Turbo front view, the confetti shapes and the three decorative objects, on the METEORO asphalt background.
+```
+
+### T4. Cielo (reemplaza a Doraemon)
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar. Guests play games from their phones: a prize wheel, song voting, table-to-table chat and matches. I will ask you for several images; ALL of them must follow this exact style, which we call "CIELO".
+
+Style CIELO: a sunny children's-cartoon sky. Sky blue background (#7EC8E8), bright blue (#2BA4D9) and white panels, navy text (#1A4A73), red (#E31C23) accents and golden yellow (#F5C518) soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font.
+
+Game title labels in this style are yellow pills with a red bottom edge, like a golden bell, reading: "ポン" (wheel), "どちら" (vote), "もしもし" (message), "大好き" (match).
+Confetti shapes: little clouds, five-point stars, small golden bells.
+Decorative objects: floating clouds, a spinning propeller, twinkling stars.
+
+Mascot (original character, must stay identical in every image): "Nubi", a small smiling white cloud with rosy cheeks, a golden bell on a red ribbon and a tiny yellow propeller on top. It must NOT look like a cat, a robot or any existing cartoon character.
+
+Rules for every image: no third-party characters, logos or brands (specifically nothing resembling Doraemon); no photos of real people (participants are generic illustrated avatars in circles); high contrast readable from 10 meters; no tiny details; keep the center of the screen calm for content.
+
+First image: a 16:9 style board showing the palette swatches, the font sample with the four labels, Nubi front view, the confetti shapes and the three decorative objects, on the CIELO sky background.
+```
+
+---
+
+## Elementos, un prompt por plantilla
+
+### P01. Fondo de escena
+
+Fondo que está detrás de cualquier juego. Ocupa toda la pantalla (1920×1080). El 78 % central tiene que quedar tranquilo porque encima va la tarjeta del juego; la decoración fuerte va en bordes y esquinas. Sin texto, sin interfaz, sin mascota.
+
+**T1 Nocturna**
+
+```
+Create a full-screen 16:9 background for a game scene on a bar TV (3840x2160 look). Background only: no text, no UI, no characters. The central area (78% of width and height) must stay calm and low-detail because game cards sit on top of it; put the richest decoration near the edges and corners.
+
+How it must look in this style: Deep violet night with a soft radial glow in the center fading to #1A1430 at the edges; neon tube lines in pink and cyan and blurred bokeh lights along the borders; a faint reflective floor at the bottom.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a full-screen 16:9 background for a game scene on a bar TV (3840x2160 look). Background only: no text, no UI, no characters. The central area (78% of width and height) must stay calm and low-detail because game cards sit on top of it; put the richest decoration near the edges and corners.
+
+How it must look in this style: Aged cream manga paper with fine diagonal hatching, screentone dot gradients in the corners, very faint radial speed lines toward the edges, a soft red ink wash in one corner and rough panel borders around the frame.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a full-screen 16:9 background for a game scene on a bar TV (3840x2160 look). Background only: no text, no UI, no characters. The central area (78% of width and height) must stay calm and low-detail because game cards sit on top of it; put the richest decoration near the edges and corners.
+
+How it must look in this style: Dark asphalt race track, checkered bands along the top and bottom edges, red and white curb stripes on the sides and faint horizontal speed streaks.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a full-screen 16:9 background for a game scene on a bar TV (3840x2160 look). Background only: no text, no UI, no characters. The central area (78% of width and height) must stay calm and low-detail because game cards sit on top of it; put the richest decoration near the edges and corners.
+
+How it must look in this style: Bright sky gradient from #7EC8E8 at the top to white at the bottom, big puffy white clouds along the edges and the bottom, a few small twinkling stars.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P01b. Velo sobre portada, logo o foto
+
+Cuando el local elige como fondo la portada de la canción, su logo o una foto, se pone este velo encima para que el contenido se lea. Es un degradé: fuerte en bordes y abajo, casi transparente en el centro.
+
+**T1 Nocturna**
+
+```
+Create a 16:9 overlay that will be placed over a blurred photo so text on top stays readable. Only a gradient vignette: strong at the edges and at the bottom, almost clear in the center. No objects, no text. Show it over a neutral mid-gray so the gradient is visible.
+
+How it must look in this style: Violet-black edges #1A1430 with a subtle pink neon tint in the bottom corners.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a 16:9 overlay that will be placed over a blurred photo so text on top stays readable. Only a gradient vignette: strong at the edges and at the bottom, almost clear in the center. No objects, no text. Show it over a neutral mid-gray so the gradient is visible.
+
+How it must look in this style: Cream paper tint at the edges with a screentone dot fade and a thin ink border.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a 16:9 overlay that will be placed over a blurred photo so text on top stays readable. Only a gradient vignette: strong at the edges and at the bottom, almost clear in the center. No objects, no text. Show it over a neutral mid-gray so the gradient is visible.
+
+How it must look in this style: Black edges with thin red and yellow diagonal stripes in the bottom corners.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a 16:9 overlay that will be placed over a blurred photo so text on top stays readable. Only a gradient vignette: strong at the edges and at the bottom, almost clear in the center. No objects, no text. Show it over a neutral mid-gray so the gradient is visible.
+
+How it must look in this style: White-blue haze at the edges with soft cloud shapes at the bottom.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P02. Ambiente animado
+
+Capa de movimiento suave encima del fondo; después se anima deslizándola o haciéndola latir, al 35 % de opacidad como máximo. Se pide como textura que se pueda repetir en mosaico sin que se note la unión.
+
+**T1 Nocturna**
+
+```
+Create a seamless tileable texture (1:1, edges must match when repeated) to be used as a slow ambient motion layer over the game background at 35% opacity. Shapes only.
+
+How it must look in this style: Soft pink and cyan light blobs and haze, like neon reflections on glass.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a seamless tileable texture (1:1, edges must match when repeated) to be used as a slow ambient motion layer over the game background at 35% opacity. Shapes only.
+
+How it must look in this style: Black ink concentration speed lines and a few screentone dots.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a seamless tileable texture (1:1, edges must match when repeated) to be used as a slow ambient motion layer over the game background at 35% opacity. Shapes only.
+
+How it must look in this style: Yellow and white horizontal speed stripes of different lengths.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a seamless tileable texture (1:1, edges must match when repeated) to be used as a slow ambient motion layer over the game background at 35% opacity. Shapes only.
+
+How it must look in this style: Small soft white clouds and tiny stars, evenly scattered.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P03. Mascota (4 poses)
+
+Personaje que anima al costado de la tarjeta del juego, siempre en los bordes y mirando hacia el centro. Cuatro poses: reposo (en loop), festeja (ganador o pareja), decepción (rechazo) y señala (durante la ruleta o la votación).
+
+**T1 Nocturna**
+
+```
+Create a character sheet of the mascot "Voltio", a small friendly robot built from bent neon tubes, with a vinyl-record face, two dot eyes and a smile drawn in cyan light, and pink tube arms. Show it four times at the same size in a row, each with a small label underneath: "reposo" (idle, relaxed, slight smile), "festeja" (jumping, arms up, very happy), "decepcion" (slumped, sad but cute, not dramatic), "señala" (pointing to the right with one arm, excited). Same design, colors and proportions in all four. Thick clean outlines, simple silhouette readable from far away. 16:9.
+
+How it must look in this style: The mascot glows softly like real neon, pink and cyan tubes.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a character sheet of the mascot "Sumi", a chubby round ink-drop character with big expressive manga eyes, a red hachimaki headband and a small brush-tip tail, drawn with thick ink lines and screentone shading. Show it four times at the same size in a row, each with a small label underneath: "reposo" (idle, relaxed, slight smile), "festeja" (jumping, arms up, very happy), "decepcion" (slumped, sad but cute, not dramatic), "señala" (pointing to the right with one arm, excited). Same design, colors and proportions in all four. Thick clean outlines, simple silhouette readable from far away. 16:9.
+
+How it must look in this style: Drawn in black ink with screentone shading and red accents, like a manga sticker.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a character sheet of the mascot "Turbo", a cheerful round racing helmet with goggles, a white visor stripe, a red and yellow paint job, a checkered scarf flying behind it and tiny sneakers. Show it four times at the same size in a row, each with a small label underneath: "reposo" (idle, relaxed, slight smile), "festeja" (jumping, arms up, very happy), "decepcion" (slumped, sad but cute, not dramatic), "señala" (pointing to the right with one arm, excited). Same design, colors and proportions in all four. Thick clean outlines, simple silhouette readable from far away. 16:9.
+
+How it must look in this style: Glossy red and yellow paint with white highlights, motion lines behind it.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a character sheet of the mascot "Nubi", a small smiling white cloud with rosy cheeks, a golden bell on a red ribbon and a tiny yellow propeller on top (not a cat, not a robot). Show it four times at the same size in a row, each with a small label underneath: "reposo" (idle, relaxed, slight smile), "festeja" (jumping, arms up, very happy), "decepcion" (slumped, sad but cute, not dramatic), "señala" (pointing to the right with one arm, excited). Same design, colors and proportions in all four. Thick clean outlines, simple silhouette readable from far away. 16:9.
+
+How it must look in this style: Puffy, soft, with a golden yellow shadow underneath and rosy cheeks.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P03b. Objetos decorativos de los costados
+
+Objetos que se mueven a los costados de la tarjeta del juego. Van en los bordes, nunca encima del contenido.
+
+**T1 Nocturna**
+
+```
+Create a sheet of decorative side objects that will float or animate at the edges of a bar TV screen, next to the game card. Each object separated. 16:9.
+
+How it must look in this style: 1) a cyan lens flare, 2) a pink glowing halo ring, 3) a neon music note, 4) a small neon disco ball.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a sheet of decorative side objects that will float or animate at the edges of a bar TV screen, next to the game card. Each object separated. 16:9.
+
+How it must look in this style: 1) a giant "ドン" sound-effect lettering in black ink with red outline, 2) a patch of screentone dots, 3) an ink splash, 4) a small red paper lantern.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a sheet of decorative side objects that will float or animate at the edges of a bar TV screen, next to the game card. Each object separated. 16:9.
+
+How it must look in this style: 1) a block of speed stripes, 2) a waving checkered flag, 3) a giant skewed yellow "GO!", 4) a vertical race start light with five red lamps.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a sheet of decorative side objects that will float or animate at the edges of a bar TV screen, next to the game card. Each object separated. 16:9.
+
+How it must look in this style: 1) a puffy cloud, 2) a small yellow propeller, 3) a group of twinkling stars, 4) a small red kite.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P04. Impacto
+
+Golpe visual de medio segundo cuando hay ganador, pareja o match. Explota desde el centro hacia afuera; el círculo central queda vacío porque ahí está la foto del ganador.
+
+**T1 Nocturna**
+
+```
+Create a full-screen 16:9 celebration burst as a flat graphic: an explosion radiating from the center outward. Leave an empty circle in the center (about 30% of the height) because the winner's photo goes there.
+
+How it must look in this style: Pink and cyan neon light rays with sparkles and a bloom ring.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a full-screen 16:9 celebration burst as a flat graphic: an explosion radiating from the center outward. Leave an empty circle in the center (about 30% of the height) because the winner's photo goes there.
+
+How it must look in this style: Red concentric shock rings with black ink concentration lines and small "ドン" marks.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a full-screen 16:9 celebration burst as a flat graphic: an explosion radiating from the center outward. Leave an empty circle in the center (about 30% of the height) because the winner's photo goes there.
+
+How it must look in this style: Red and yellow radial speed bursts with checkered fragments flying out.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a full-screen 16:9 celebration burst as a flat graphic: an explosion radiating from the center outward. Leave an empty circle in the center (about 30% of the height) because the winner's photo goes there.
+
+How it must look in this style: A golden starburst with little stars and cloud puffs flying out.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P05. Marco del juego
+
+Tarjeta grande que contiene la ruleta, la votación o los mensajes. Va centrada y mide hasta 1500×840 px. El interior es de un solo color y la decoración va sólo en bordes y esquinas, para poder estirarla (esquinas fijas, lados repetibles).
+
+**T1 Nocturna**
+
+```
+Create the main game card frame of a bar TV game screen: a wide rectangle that will contain a prize wheel, vote options or chat. Interior must be a single flat fill with no decoration; all decoration only on the border and the four corners, so it can be stretched as a 9-slice (fixed corners, repeatable edges). Front view, 16:9.
+
+How it must look in this style: Thin pink neon tube border with soft glow, 22 px rounded corners, dark translucent violet interior #141028, small cyan accents on the corners.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the main game card frame of a bar TV game screen: a wide rectangle that will contain a prize wheel, vote options or chat. Interior must be a single flat fill with no decoration; all decoration only on the border and the four corners, so it can be stretched as a 9-slice (fixed corners, repeatable edges). Front view, 16:9.
+
+How it must look in this style: Thick black ink comic-panel border, cream interior #FFF6DC, hard red offset shadow to the bottom-right, screentone dots in the corners.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the main game card frame of a bar TV game screen: a wide rectangle that will contain a prize wheel, vote options or chat. Interior must be a single flat fill with no decoration; all decoration only on the border and the four corners, so it can be stretched as a 9-slice (fixed corners, repeatable edges). Front view, 16:9.
+
+How it must look in this style: Thick white border with a red outline and a yellow outer ring, near-black interior, checkered corner pieces.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the main game card frame of a bar TV game screen: a wide rectangle that will contain a prize wheel, vote options or chat. Interior must be a single flat fill with no decoration; all decoration only on the border and the four corners, so it can be stretched as a 9-slice (fixed corners, repeatable edges). Front view, 16:9.
+
+How it must look in this style: Thick rounded blue #2BA4D9 border with 48 px radius, white interior, golden yellow shadow underneath, small cloud puffs on the corners.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P06. Títulos de juego (sellos)
+
+Etiqueta que va arriba de la tarjeta y dice qué juego está corriendo; mide unos 64 px de alto. Son cuatro con la misma forma y distinto texto, más una base vacía.
+
+**T1 Nocturna**
+
+```
+Create the game title labels shown above the game card on a bar TV, about 64 px tall at 1080p. Five pieces with the same base shape: four with the texts "RULETA", "VOTACIÓN", "MENSAJE", "MATCH" and one empty base without text. 16:9.
+
+How it must look in this style: Glowing pink neon uppercase lettering with wide spacing inside a thin neon-tube capsule outline.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the game title labels shown above the game card on a bar TV, about 64 px tall at 1080p. Five pieces with the same base shape: four with the texts "ルーレット", "投票", "伝言", "ドン" and one empty base without text. 16:9.
+
+How it must look in this style: Red round hanko stamps rotated -8°, with ink texture and a small black offset shadow.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the game title labels shown above the game card on a bar TV, about 64 px tall at 1080p. Five pieces with the same base shape: four with the texts "GO!", "GRID", "RADIO", "FINISH" and one empty base without text. 16:9.
+
+How it must look in this style: Red plates skewed -12° with heavy white italic text and a yellow offset shadow.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the game title labels shown above the game card on a bar TV, about 64 px tall at 1080p. Five pieces with the same base shape: four with the texts "ポン", "どちら", "もしもし", "大好き" and one empty base without text. 16:9.
+
+How it must look in this style: Golden yellow pills with a red bottom edge like a bell, with navy rounded text.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P08. Ruleta
+
+La rueda que sortea una mesa o una persona. Mide unos 626 px de diámetro (hasta 842 px si hay varias). La cantidad de gajos es variable, por eso se piden las partes por separado y una rueda de ejemplo.
+
+**T1 Nocturna**
+
+```
+Create the parts of a prize wheel for a bar TV game, front view, perfectly circular: 1) the outer rim ring with an empty center, 2) the center hub, 3) the pointer that sits at the top and points down into the wheel, 4) a small ring that frames a participant photo inside each segment, 5) a full assembled example wheel with 8 segments alternating #241C3D and #141028 with thin pink and cyan dividers, each segment with a generic illustrated avatar circle and a short name like "Mesa 3". 16:9.
+
+How it must look in this style: Rim of pink neon with small cyan light bulbs; hub shaped like a glowing vinyl record; pointer a pink glowing triangle.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the parts of a prize wheel for a bar TV game, front view, perfectly circular: 1) the outer rim ring with an empty center, 2) the center hub, 3) the pointer that sits at the top and points down into the wheel, 4) a small ring that frames a participant photo inside each segment, 5) a full assembled example wheel with 8 segments alternating #FFF6DC and #C4A86A with screentone texture, each segment with a generic illustrated avatar circle and a short name like "Mesa 3". 16:9.
+
+How it must look in this style: Rim as a thick black ink circle with red hanko marks; hub a red hanko seal; pointer a black brush-stroke arrow with a red tip.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the parts of a prize wheel for a bar TV game, front view, perfectly circular: 1) the outer rim ring with an empty center, 2) the center hub, 3) the pointer that sits at the top and points down into the wheel, 4) a small ring that frames a participant photo inside each segment, 5) a full assembled example wheel with 8 segments alternating red #E31C23 and yellow #FFD100, each segment with a generic illustrated avatar circle and a short name like "Mesa 3". 16:9.
+
+How it must look in this style: Rim like a racing tire with a yellow ring (no brand text); hub like a chrome hubcap; pointer red with a checkered tip.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the parts of a prize wheel for a bar TV game, front view, perfectly circular: 1) the outer rim ring with an empty center, 2) the center hub, 3) the pointer that sits at the top and points down into the wheel, 4) a small ring that frames a participant photo inside each segment, 5) a full assembled example wheel with 8 segments alternating blue #2BA4D9 and white, each segment with a generic illustrated avatar circle and a short name like "Mesa 3". 16:9.
+
+How it must look in this style: Rim as a puffy blue ring with white cloud puffs and small yellow lights; hub a golden bell; pointer a rounded red drop.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P09. Participante elegido y pareja
+
+Cuando la ruleta para, la persona elegida (o la pareja formada) aparece grande en el centro: foto redonda de unos 150 px y nombre debajo. En pareja van dos fotos con un separador entre ellas.
+
+**T1 Nocturna**
+
+```
+Create the pieces that show the chosen participant in the center of a bar TV after a prize wheel stops: 1) a participant card (stretchable 9-slice) with a round photo ring of 160 px on top and a name bar below, shown with a generic illustrated avatar and the name "Lucía"; 2) the round photo ring alone; 3) a pair separator icon that goes between two photos; 4) a small adornment for the chosen person (crown or similar). 16:9.
+
+How it must look in this style: Dark violet card with 18 px radius and pink neon glow; pink neon photo ring; separator a neon heart; adornment a cyan neon star.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the pieces that show the chosen participant in the center of a bar TV after a prize wheel stops: 1) a participant card (stretchable 9-slice) with a round photo ring of 160 px on top and a name bar below, shown with a generic illustrated avatar and the name "Lucía"; 2) the round photo ring alone; 3) a pair separator icon that goes between two photos; 4) a small adornment for the chosen person (crown or similar). 16:9.
+
+How it must look in this style: Cream card with thick ink border and hard red shadow; ink photo ring with a red stamp ring; separator a red ink heart with action lines; adornment a small ink-drawn crown.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the pieces that show the chosen participant in the center of a bar TV after a prize wheel stops: 1) a participant card (stretchable 9-slice) with a round photo ring of 160 px on top and a name bar below, shown with a generic illustrated avatar and the name "Lucía"; 2) the round photo ring alone; 3) a pair separator icon that goes between two photos; 4) a small adornment for the chosen person (crown or similar). 16:9.
+
+How it must look in this style: Black card with white border and red outline, name in yellow heavy italic; photo ring like a tire; separator a checkered plus sign; adornment a golden laurel.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the pieces that show the chosen participant in the center of a bar TV after a prize wheel stops: 1) a participant card (stretchable 9-slice) with a round photo ring of 160 px on top and a name bar below, shown with a generic illustrated avatar and the name "Lucía"; 2) the round photo ring alone; 3) a pair separator icon that goes between two photos; 4) a small adornment for the chosen person (crown or similar). 16:9.
+
+How it must look in this style: White card with 36 px radius, blue border and yellow shadow; puffy blue photo ring; separator a pink heart-shaped cloud; adornment a crown made of golden bells.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P10. Tira de parejas formadas
+
+Historial de parejas de la ronda, en fila abajo de la pantalla. Cada una es una píldora de unos 44 px de alto con dos fotitos y los nombres. También se pide la estela que deja la pareja al volar del centro a la tira.
+
+**T1 Nocturna**
+
+```
+Create: 1) a small horizontal pill (stretchable 9-slice, about 44 px tall at 1080p) for a strip of formed pairs at the bottom of a bar TV screen, with two tiny round avatar slots side by side and space for short names; show it empty and with the names "Lucía + Martín"; 2) a motion trail graphic left behind when a pair flies from the center of the screen to the strip. 16:9.
+
+How it must look in this style: Dark pill with a thin pink neon outline; trail a pink light streak.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create: 1) a small horizontal pill (stretchable 9-slice, about 44 px tall at 1080p) for a strip of formed pairs at the bottom of a bar TV screen, with two tiny round avatar slots side by side and space for short names; show it empty and with the names "Lucía + Martín"; 2) a motion trail graphic left behind when a pair flies from the center of the screen to the strip. 16:9.
+
+How it must look in this style: Cream pill with black ink border and red shadow; trail black ink brush speed lines.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create: 1) a small horizontal pill (stretchable 9-slice, about 44 px tall at 1080p) for a strip of formed pairs at the bottom of a bar TV screen, with two tiny round avatar slots side by side and space for short names; show it empty and with the names "Lucía + Martín"; 2) a motion trail graphic left behind when a pair flies from the center of the screen to the strip. 16:9.
+
+How it must look in this style: Black pill with white border, red outline and a checkered end cap; trail red and yellow skid marks.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create: 1) a small horizontal pill (stretchable 9-slice, about 44 px tall at 1080p) for a strip of formed pairs at the bottom of a bar TV screen, with two tiny round avatar slots side by side and space for short names; show it empty and with the names "Lucía + Martín"; 2) a motion trail graphic left behind when a pair flies from the center of the screen to the strip. 16:9.
+
+How it must look in this style: White pill with blue border and yellow shadow; trail a line of cloud puffs.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P11. Rechazo
+
+Cuando la persona elegida rechaza, su tarjeta se cae. Se pide el efecto que va encima de la tarjeta y una etiqueta "NO". Tiene que ser simpático, no triste.
+
+**T1 Nocturna**
+
+```
+Create: 1) a rejection effect drawn over a participant card (flat graphic, shown over an empty card silhouette), used when a chosen participant declines; 2) a "NO" label. Playful and funny, not sad or aggressive. 16:9.
+
+How it must look in this style: A neon tube flickering off and cracking, dim pink; the "NO" in broken flickering neon.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create: 1) a rejection effect drawn over a participant card (flat graphic, shown over an empty card silhouette), used when a chosen participant declines; 2) a "NO" label. Playful and funny, not sad or aggressive. 16:9.
+
+How it must look in this style: A black ink splat with a big red ×; the "NO" as a red hanko stamp.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create: 1) a rejection effect drawn over a participant card (flat graphic, shown over an empty card silhouette), used when a chosen participant declines; 2) a "NO" label. Playful and funny, not sad or aggressive. 16:9.
+
+How it must look in this style: A puff of tire smoke and a black flag; the "NO" on a black skewed plate with white text.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create: 1) a rejection effect drawn over a participant card (flat graphic, shown over an empty card silhouette), used when a chosen participant declines; 2) a "NO" label. Playful and funny, not sad or aggressive. 16:9.
+
+How it must look in this style: A small gray rain cloud dripping; the "NO" inside a gray cloud pill.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P12. Confeti
+
+Partículas que caen cuando hay festejo. Cada forma, de un solo color, para después teñirlas con la paleta.
+
+**T1 Nocturna**
+
+```
+Create a sheet of confetti pieces for a celebration on a bar TV: three shapes, five variants of each (different angles), each piece large and a single flat color from the palette, all separated. 16:9.
+
+How it must look in this style: Shapes: thin neon strips, glowing dots, four-point sparkles.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a sheet of confetti pieces for a celebration on a bar TV: three shapes, five variants of each (different angles), each piece large and a single flat color from the palette, all separated. 16:9.
+
+How it must look in this style: Shapes: sakura petals, tiny round red stamps, ink splats.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a sheet of confetti pieces for a celebration on a bar TV: three shapes, five variants of each (different angles), each piece large and a single flat color from the palette, all separated. 16:9.
+
+How it must look in this style: Shapes: small checkered flags, long thin speed streaks, sparks.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a sheet of confetti pieces for a celebration on a bar TV: three shapes, five variants of each (different angles), each piece large and a single flat color from the palette, all separated. 16:9.
+
+How it must look in this style: Shapes: little clouds, five-point stars, small golden bells.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P13. Cierre de la ronda
+
+Al terminar una ronda de parejas se muestra un resumen en grilla (hasta 4×2). Se piden el título y una celda.
+
+**T1 Nocturna**
+
+```
+Create: 1) a title banner for the end-of-round summary with the text "PAREJAS DE LA NOCHE"; 2) one small grid cell card (stretchable 9-slice) with two round avatar slots side by side and two short names below ("Ana", "Juan"). 16:9.
+
+How it must look in this style: The title is a neon sign; the cell is a dark card with thin pink neon outline.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create: 1) a title banner for the end-of-round summary with the text "完" with the subtitle "Parejas de la noche"; 2) one small grid cell card (stretchable 9-slice) with two round avatar slots side by side and two short names below ("Ana", "Juan"). 16:9.
+
+How it must look in this style: The title is a brush-lettered ink banner on a paper scroll; the cell an ink-bordered cream panel.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create: 1) a title banner for the end-of-round summary with the text "FINISH" with the subtitle "Parejas de la noche"; 2) one small grid cell card (stretchable 9-slice) with two round avatar slots side by side and two short names below ("Ana", "Juan"). 16:9.
+
+How it must look in this style: The title is a checkered finish banner; the cell a black card with white border and red outline.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create: 1) a title banner for the end-of-round summary with the text "¡Listo!" with the subtitle "Parejas de la noche"; 2) one small grid cell card (stretchable 9-slice) with two round avatar slots side by side and two short names below ("Ana", "Juan"). 16:9.
+
+How it must look in this style: The title is a cloud banner with golden bells; the cell a white puffy card with blue border.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P14. Votación de la próxima canción
+
+El público vota desde el teléfono qué canción va después. Hay de 2 a 4 opciones, cada una con portada cuadrada (unos 173 px) y título. Estados: votando (con barra de votos) y ganadora (más grande, borde fuerte, insignia). Lleva cuenta regresiva.
+
+**T1 Nocturna**
+
+```
+Create the song-voting pieces for a bar TV: 1) an option card with a square album-cover slot and a title bar below, normal state, with an invented album cover (no real artists) and the fictional title "Noche de Verano"; 2) the same card in winner state: bigger, stronger border and glow; 3) a winner badge; 4) a horizontal vote bar, shown empty and 60% filled; 5) a countdown ring. 16:9.
+
+How it must look in this style: Dark cards with thin cyan neon outline; the winner gets a thicker pink neon border and bloom; badge a neon crown; bar filled with cyan light; countdown ring in pink neon.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the song-voting pieces for a bar TV: 1) an option card with a square album-cover slot and a title bar below, normal state, with an invented album cover (no real artists) and the fictional title "Noche de Verano"; 2) the same card in winner state: bigger, stronger border and glow; 3) a winner badge; 4) a horizontal vote bar, shown empty and 60% filled; 5) a countdown ring. 16:9.
+
+How it must look in this style: Cream cards with ink borders; the winner gets a red border, red hard shadow and a red "勝" stamp badge; bar filled with red screentone; countdown ring a brush-stroke circle.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the song-voting pieces for a bar TV: 1) an option card with a square album-cover slot and a title bar below, normal state, with an invented album cover (no real artists) and the fictional title "Noche de Verano"; 2) the same card in winner state: bigger, stronger border and glow; 3) a winner badge; 4) a horizontal vote bar, shown empty and 60% filled; 5) a countdown ring. 16:9.
+
+How it must look in this style: Black cards with white border; the winner gets a yellow ring and a checkered flag badge; bar like a red-to-yellow rev gauge; countdown ring like a stopwatch.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the song-voting pieces for a bar TV: 1) an option card with a square album-cover slot and a title bar below, normal state, with an invented album cover (no real artists) and the fictional title "Noche de Verano"; 2) the same card in winner state: bigger, stronger border and glow; 3) a winner badge; 4) a horizontal vote bar, shown empty and 60% filled; 5) a countdown ring. 16:9.
+
+How it must look in this style: White puffy cards with blue border; the winner gets a yellow glow and a star badge; bar a blue fill with a cloud at the tip; countdown ring a smiling sun.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P15. Globo de dedicatoria
+
+Globo de texto para una dedicatoria o un mensaje destacado dentro de la tarjeta, de 1 a 3 líneas y hasta 920 px de ancho. El cuerpo se estira y la colita va aparte para ponerla a la izquierda o a la derecha.
+
+**T1 Nocturna**
+
+```
+Create a speech balloon for a dedication message on a bar TV (1 to 3 lines of text, up to 920 px wide): 1) the empty balloon body as a stretchable 9-slice, 2) its tail as a separate piece, shown on the left and on the right, 3) one example with the text "Para Caro, ¡feliz cumple!". 16:9.
+
+How it must look in this style: Translucent cyan glass balloon with a cyan neon edge glow and near-white text.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create a speech balloon for a dedication message on a bar TV (1 to 3 lines of text, up to 920 px wide): 1) the empty balloon body as a stretchable 9-slice, 2) its tail as a separate piece, shown on the left and on the right, 3) one example with the text "Para Caro, ¡feliz cumple!". 16:9.
+
+How it must look in this style: Classic manga fukidashi: white, 3 px black ink border, hard black offset shadow, sharp tail.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create a speech balloon for a dedication message on a bar TV (1 to 3 lines of text, up to 920 px wide): 1) the empty balloon body as a stretchable 9-slice, 2) its tail as a separate piece, shown on the left and on the right, 3) one example with the text "Para Caro, ¡feliz cumple!". 16:9.
+
+How it must look in this style: White balloon with a thick yellow border, skewed -6°, red offset shadow, like a radio callout.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create a speech balloon for a dedication message on a bar TV (1 to 3 lines of text, up to 920 px wide): 1) the empty balloon body as a stretchable 9-slice, 2) its tail as a separate piece, shown on the left and on the right, 3) one example with the text "Para Caro, ¡feliz cumple!". 16:9.
+
+How it must look in this style: Round puffy cloud-like balloon with blue border and yellow shadow, navy text.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P16. Chat en pantalla
+
+Mensajes entre mesas, en un riel a la derecha de 350 a 420 px de ancho. Burbuja entrante (colita a la izquierda), saliente (colita a la derecha), anillo para el avatar (48 px), insignia "NUEVO" y, opcional, un fondo para el riel.
+
+**T1 Nocturna**
+
+```
+Create the on-screen chat pieces for messages between bar tables, shown in a side panel 350 to 420 px wide on a bar TV: 1) incoming bubble (tail on the left), 2) outgoing bubble (tail on the right), both stretchable 9-slice; show one example of each with a 48 px round avatar, the author "Mesa 4", the text "¿Bailamos?" and the time "23:41"; 3) the round avatar ring alone; 4) a "NUEVO" badge; 5) an optional tall panel background for the chat column. 16:9.
+
+How it must look in this style: Incoming bubble dark violet with a cyan edge; outgoing bubble a glowing pink gradient with white text; badge in pink neon; panel a dark glass column.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the on-screen chat pieces for messages between bar tables, shown in a side panel 350 to 420 px wide on a bar TV: 1) incoming bubble (tail on the left), 2) outgoing bubble (tail on the right), both stretchable 9-slice; show one example of each with a 48 px round avatar, the author "Mesa 4", the text "¿Bailamos?" and the time "23:41"; 3) the round avatar ring alone; 4) a "NUEVO" badge; 5) an optional tall panel background for the chat column. 16:9.
+
+How it must look in this style: Incoming a white fukidashi with ink border; outgoing cream with red hard shadow; badge a red stamp; panel a vertical manga page strip.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the on-screen chat pieces for messages between bar tables, shown in a side panel 350 to 420 px wide on a bar TV: 1) incoming bubble (tail on the left), 2) outgoing bubble (tail on the right), both stretchable 9-slice; show one example of each with a 48 px round avatar, the author "Mesa 4", the text "¿Bailamos?" and the time "23:41"; 3) the round avatar ring alone; 4) a "NUEVO" badge; 5) an optional tall panel background for the chat column. 16:9.
+
+How it must look in this style: Incoming white with black text and red outline; outgoing red with white italic text; badge a yellow skewed plate; panel like a pit-radio display.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the on-screen chat pieces for messages between bar tables, shown in a side panel 350 to 420 px wide on a bar TV: 1) incoming bubble (tail on the left), 2) outgoing bubble (tail on the right), both stretchable 9-slice; show one example of each with a 48 px round avatar, the author "Mesa 4", the text "¿Bailamos?" and the time "23:41"; 3) the round avatar ring alone; 4) a "NUEVO" badge; 5) an optional tall panel background for the chat column. 16:9.
+
+How it must look in this style: Incoming a white cloud bubble; outgoing blue with white text; badge a yellow star; panel a soft sky column with clouds.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P17. Match
+
+Aviso de que dos personas o mesas se eligieron mutuamente. Un chip arriba de la pantalla (unos 64 px de alto) y una ilustración de las dos fotos juntándose.
+
+**T1 Nocturna**
+
+```
+Create the match pieces for a bar TV (two people chose each other): 1) a top chip pill about 64 px tall with two round avatar slots joined by the match icon (stretchable 9-slice); 2) the match icon alone; 3) an illustration of two round generic avatars coming together with a celebration. 16:9.
+
+How it must look in this style: A pink and a cyan neon tube meeting to form a heart; chip dark with neon outline.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the match pieces for a bar TV (two people chose each other): 1) a top chip pill about 64 px tall with two round avatar slots joined by the match icon (stretchable 9-slice); 2) the match icon alone; 3) an illustration of two round generic avatars coming together with a celebration. 16:9.
+
+How it must look in this style: A big "ドン" with the two avatars bumping together and a red ink heart; chip cream with ink border.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the match pieces for a bar TV (two people chose each other): 1) a top chip pill about 64 px tall with two round avatar slots joined by the match icon (stretchable 9-slice); 2) the match icon alone; 3) an illustration of two round generic avatars coming together with a celebration. 16:9.
+
+How it must look in this style: Two racing helmets crossing a checkered finish line side by side; chip black with white border and red outline.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the match pieces for a bar TV (two people chose each other): 1) a top chip pill about 64 px tall with two round avatar slots joined by the match icon (stretchable 9-slice); 2) the match icon alone; 3) an illustration of two round generic avatars coming together with a celebration. 16:9.
+
+How it must look in this style: Two little clouds merging into a heart-shaped cloud with stars; chip white with blue border.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P19. Franja superior y placa del logo
+
+Franja de 86 px arriba de la pantalla, donde va el chip de match y el logo del bar (hasta 448×70 px). Tiene que ser sutil.
+
+**T1 Nocturna**
+
+```
+Create: 1) a subtle top strip for a bar TV screen (1920x86 proportion) that will hold a match chip in the center; 2) a plate to hold a bar's logo (up to 448x70 proportion), shown empty and with the fictional logo text "BAR LUNA". 16:9 sheet.
+
+How it must look in this style: Thin dark band with a pink neon line underneath; plate a neon-outlined rounded rectangle.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create: 1) a subtle top strip for a bar TV screen (1920x86 proportion) that will hold a match chip in the center; 2) a plate to hold a bar's logo (up to 448x70 proportion), shown empty and with the fictional logo text "BAR LUNA". 16:9 sheet.
+
+How it must look in this style: Ink-bordered band with screentone; plate a cream paper tag with a red stamp in one corner.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create: 1) a subtle top strip for a bar TV screen (1920x86 proportion) that will hold a match chip in the center; 2) a plate to hold a bar's logo (up to 448x70 proportion), shown empty and with the fictional logo text "BAR LUNA". 16:9 sheet.
+
+How it must look in this style: Thin checkered band; plate like a race sponsor plate, white with red outline.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create: 1) a subtle top strip for a bar TV screen (1920x86 proportion) that will hold a match chip in the center; 2) a plate to hold a bar's logo (up to 448x70 proportion), shown empty and with the fictional logo text "BAR LUNA". 16:9 sheet.
+
+How it must look in this style: Band of small clouds; plate a white pill with blue border and yellow shadow.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+### P20. Pantalla "Ahora suena" (piezas)
+
+Cuando no hay juego, la pantalla muestra la canción que suena. Se piden el marco de la portada (480×480), la etiqueta "AHORA SUENA", un globito para la dedicatoria y unas barras de ecualizador. La pantalla completa se pide en L2.
+
+**T1 Nocturna**
+
+```
+Create the pieces of the "now playing" idle screen of a bar TV: 1) a frame for a square album cover (480x480), shown with an invented cover; 2) the label "AHORA SUENA"; 3) a small dedication balloon with the text "Dedicado a la Mesa 12"; 4) a set of equalizer bars. 16:9.
+
+How it must look in this style: Cover framed as a glowing vinyl sleeve with a record peeking out; label a pink neon sign; equalizer bars in cyan neon.
+
+NOCTURNA style: an elegant late-night bar lit by neon. Violet-black background #1A1430, panels #241C3D and #141028, hot pink neon #FF3D8B as the main accent, electric cyan #22E0E6 as the secondary accent, small touches of lime #9BE85A and amber #FFB648, near-white text #F5F6FA. Bold geometric sans-serif, uppercase with wide letter spacing. Thin glowing neon-tube outlines with soft bloom.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T2 Manga**
+
+```
+Create the pieces of the "now playing" idle screen of a bar TV: 1) a frame for a square album cover (480x480), shown with an invented cover; 2) the label "AHORA SUENA"; 3) a small dedication balloon with the text "Dedicado a la Mesa 12"; 4) a set of equalizer bars. 16:9.
+
+How it must look in this style: Cover framed as a manga panel with ink border and speed lines; label a hand-lettered ink banner; equalizer bars as ink brush strokes.
+
+MANGA style: a printed Japanese manga page. Aged cream paper #E8D4A8, light panels #FFF6DC, toasted panels #C4A86A, thick black ink lines #111111, hanko-stamp red #C41E3A as the only accent. Screentone dot patterns, speed lines, hard red offset shadows, comic panel borders. Heavy rounded Japanese-style display lettering. Do not copy any existing manga or anime.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T3 Meteoro**
+
+```
+Create the pieces of the "now playing" idle screen of a bar TV: 1) a frame for a square album cover (480x480), shown with an invented cover; 2) the label "AHORA SUENA"; 3) a small dedication balloon with the text "Dedicado a la Mesa 12"; 4) a set of equalizer bars. 16:9.
+
+How it must look in this style: Cover inside a speedometer dial; label on a red skewed plate; equalizer like tachometer LED segments.
+
+METEORO style: a retro 1960s motor-racing poster. Dark asphalt #1A1A1A, racing red #E31C23 and signal yellow #FFD100 as main colors, white #FFFFFF outlines. Checkered-flag patterns and speed stripes. Everything leans forward: italic, skewed shapes, thick white borders with red outlines and yellow rings. Condensed heavy italic uppercase font. No cars, logos or characters from any existing anime or brand.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+**T4 Cielo (reemplaza a Doraemon)**
+
+```
+Create the pieces of the "now playing" idle screen of a bar TV: 1) a frame for a square album cover (480x480), shown with an invented cover; 2) the label "AHORA SUENA"; 3) a small dedication balloon with the text "Dedicado a la Mesa 12"; 4) a set of equalizer bars. 16:9.
+
+How it must look in this style: Cover inside a puffy cloud frame with a small propeller on top; label a yellow bell pill; equalizer as bouncing little clouds.
+
+CIELO style: a sunny children's-cartoon sky. Sky blue #7EC8E8, bright blue #2BA4D9 and white panels, navy text #1A4A73, red #E31C23 accents and golden yellow #F5C518 soft shadows under every shape. Everything is round, puffy and bouncy: thick rounded blue borders, pill shapes, fluffy clouds, twinkling stars. Rounded friendly display font. Nothing may resemble Doraemon or any existing cartoon: no blue cat, no robot cat.
+
+Background: flat solid pure green #00FF00, no shadows or texture on the green, every piece well separated with empty space around it, nothing touching the image edges.
+
+Rules: no third-party characters, logos or brands; no photos of real people (any participant is a generic illustrated avatar inside a circle); high contrast, readable on a TV seen from 10 meters; no lines thinner than 4 px; crisp clean edges; no extra text except the one requested.
+```
+
+---
+
+## Láminas completas (para aprobar el conjunto)
+
+Se piden en el mismo chat de cada plantilla, después del ancla.
+
+### L1. Láminas de momentos, todas 16:9
+
+En todas las láminas la pantalla tiene la misma estructura: fondo de la plantilla; franja superior fina con el logo de un bar ficticio "BAR LUNA" a la izquierda; contenido centrado; chat a la derecha cuando corresponde.
+
+**L1a. Ruleta girando**
+
+```
+Create a full 16:9 TV screen mockup in the established style: the "wheel" game in progress. Top strip with a small fictional bar logo "BAR LUNA" on the left. Center: the big game card with the wheel title label on top and the prize wheel spinning (motion blur on the segments), 10 segments with generic illustrated avatar circles and names like "Mesa 3", "Mesa 7". The mascot stands at the bottom left, pose "señala", pointing at the wheel. Light ambient effect from the style. Nothing covers the wheel or the pointer.
+```
+
+**L1b. Pareja formada**
+
+```
+Same screen, next moment: the wheel stopped. Center card shows the formed pair: two big round avatar photos side by side with the style's pair separator between them and the names "Lucía" and "Martín" under them. Celebration impact effect and confetti of the style falling. At the bottom, a strip of small pills with three previously formed pairs. The mascot at the bottom left in pose "festeja".
+```
+
+**L1c. Votación con ganador**
+
+```
+Same style, new screen: song voting result. Center card with the vote title label and the question "¿Qué suena después?". Three option cards in a row, each with an invented album cover illustration (no real artists) and a fictional song title under it, plus a vote bar. The middle option is the winner: bigger, with the winner border and badge; the other two dimmed. Confetti. Mascot at the bottom left in pose "festeja".
+```
+
+**L1d. Chat destacado con dedicatoria**
+
+```
+Same style, new screen: table-to-table messages. On the right side, a tall chat panel with 5 bubbles alternating incoming (left) and outgoing (right), each with a small round avatar, author ("Mesa 4", "Mesa 9"), short friendly Spanish messages and a time; the newest bubble has the "NUEVO" badge. In the center, the game card with the message title label, the route "MESA 4 → MESA 9" and a big dedication balloon: "Para Caro, ¡feliz cumple! 🎂". Mascot at the bottom left in pose "reposo".
+```
+
+**L1e. Rechazo**
+
+```
+Same style, new screen: the wheel picked "Mesa 5" but they declined. Center: the participant card falling away with the style's rejection effect and a "NO" / "PASO" label in the style's lettering. Mascot at the bottom left in pose "decepcion". Keep it playful, not sad.
+```
+
+**L1f. Cierre de la ronda**
+
+```
+Same style, new screen: end of the pairing round. Center card titled in the style's lettering ("Parejas de la noche" or the style's equivalent) with a 4x2 grid of small pair cards, each with two round avatars and names. Light confetti. Mascot in pose "festeja".
+```
+
+### L2. Pantalla de reposo "Ahora" completa
+
+```
+Same style, new 16:9 screen with no game: "now playing". Background: a big blurred version of an invented album cover with the style's overlay gradient. Left: the album cover framed in the style (vinyl / manga panel / speedometer / cloud frame, as fits the style). Right: the label "AHORA SUENA" in the style's lettering, a big fictional song title "Luces de Neón", artist "Los Satélites", and a small dedication balloon "Dedicado a la Mesa 12". Small animated-looking equalizer bars. Fictional bar logo "BAR LUNA" in the top strip. No real artists or covers.
+```
+
+### L3. Prueba de legibilidad
+
+```
+Take the "wheel spinning" screen and the "chat with dedication" screen you made and show them small, side by side, as they would look on a TV seen from 10 meters in a dark bar. Point out anything that becomes unreadable and propose the fix.
+```
+
+---
+
+---
+
+## Qué me tenés que pasar
+
+Pasame primero, de cada plantilla, el ancla y `P05` para aprobarlos. Después, el resto de las piezas con el nombre `<plantilla>-<código>.png`. Las piezas planas (P05, P06, P09, P10, P14, P15, P16, P17, P19) se pueden vectorizar en Recraft; yo hago los recortes 9-slice, las animaciones y la integración en `display.js`.
