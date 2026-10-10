@@ -1158,21 +1158,64 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   z-index: 20;
   pointer-events: none;
 }
-.demo-mas {
+.demo-riel {
   pointer-events: auto;
   position: absolute;
-  top: calc(10px + env(safe-area-inset-top, 0px));
-  right: 10px;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(14, 14, 18, 0.62);
-  color: #f5f6fa;
-  font: 700 22px/1 system-ui, sans-serif;
-  letter-spacing: 0.08em;
+  top: calc(8px + env(safe-area-inset-top, 0px));
+  left: calc(6px + env(safe-area-inset-left, 0px));
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  opacity: .45;
+  transition: opacity .2s;
+}
+.demo-riel::-webkit-scrollbar { display: none; }
+.demo-riel > :first-child { margin-top: auto; }
+.demo-riel > :last-child { margin-bottom: auto; }
+@media (max-height: 480px) {
+  .demo-riel { gap: 2px; }
+  .demo-riel button { width: 26px; height: 26px; border-radius: 7px; }
+  .demo-riel-sep { display: none; }
+  .demo-aviso { left: 46px; }
+}
+.demo-riel:hover,
+.demo-riel:focus-within,
+.demo-capas.is-tocado .demo-riel { opacity: 1; }
+.demo-riel button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(30px, 4.4vh, 42px);
+  height: clamp(30px, 4.4vh, 42px);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 10px;
+  background: rgba(14, 14, 18, .72);
+  color: #c9c6d6;
   cursor: pointer;
 }
+.demo-riel button svg { width: 58%; height: 58%; }
+.demo-riel button b { font: 800 11px/1 system-ui, sans-serif; letter-spacing: .04em; }
+.demo-riel button.is-on { background: #c5d83b; border-color: #c5d83b; color: #111927; }
+.demo-riel-sep { flex: none; height: 1px; margin: 3px 4px; background: rgba(255, 255, 255, .2); }
+.demo-aviso {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: calc(clamp(30px, 4.4vh, 42px) + 18px);
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: rgba(14, 14, 18, .88);
+  color: #f5f6fa;
+  font: 600 13px/1.2 system-ui, sans-serif;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .2s, transform .2s;
+}
+.demo-aviso.is-on { opacity: 1; transform: none; }
 .demo-dock {
   pointer-events: auto;
   position: absolute;
@@ -1294,20 +1337,8 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 .demo-dialog-acciones button { background: #ff3d8b; border-color: #ff3d8b; color: #1a0a12; }
 .demo-dialog-pieles button.is-on,
 .demo-dialog-chips button.is-on { background: #c5d83b; color: #111927; border-color: #c5d83b; }
-.demo-sms-bar {
-  pointer-events: auto;
-  position: absolute;
-  left: 50%;
-  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
-  z-index: 21;
-}
-.demo-capas.is-dialogo .demo-sms-bar,
-.demo-capas.is-dock .demo-sms-bar { display: none; }
-.demo-sms-users,
-.demo-sms-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-.demo-sms-users button,
-.demo-sms-bar button {
+.demo-sms-users { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.demo-sms-users button {
   pointer-events: auto;
   display: grid;
   justify-items: center;
@@ -1321,8 +1352,7 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   font: 700 13px system-ui, sans-serif;
   cursor: pointer;
 }
-.demo-sms-users img,
-.demo-sms-bar img {
+.demo-sms-users img {
   width: 52px;
   height: 52px;
   border-radius: 50%;

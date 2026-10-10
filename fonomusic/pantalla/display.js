@@ -610,7 +610,7 @@ function pintarCapas(capas, dedicatorias, avatares) {
   const escena = document.getElementById('escena');
   const escenario = escenarioAhora();
   const lista = capas || [];
-  const { piel, fx, ajustes } = fxDeCapa(lista[0] || {});
+  const { piel, fx, ajustes } = fxDeCapa(lista[0] || { piel: pielSinCapas });
   const ruleta = lista.find((item) => item.tipo === 'ruleta');
   const pilaN = Array.isArray(ruleta?.pila) ? ruleta.pila.length : 0;
   const ruedasVivas = Array.isArray(ruleta?.ruedas) ? ruleta.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0).length : 0;
@@ -1100,6 +1100,7 @@ const smsFraseIdx = { p01: 0, p02: 0 };
 const capasDemo = new Map();
 let dedicasDemo = [];
 let demoPiel = 'nocturna';
+let pielSinCapas = '';
 const demoAjustes = { cantidad: 2, rechazo: false, claseVoto: 'parejas', desde: 'Mesa 2', hacia: 'Mesa 7', texto: '¿Bailamos la próxima?', pesoMensaje: 'accesorio', fondo: 'actual' };
 let demoDialogoTipo = '';
 let demoTanda = 0;
@@ -1118,7 +1119,7 @@ function refrescarPantalla() {
   }
   for (const [tipo, capa] of capasDemo) porTipo.set(tipo, capa);
   pintarCapas([...porTipo.values()], [...dedicasServidor, ...dedicasDemo], [...avataresServidor, ...JUGADORES_DEMO]);
-  pintarBarraSmsDemo();
+  pintarRielDemo();
 }
 
 function cancelarDemo() {
@@ -1275,23 +1276,6 @@ function htmlBotonesSms() {
   )).join('') + '</div>';
 }
 
-function pintarBarraSmsDemo() {
-  const root = document.getElementById('demo-capas');
-  if (!root) return;
-  let barra = document.getElementById('demo-sms-bar');
-  if (!capasDemo.has('mensaje')) {
-    if (barra) barra.remove();
-    return;
-  }
-  if (!barra) {
-    barra = document.createElement('div');
-    barra.id = 'demo-sms-bar';
-    barra.className = 'demo-sms-bar';
-    root.appendChild(barra);
-  }
-  barra.innerHTML = htmlBotonesSms();
-}
-
 function demoSmsUsuario(userId) {
   const user = USUARIOS_SMS.find((item) => item.id === userId) || USUARIOS_SMS[0];
   const escrito = String(demoAjustes.texto || '').trim();
@@ -1362,6 +1346,138 @@ async function correrDemo(tipo) {
   await demoRuleta(id, tipo === 'rechazo');
 }
 
+const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon'];
+let demoAvisoTimer = 0;
+let demoSmsTurno = 0;
+
+function avisoDemo(texto) {
+  const aviso = document.getElementById('demo-aviso');
+  if (!aviso) return;
+  aviso.textContent = texto;
+  aviso.classList.add('is-on');
+  clearTimeout(demoAvisoTimer);
+  demoAvisoTimer = setTimeout(() => aviso.classList.remove('is-on'), 1600);
+}
+
+function cambiarPielDemo(id) {
+  demoPiel = id;
+  pielSinCapas = id;
+  for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, piel: demoPiel, ajustes: ajustesDe(demoPiel) });
+  refrescarPantalla();
+}
+
+function botonesRielDemo() {
+  const ajustes = ajustesDe(demoPiel);
+  const piel = pielDe(demoPiel);
+  const mascota = Boolean(piel.mascota) && ajustes.efectos && ajustes.objetos.mascota !== false;
+  return [
+    { id: 'ruleta', nombre: 'Ruleta', on: capasDemo.has('ruleta') },
+    { id: 'votacion', nombre: 'Votación', on: capasDemo.has('votacion') },
+    { id: 'mensaje', nombre: 'Chat', on: capasDemo.has('mensaje') },
+    ...(capasDemo.has('mensaje') ? [{ id: 'sms', nombre: 'Nuevo mensaje', on: false }] : []),
+    { id: 'match', nombre: 'Match', on: capasDemo.has('match') },
+    { id: 'mensajes', nombre: 'Dedicatorias', on: dedicasDemo.length > 0 },
+    { sep: true },
+    { id: 'piel', nombre: `Piel: ${piel.id}`, on: false, texto: piel.id.slice(0, 2).toUpperCase() },
+    { id: 'fondo', nombre: 'Fondo de la piel', on: demoAjustes.fondo === 'juego' },
+    ...(piel.mascota ? [{ id: 'mascota', nombre: 'Mascota', on: mascota }] : []),
+    { id: 'efectos', nombre: 'Efectos', on: ajustes.efectos },
+    { id: 'sonido', nombre: 'Sonido', on: ajustes.sonido },
+    { id: 'grilla', nombre: 'Grilla', on: grillaVisible() },
+    { sep: true },
+    { id: 'ajustes', nombre: 'Ajustes', on: false },
+  ];
+}
+
+function pintarRielDemo() {
+  const riel = document.getElementById('demo-riel');
+  if (!riel) return;
+  const html = botonesRielDemo().map((boton) => (boton.sep
+    ? '<i class="demo-riel-sep"></i>'
+    : `<button type="button" data-riel="${boton.id}" class="${boton.on ? 'is-on' : ''}" aria-pressed="${boton.on}" aria-label="${escapar(boton.nombre)}" title="${escapar(boton.nombre)}">`
+      + (boton.texto ? `<b>${escapar(boton.texto)}</b>` : DEMO_ICONOS[boton.id])
+      + '</button>'
+  )).join('');
+  // La pantalla se refresca muchas veces por segundo durante la ruleta: redibujar igual haría perder toques.
+  if (riel.dataset.html === html) return;
+  riel.dataset.html = html;
+  riel.innerHTML = html;
+}
+
+let demoTocadoTimer = 0;
+
+function accionRielDemo(id) {
+  prepararSonido();
+  const raiz = document.getElementById('demo-capas');
+  if (raiz) {
+    raiz.classList.add('is-tocado');
+    clearTimeout(demoTocadoTimer);
+    demoTocadoTimer = setTimeout(() => raiz.classList.remove('is-tocado'), 4000);
+  }
+  const ajustes = ajustesDe(demoPiel);
+  const estado = (encendido) => (encendido ? 'sí' : 'no');
+  if (id === 'ruleta' || id === 'votacion') {
+    const estaba = capasDemo.has(id);
+    cancelarDemo();
+    capasDemo.delete('ruleta');
+    capasDemo.delete('votacion');
+    refrescarPantalla();
+    if (!estaba) void correrDemo(id === 'ruleta' && demoAjustes.rechazo ? 'rechazo' : id);
+    avisoDemo(`${id === 'ruleta' ? 'Ruleta' : 'Votación'}: ${estado(!estaba)}`);
+  } else if (id === 'mensaje') {
+    const estaba = capasDemo.has('mensaje');
+    if (estaba) {
+      capasDemo.delete('mensaje');
+      refrescarPantalla();
+    } else {
+      demoMensaje();
+      demoSmsUsuario('p01');
+      demoSmsUsuario('p02');
+    }
+    avisoDemo(`Chat: ${estado(!estaba)}`);
+  } else if (id === 'sms') {
+    demoSmsTurno += 1;
+    demoSmsUsuario(demoSmsTurno % 2 ? 'p01' : 'p02');
+    avisoDemo('Mensaje enviado');
+  } else if (id === 'match') {
+    const estaba = capasDemo.has('match');
+    if (estaba) {
+      capasDemo.delete('match');
+      refrescarPantalla();
+    } else {
+      ponerCapaDemo({ tipo: 'match', desde: JUGADORES_DEMO[0].titulo, hacia: JUGADORES_DEMO[1].titulo, texto: 'Se gustaron', quedaMs: 12000 });
+    }
+    avisoDemo(`Match: ${estado(!estaba)}`);
+  } else if (id === 'mensajes') {
+    void correrDemo('mensajes');
+    avisoDemo(`Dedicatorias: ${estado(dedicasDemo.length > 0)}`);
+  } else if (id === 'piel') {
+    cambiarPielDemo(PIELES_DEMO[(PIELES_DEMO.indexOf(demoPiel) + 1) % PIELES_DEMO.length]);
+    avisoDemo(`Piel: ${demoPiel}`);
+  } else if (id === 'fondo') {
+    demoAjustes.fondo = demoAjustes.fondo === 'juego' ? 'actual' : 'juego';
+    for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, fondo: demoAjustes.fondo });
+    refrescarPantalla();
+    avisoDemo(demoAjustes.fondo === 'juego' ? 'Fondo de la piel' : 'Sobre el video');
+  } else if (id === 'mascota' || id === 'efectos' || id === 'sonido') {
+    const nuevo = id === 'mascota'
+      ? { ...ajustes, efectos: true, objetos: { ...ajustes.objetos, mascota: !(ajustes.efectos && ajustes.objetos.mascota !== false) } }
+      : { ...ajustes, [id]: !ajustes[id] };
+    guardarAjustesPiel(demoPiel, nuevo);
+    cambiarPielDemo(demoPiel);
+    const valor = id === 'mascota' ? nuevo.objetos.mascota : nuevo[id];
+    avisoDemo(`${id === 'mascota' ? 'Mascota' : id === 'efectos' ? 'Efectos' : 'Sonido'}: ${estado(valor)}`);
+  } else if (id === 'grilla') {
+    alternarGrilla();
+    avisoDemo(`Grilla: ${estado(grillaVisible())}`);
+  } else if (id === 'ajustes') {
+    const root = document.getElementById('demo-capas');
+    if (root && root.classList.contains('is-dock')) cerrarDockDemo();
+    else abrirDockDemo();
+  }
+  pintarRielDemo();
+}
+
 const DEMO_ICONOS = {
   ruleta: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v9l6.5 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
   votacion: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.2 10.4 14.6 16 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -1370,6 +1486,12 @@ const DEMO_ICONOS = {
   mensajes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h11v8H8l-4 3z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 9h10v8h-6l-4 3z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
   cerrar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   grilla: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+  sms: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v9.5H9L5 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 8.2v5M9.5 10.7h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  fondo: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 16l5-5 4 4 2.5-2.5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="16" cy="9" r="1.6" fill="currentColor"/></svg>',
+  mascota: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="1.6" fill="currentColor"/><path d="M9 16.5h6v4H9zM9 18.5H6M15 18.5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  efectos: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M18 16v4M16 18h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  sonido: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 9a4 4 0 0 1 0 6M17.8 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  ajustes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h9M18 7h1M5 12h3M12 12h7M5 17h11M20 17h-1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
 };
 
 const DEMO_FICHAS = [
@@ -1499,21 +1621,24 @@ function montarBarraDemo() {
   const root = document.createElement('div');
   root.id = 'demo-capas';
   root.className = 'demo-capas';
-  root.innerHTML = '<button type="button" class="demo-mas" data-demo="toggle" aria-label="Capas de prueba">…</button>'
+  root.innerHTML = '<nav class="demo-riel" id="demo-riel" aria-label="Funciones de prueba"></nav>'
+    + '<p class="demo-aviso" id="demo-aviso" role="status"></p>'
     + '<div class="demo-dock" id="demo-dock">'
     + DEMO_FICHAS.map((item) => (
       `<button type="button" data-abrir="${item.id}" aria-label="${item.nombre}"><span>${DEMO_ICONOS[item.id]}</span><em>${item.nombre}</em></button>`
     )).join('')
-    + `<button type="button" data-demo="grilla" aria-label="Grilla"><span>${DEMO_ICONOS.grilla}</span><em>Grilla</em></button>`
     + '</div>'
     + '<div class="demo-dialogo" id="demo-dialogo"></div>';
   document.body.appendChild(root);
   root.addEventListener('click', (evento) => {
+    const riel = evento.target.closest('[data-riel]');
+    if (riel) {
+      accionRielDemo(riel.getAttribute('data-riel'));
+      return;
+    }
     const piel = evento.target.closest('[data-piel]');
     if (piel) {
-      demoPiel = piel.getAttribute('data-piel');
-      for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, piel: demoPiel, ajustes: ajustesDe(demoPiel) });
-      refrescarPantalla();
+      cambiarPielDemo(piel.getAttribute('data-piel'));
       if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
       return;
     }
@@ -1588,23 +1713,17 @@ function montarBarraDemo() {
       return;
     }
     const accion = demo.getAttribute('data-demo');
-    if (accion === 'toggle') {
-      if (root.classList.contains('is-dock')) cerrarDockDemo();
-      else abrirDockDemo();
-      return;
-    }
     if (accion === 'cerrar-dialogo') cerrarDialogoDemo();
-    if (accion === 'grilla') {
-      alternarGrilla();
-      abrirDockDemo();
-    }
   });
   document.addEventListener('keydown', (evento) => {
     if (evento.key === 'Escape') {
       cerrarDialogoDemo();
       cerrarDockDemo();
     }
-    if ((evento.key === 'g' || evento.key === 'G') && !evento.target.closest('input, textarea')) alternarGrilla();
+    if ((evento.key === 'g' || evento.key === 'G') && !evento.target.closest('input, textarea')) {
+      alternarGrilla();
+      pintarRielDemo();
+    }
   });
 }
 
@@ -1931,6 +2050,7 @@ escuchar();
 conectarPlayer();
 montarBarraDemo();
 if (new URLSearchParams(location.search).get('grilla') === '1') ponerGrilla(true);
+pintarRielDemo();
 arrancarVideoEjemplo();
 document.addEventListener('pointerdown', () => {
   const video = document.querySelector('#ahora-media video');
