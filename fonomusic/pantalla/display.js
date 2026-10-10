@@ -1,0 +1,1661 @@
+const PIELES = {
+  nocturna: {
+    id: 'nocturna',
+    fondo: '#1A1430', sectorA: '#241c3d', sectorB: '#141028', acento: '#FF3D8B',
+    info: '#22E0E6', texto: '#F5F6FA', colores: ['#FF3D8B', '#22E0E6', '#9BE85A', '#FFB648'],
+    fotoHueco: '#2c3142', fuente: '700 13px system-ui, sans-serif',
+    sellos: { ruleta: 'Ruleta', votacion: 'Votación', mensaje: 'Mensaje', match: 'Match' },
+    efectos: {
+      fondo: 'fx-fondo-neon', ambiente: 'fx-ambiente-neon', marco: 'fx-marco-neon',
+      sello: 'fx-sello-neon', foto: 'fx-foto-circulo', globo: 'fx-globo-neon',
+      impacto: 'fx-impacto-flash', entrada: 'fx-entrada-scale',
+      apila: 'fx-apila-neon', rechazo: 'fx-rechazo-neon', ficha: 'fx-ficha-neon', lienzo: 'fx-lienzo-neon',
+      sonidos: { clic: 'neon-clic', exito: 'neon-exito', decepcion: 'neon-decepcion' },
+      particulas: { formas: ['recto', 'redondo', 'chispa'], colores: ['#FF3D8B', '#22E0E6', '#9BE85A', '#FFB648', '#F5F6FA'], cantidad: 40 },
+      giro: { papel: false, trama: false, lineas: false, vineta: false },
+      objetos: [
+        { id: 'destello', clase: 'fx-obj-destello', en: ['match', 'ruleta'] },
+        { id: 'halo', clase: 'fx-obj-halo', en: ['votacion', 'mensaje'] },
+      ],
+    },
+  },
+  manga: {
+    id: 'manga',
+    fondo: '#E8D4A8', sectorA: '#FFF6DC', sectorB: '#C4A86A', acento: '#C41E3A',
+    info: '#111111', texto: '#111111', colores: ['#111111', '#C41E3A', '#111111', '#1F4E79'],
+    fotoHueco: '#B89A5C', fuente: '800 14px "Zen Maru Gothic", Impact, sans-serif',
+    sellos: { ruleta: 'ルーレット', votacion: '投票', mensaje: '伝言', match: 'ドン' },
+    efectos: {
+      fondo: 'fx-fondo-papel', ambiente: 'fx-ambiente-lineas', marco: 'fx-marco-tinta',
+      sello: 'fx-sello-hanko', foto: 'fx-foto-circulo', globo: 'fx-globo-fukidashi',
+      impacto: 'fx-impacto-don', entrada: 'fx-entrada-slam',
+      apila: 'fx-apila-tinta', rechazo: 'fx-rechazo-tinta', ficha: 'fx-ficha-tinta', lienzo: 'fx-lienzo-tinta',
+      sonidos: { clic: 'taiko-clic', exito: 'don-exito', decepcion: 'shamisen-decepcion' },
+      particulas: { formas: ['sakura', 'sello', 'tinta'], colores: ['#C41E3A', '#F4A7BB', '#1A1A1A', '#FBF3DC', '#2E5A88'], cantidad: 40 },
+      giro: { papel: true, trama: true, lineas: true, vineta: false },
+      objetos: [
+        { id: 'onoma', clase: 'fx-obj-don', texto: 'ドン', en: ['match'] },
+        { id: 'trama', clase: 'fx-obj-trama', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+      ],
+    },
+  },
+  meteoro: {
+    id: 'meteoro',
+    fondo: '#1A1A1A', sectorA: '#E31C23', sectorB: '#FFD100', acento: '#E31C23',
+    info: '#FFFFFF', texto: '#111111', colores: ['#FFFFFF', '#1E4B9C', '#FFFFFF', '#111111'],
+    fotoHueco: '#3a3a3a', fuente: '800 14px Impact, "Arial Black", sans-serif',
+    sellos: { ruleta: 'GO!', votacion: 'GRID', mensaje: 'RADIO', match: 'FINISH' },
+    efectos: {
+      fondo: 'fx-fondo-pista', ambiente: 'fx-ambiente-velocidad', marco: 'fx-marco-carrera',
+      sello: 'fx-sello-go', foto: 'fx-foto-circulo', globo: 'fx-globo-carrera',
+      impacto: 'fx-impacto-turbo', entrada: 'fx-entrada-zoom',
+      apila: 'fx-apila-carrera', rechazo: 'fx-rechazo-carrera', ficha: 'fx-ficha-carrera', lienzo: 'fx-lienzo-carrera',
+      sonidos: { clic: 'motor-clic', exito: 'motor-exito', decepcion: 'motor-decepcion' },
+      particulas: { formas: ['bandera', 'raya', 'chispa'], colores: ['#E31C23', '#FFD100', '#FFFFFF', '#1E4B9C', '#111111'], cantidad: 48 },
+      giro: { papel: false, trama: false, lineas: true, vineta: false },
+      objetos: [
+        { id: 'rayas', clase: 'fx-obj-rayas', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+        { id: 'bandera', clase: 'fx-obj-bandera', en: ['ruleta', 'votacion'] },
+        { id: 'go', clase: 'fx-obj-go', texto: 'GO!', en: ['match'] },
+      ],
+    },
+  },
+  doraemon: {
+    id: 'doraemon',
+    fondo: '#7EC8E8', sectorA: '#2BA4D9', sectorB: '#FFFFFF', acento: '#E31C23',
+    info: '#1A4A73', texto: '#1A4A73', colores: ['#F5C518', '#E31C23', '#2BA4D9', '#FFFFFF'],
+    fotoHueco: '#5BB3D9', fuente: '800 14px "Zen Maru Gothic", "Comic Sans MS", sans-serif',
+    sellos: { ruleta: 'ポン', votacion: 'どちら', mensaje: 'もしもし', match: '大好き' },
+    efectos: {
+      fondo: 'fx-fondo-cielo', ambiente: 'fx-ambiente-nubes', marco: 'fx-marco-globo',
+      sello: 'fx-sello-cascabel', foto: 'fx-foto-circulo', globo: 'fx-globo-redondo',
+      impacto: 'fx-impacto-destello', entrada: 'fx-entrada-rebote',
+      apila: 'fx-apila-cielo', rechazo: 'fx-rechazo-cielo', ficha: 'fx-ficha-cielo', lienzo: 'fx-lienzo-cielo',
+      sonidos: { clic: 'campana-clic', exito: 'campana-exito', decepcion: 'campana-decepcion' },
+      particulas: { formas: ['nube', 'estrella', 'cascabel'], colores: ['#2BA4D9', '#FFFFFF', '#F5C518', '#E31C23', '#87CEEB'], cantidad: 40 },
+      giro: { papel: false, trama: false, lineas: false, vineta: false },
+      objetos: [
+        { id: 'nubesfx', clase: 'fx-obj-nubes', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+        { id: 'helice', clase: 'fx-obj-helice', en: ['ruleta', 'match'] },
+        { id: 'gatoazul', clase: 'fx-obj-gatoazul', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+        { id: 'estrellas', clase: 'fx-obj-estrellas', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+      ],
+    },
+  },
+};
+
+function pielDe(id) {
+  return PIELES[String(id || '').toLowerCase()] || PIELES.nocturna;
+}
+
+const AJUSTES_CLAVE = 'fonobar_entretenimiento_ajustes_piel';
+const OBJETO_NOMBRES = {
+  destello: 'Destello', halo: 'Halo', onoma: 'Don', trama: 'Trama', bandera: 'Bandera',
+  go: 'GO!', rayas: 'Rayas', nubesfx: 'Nubes', helice: 'Hélice', gatoazul: 'Gadget', estrellas: 'Estrellas',
+};
+
+function ajustesPorDefecto(id) {
+  const objetos = {};
+  for (const objeto of pielDe(id).efectos.objetos || []) objetos[objeto.id] = true;
+  return { sonido: true, efectos: true, objetos };
+}
+
+function leerMapaAjustes() {
+  try {
+    const crudo = JSON.parse(localStorage.getItem(AJUSTES_CLAVE) || '{}');
+    return crudo && typeof crudo === 'object' ? crudo : {};
+  } catch {
+    return {};
+  }
+}
+
+let pielesServidor = {};
+
+function ajustesDe(id, extra) {
+  const base = ajustesPorDefecto(id);
+  const nube = pielesServidor[pielDe(id).id] || {};
+  const guardado = leerMapaAjustes()[pielDe(id).id] || {};
+  return {
+    sonido: (extra && extra.sonido !== undefined ? extra.sonido : guardado.sonido !== undefined ? guardado.sonido : nube.sonido) !== false,
+    efectos: (extra && extra.efectos !== undefined ? extra.efectos : guardado.efectos !== undefined ? guardado.efectos : nube.efectos) !== false,
+    objetos: { ...base.objetos, ...(nube.objetos || {}), ...(guardado.objetos || {}), ...((extra && extra.objetos) || {}) },
+  };
+}
+
+function guardarAjustesPiel(id, ajustes) {
+  const limpio = ajustesDe(id, ajustes);
+  try {
+    const mapa = leerMapaAjustes();
+    mapa[pielDe(id).id] = limpio;
+    localStorage.setItem(AJUSTES_CLAVE, JSON.stringify(mapa));
+  } catch { /* la pantalla sigue sin persistir */ }
+  return limpio;
+}
+
+function fxDeCapa(capa) {
+  const piel = pielDe(capa?.piel);
+  const ajustes = ajustesDe(piel.id, capa?.ajustes);
+  return {
+    piel,
+    ajustes,
+    fx: {
+      ...piel.efectos,
+      objetos: ajustes.efectos
+        ? (piel.efectos.objetos || []).filter((objeto) => ajustes.objetos[objeto.id] !== false)
+        : [],
+      ambiente: ajustes.efectos ? piel.efectos.ambiente : '',
+      impacto: ajustes.efectos ? piel.efectos.impacto : '',
+      particulas: ajustes.efectos ? piel.efectos.particulas : { ...(piel.efectos.particulas || {}), cantidad: 0 },
+    },
+  };
+}
+
+let audioFx = null;
+let previaPila = 0;
+let previoRechazo = '';
+let previoCierre = false;
+
+function prepararSonido() {
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  if (!audioFx) audioFx = new Ctx();
+  void audioFx.resume();
+}
+
+function notaFx(frecuencia, tipo, volumen, cuando, duracion) {
+  if (!audioFx) return;
+  const osc = audioFx.createOscillator();
+  const ganancia = audioFx.createGain();
+  osc.type = tipo;
+  osc.frequency.value = frecuencia;
+  ganancia.gain.value = volumen;
+  ganancia.gain.exponentialRampToValueAtTime(0.0001, cuando + duracion);
+  osc.connect(ganancia);
+  ganancia.connect(audioFx.destination);
+  osc.start(cuando);
+  osc.stop(cuando + duracion);
+}
+
+function ruidoFx(duracion, volumen, frecuencia, q, cuando) {
+  if (!audioFx) return;
+  const n = Math.max(32, Math.floor(audioFx.sampleRate * duracion));
+  const buffer = audioFx.createBuffer(1, n, audioFx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < n; i += 1) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2.4);
+  const src = audioFx.createBufferSource();
+  src.buffer = buffer;
+  const filtro = audioFx.createBiquadFilter();
+  filtro.type = 'bandpass';
+  filtro.frequency.value = frecuencia;
+  filtro.Q.value = q;
+  const ganancia = audioFx.createGain();
+  ganancia.gain.setValueAtTime(Math.max(0.001, volumen), cuando);
+  ganancia.gain.exponentialRampToValueAtTime(0.0001, cuando + duracion);
+  src.connect(filtro);
+  filtro.connect(ganancia);
+  ganancia.connect(audioFx.destination);
+  src.start(cuando);
+}
+
+function reanudarEscenario() {
+  prepararSonido();
+  if (ytPlayer && ytPlayer.playVideo) {
+    try { ytPlayer.unMute(); ytPlayer.playVideo(); } catch (error) { /* iOS pide el toque */ }
+  }
+  const video = document.querySelector('#ahora-media video');
+  if (video && video.paused) video.play().catch(() => {});
+}
+
+document.addEventListener('pointerdown', reanudarEscenario, { passive: true });
+document.addEventListener('keydown', reanudarEscenario);
+
+function tocarSonido(motor, fuerza = 1) {
+  prepararSonido();
+  if (!audioFx) return;
+  if (audioFx.state !== 'running') {
+    void audioFx.resume().then(() => {
+      if (audioFx?.state === 'running') tocarSonido(motor, fuerza);
+    });
+    return;
+  }
+  const cuando = audioFx.currentTime;
+  if (motor === 'ruleta-clic' || motor.endsWith('-clic')) {
+    ruidoFx(0.028 + fuerza * 0.016, 0.15 + fuerza * 0.2, 1280 + fuerza * 980, 6.2, cuando);
+    notaFx(190 + fuerza * 36, 'triangle', 0.01 + fuerza * 0.016, cuando, 0.016);
+    return;
+  }
+  if (motor === 'ruleta-cae') {
+    ruidoFx(0.1, 0.24, 480, 2.1, cuando);
+    notaFx(72, 'sine', 0.09, cuando, 0.16);
+    notaFx(148, 'triangle', 0.045, cuando + 0.018, 0.09);
+    return;
+  }
+  if (motor === 'neon-exito') {
+    [523, 659, 784].forEach((frecuencia, indice) => notaFx(frecuencia, 'triangle', 0.06, cuando + indice * 0.07, 0.18));
+    return;
+  }
+  if (motor === 'don-exito') {
+    notaFx(98, 'triangle', 0.14, cuando, 0.28);
+    notaFx(196, 'sine', 0.09, cuando + 0.05, 0.22);
+    notaFx(392, 'square', 0.05, cuando + 0.12, 0.14);
+    return;
+  }
+  if (motor === 'motor-exito') {
+    [392, 523, 784].forEach((frecuencia, indice) => notaFx(frecuencia, 'square', 0.055, cuando + indice * 0.08, 0.16));
+    return;
+  }
+  if (motor === 'campana-exito') {
+    [784, 988, 1174].forEach((frecuencia, indice) => notaFx(frecuencia, 'sine', 0.06, cuando + indice * 0.08, 0.2));
+    return;
+  }
+  if (motor === 'neon-decepcion') {
+    [392, 196].forEach((frecuencia, indice) => notaFx(frecuencia, 'triangle', 0.07, cuando + indice * 0.2, 0.24));
+    return;
+  }
+  if (motor === 'shamisen-decepcion') {
+    [349, 262, 196].forEach((frecuencia, indice) => notaFx(frecuencia, 'sine', 0.09, cuando + indice * 0.16, 0.38));
+    return;
+  }
+  if (motor === 'motor-decepcion') {
+    [196, 147, 98].forEach((frecuencia, indice) => notaFx(frecuencia, 'sawtooth', 0.05, cuando + indice * 0.12, 0.18));
+    return;
+  }
+  if (motor === 'campana-decepcion') {
+    [440, 349].forEach((frecuencia, indice) => notaFx(frecuencia, 'sine', 0.07, cuando + indice * 0.18, 0.28));
+    return;
+  }
+}
+
+function htmlConfeti(fx) {
+  const formas = fx.particulas?.formas || ['recto'];
+  const colores = fx.particulas?.colores || ['#fff'];
+  const n = Math.min(40, fx.particulas?.cantidad || 0);
+  if (n <= 0) return '';
+  const bits = Array.from({ length: n }, (_, i) => {
+    const left = Math.random() * 100;
+    const dx = (Math.random() - 0.5) * 140;
+    const giro = (Math.random() - 0.5) * 720;
+    return `<i class="papel-${formas[i % formas.length]}" style="left:${left}%;background:${colores[i % colores.length]};width:${6 + Math.random() * 8}px;height:${8 + Math.random() * 12}px;animation-delay:${Math.random() * 0.45}s;animation-duration:${1.7 + Math.random() * 1.5}s;--dx:${dx}px;--giro:${giro}deg"></i>`;
+  }).join('');
+  return `<div class="papel-picado ${escapar(fx.impacto)}" aria-hidden="true">${bits}</div>`;
+}
+
+function localId() {
+  return new URLSearchParams(location.search).get('local') || '';
+}
+
+function apiBase() {
+  return location.origin;
+}
+
+const avataresListos = new Map();
+
+function urlsDe(item) {
+  if (!item) return [];
+  const lista = [];
+  if (item.foto) lista.push(item.foto);
+  for (const foto of item.fotos || []) if (foto) lista.push(foto);
+  return lista;
+}
+
+function imagenLista(url) {
+  const imagen = avataresListos.get(url);
+  return imagen && imagen.naturalWidth > 0 ? imagen : undefined;
+}
+
+function guardarAvatar(url, imagen) {
+  if (url && imagen && imagen.naturalWidth > 0) avataresListos.set(url, imagen);
+}
+
+function decodificarFoto(url) {
+  if (!url || avataresListos.has(url)) return Promise.resolve(imagenLista(url));
+  return fetch(url, { cache: 'force-cache', mode: 'cors' }).then((respuesta) => {
+    if (!respuesta.ok) throw new Error('foto');
+    return respuesta.blob();
+  }).then((blob) => {
+    const objeto = URL.createObjectURL(blob);
+    return new Promise((resolve) => {
+      const imagen = new Image();
+      imagen.onload = () => {
+        guardarAvatar(url, imagen);
+        resolve(imagenLista(url));
+      };
+      imagen.onerror = () => resolve(undefined);
+      imagen.src = objeto;
+    });
+  }).catch(() => new Promise((resolve) => {
+    const imagen = new Image();
+    imagen.referrerPolicy = 'no-referrer';
+    imagen.onload = () => {
+      guardarAvatar(url, imagen);
+      resolve(imagenLista(url));
+    };
+    imagen.onerror = () => resolve(undefined);
+    imagen.src = url;
+  }));
+}
+
+function precargarAvatares(items) {
+  const urls = [];
+  for (const item of items || []) {
+    for (const url of urlsDe(item)) if (!urls.includes(url)) urls.push(url);
+  }
+  return Promise.all(urls.map(decodificarFoto));
+}
+
+function escapar(valor) {
+  return String(valor || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function formatearQueda(ms) {
+  const s = Math.max(0, Math.ceil(Number(ms || 0) / 1000));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function aplicarFondoEscena(escena, capa) {
+  escena.dataset.fondo = capa?.fondo || 'juego';
+  if ((capa?.fondo === 'foto' || capa?.fondo === 'logo') && capa.foto) {
+    escena.style.setProperty('--foto-fondo', `url("${capa.foto}")`);
+  } else {
+    escena.style.removeProperty('--foto-fondo');
+  }
+}
+
+function pesoDe(capa) {
+  const pedido = String(capa?.peso || '').toLowerCase();
+  if (pedido === 'destacado' || pedido === 'accesorio') return pedido;
+  return (capa?.tipo || 'mensaje') === 'mensaje' ? 'accesorio' : 'destacado';
+}
+
+function htmlCapa(capa) {
+  const { piel, fx } = fxDeCapa(capa);
+  const tipo = capa.tipo || 'mensaje';
+  const peso = pesoDe({ ...capa, tipo });
+  const objetos = (fx.objetos || []).filter((objeto) => objeto.en.includes(tipo))
+    .map((objeto) => `<i class="escena-obj ${escapar(objeto.clase)}" aria-hidden="true">${escapar(objeto.texto || '')}</i>`)
+    .join('');
+  let interior = '';
+  if (tipo === 'ruleta') {
+    const ruedas = Array.isArray(capa.ruedas) ? capa.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0) : [];
+    const pila = Array.isArray(capa.pila) ? capa.pila : [];
+    const cierre = Boolean(capa.cierre) || (pila.length > 0 && ruedas.length === 0);
+    if (cierre) {
+      interior = `${htmlConfeti(fx)}${htmlSalon(pila, fx)}`;
+    } else {
+      const lienzos = ruedas.length > 1
+        ? `<div class="escena-ruletas">${ruedas.map((rueda) => `<div class="${escapar(fx.lienzo)}"><canvas class="escena-ruleta" width="720" height="720" data-sectores="${rueda.opciones.length}"></canvas></div>`).join('')}</div>`
+        : ruedas.length === 1
+          ? `<div class="${escapar(fx.lienzo)}"><canvas class="escena-ruleta" width="720" height="720" data-sectores="${ruedas[0].opciones.length}"></canvas></div>`
+          : '';
+      const fiesta = pila.length > 0 || (Array.isArray(capa.centro) && capa.centro.length > 0);
+      interior = `${fiesta ? htmlConfeti(fx) : ''}${lienzos}${htmlCentro(capa.centro, fx)}${htmlPila(pila, fx)}${htmlRechazo(capa.rechazo, fx)}`;
+    }
+  } else if (tipo === 'votacion') {
+    const opciones = (capa.opciones || []).map((opcion) => {
+      const foto = opcion.foto || (opcion.fotos && opcion.fotos[0]) || '';
+      const gana = capa.ganador && String(opcion.id) === String(capa.ganador) ? ' is-ganador' : '';
+      return `<article class="escena-opcion ${escapar(fx.foto)}${gana}">${foto ? `<img src="${escapar(foto)}" alt="">` : ''}<strong>${escapar(opcion.titulo)}</strong></article>`;
+    }).join('');
+    interior = `<h2>${escapar(capa.texto || 'Votá')}</h2><div class="escena-opciones">${opciones}</div>`;
+  } else if (tipo === 'mensaje') {
+    interior = htmlHiloSms(Array.isArray(capa.filas) ? capa.filas : filasSmsDe(capa));
+  } else {
+    interior = `<div class="escena-match"><div class="escena-match-par"><h2>${escapar(capa.desde || '')}</h2><p>${escapar(capa.texto || 'Se gustaron')}</p><h2>${escapar(capa.hacia || '')}</h2></div></div>`;
+  }
+  const pilaN = Array.isArray(capa.pila) ? capa.pila.length : 0;
+  const ruedasVivas = Array.isArray(capa.ruedas) ? capa.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0).length : 0;
+  const cierre = tipo === 'ruleta' && (Boolean(capa.cierre) || (pilaN > 0 && ruedasVivas === 0));
+  const conPila = tipo === 'ruleta' && pilaN > 0 && !cierre;
+  const cuerpo = cierre ? ' is-cierre' : conPila ? ' is-con-pila' : '';
+  const reloj = !cierre && capa.quedaMs != null ? `<p class="escena-reloj">${formatearQueda(capa.quedaMs)}</p>` : '';
+  const ambiente = tipo === 'mensaje' ? '' : (fx.ambiente ? `<div class="escena-fx ${escapar(fx.ambiente)}"></div>` : '');
+  const impacto = tipo === 'mensaje' ? '' : (fx.impacto ? `<div class="escena-impacto ${escapar(fx.impacto)}"></div>` : '');
+  const objetosCapa = tipo === 'mensaje' ? '' : objetos;
+  const marco = tipo === 'mensaje'
+    ? 'escena-marco sms-marco'
+    : `escena-marco ${escapar(fx.marco)} ${escapar(fx.entrada)}`;
+  const sello = tipo === 'mensaje' ? '' : `<p class="escena-sello ${escapar(fx.sello)}">${escapar(piel.sellos[tipo] || tipo)}</p>`;
+  const relojCapa = tipo === 'mensaje' ? '' : reloj;
+  return `<section class="escena-capa" data-tipo="${escapar(tipo)}" data-peso="${escapar(peso)}" data-salon="${cierre ? '1' : '0'}">${ambiente}${objetosCapa}${impacto}<div class="${marco}">${sello}${relojCapa}<div class="escena-cuerpo${cuerpo}" style="--n:${pilaN || 1}">${interior}</div></div></section>`;
+}
+
+function horaSms(cuando) {
+  const fecha = cuando ? new Date(cuando) : new Date();
+  if (Number.isNaN(fecha.getTime())) {
+    const ahora = new Date();
+    return `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+  }
+  return `${String(fecha.getHours()).padStart(2, '0')}:${String(fecha.getMinutes()).padStart(2, '0')}`;
+}
+
+function inicialesSms(nombre) {
+  const partes = String(nombre || '').trim().split(/\s+/).filter(Boolean);
+  return ((partes[0] || '?')[0] + (partes[1] ? partes[1][0] : '')).toUpperCase();
+}
+
+function fotoSmsDe(autor, extras) {
+  const lista = [...(extras || []), ...avataresServidor, ...JUGADORES_DEMO];
+  const n = String(autor || '').trim().toLowerCase();
+  if (!n) return '';
+  const hit = lista.find((persona) => {
+    const titulo = String(persona.titulo || persona.nombre || persona.autor || '').toLowerCase();
+    return titulo === n || titulo.startsWith(n) || String(persona.id || '').toLowerCase() === n;
+  });
+  return hit?.foto || (hit?.fotos && hit.fotos[0]) || '';
+}
+
+function claveSms(item, indice) {
+  return item.id || `${item.autor || ''}|${item.texto || ''}|${item.cuando || ''}|${indice}`;
+}
+
+function completarFilaSms(item, indice, extras) {
+  const clave = claveSms(item, indice);
+  const nuevo = item.nuevo === true || !smsClavesVistas.has(clave);
+  smsClavesVistas.add(clave);
+  return {
+    ...item,
+    id: clave,
+    autor: item.autor || 'Invitado',
+    foto: item.foto || fotoSmsDe(item.autor, extras),
+    lado: item.lado === 'out' ? 'out' : 'in',
+    nuevo,
+  };
+}
+
+function filasSmsDe(capa, extras) {
+  const filas = Array.isArray(capa?.filas) ? capa.filas.map((item) => ({ ...item })) : [];
+  if (!filas.length && capa && (capa.texto || capa.desde || capa.hacia)) {
+    filas.push({
+      autor: capa.desde || 'Mesa',
+      texto: capa.texto || '…',
+      lado: 'in',
+      cuando: capa.cuando,
+      foto: capa.fotoDesde || capa.foto || '',
+    });
+    if (capa.respuesta) {
+      filas.push({
+        autor: capa.hacia || 'Mesa',
+        texto: capa.respuesta,
+        lado: 'out',
+        cuando: capa.cuando,
+        foto: capa.fotoHacia || '',
+      });
+    }
+  }
+  (extras || []).forEach((item) => {
+    filas.push({
+      autor: item.autor || item.desde || 'Invitado',
+      texto: item.texto || item.respuesta || '…',
+      lado: filas.length % 2 ? 'out' : 'in',
+      cuando: item.cuando,
+      foto: item.foto || '',
+    });
+  });
+  return filas;
+}
+
+function htmlHiloSms(filas) {
+  return `<div class="sms-hilo">${(filas || []).map((item) => {
+    const lado = item.lado === 'out' ? 'out' : 'in';
+    const nuevo = item.nuevo ? ' is-nuevo' : '';
+    const autor = item.autor || 'Invitado';
+    const avatar = item.foto
+      ? `<img class="sms-avatar" src="${escapar(item.foto)}" alt="">`
+      : `<span class="sms-avatar is-hueco" aria-hidden="true">${escapar(inicialesSms(autor))}</span>`;
+    return `<article class="sms-fila is-${lado}${nuevo}">${avatar}<div class="sms-cuerpo"><p class="sms-meta"><strong>${escapar(autor)}</strong> // <em>${horaSms(item.cuando)}</em></p><div class="sms-burbuja">${escapar(item.texto || '…')}</div></div></article>`;
+  }).join('')}</div>`;
+}
+
+function revelarSmsNuevo() {
+  const hilo = document.querySelector('.sms-hilo');
+  const nuevo = hilo && hilo.querySelector('.sms-fila.is-nuevo:last-of-type');
+  if (!hilo || !nuevo) return;
+  requestAnimationFrame(() => {
+    const tope = nuevo.offsetTop - Math.max(0, hilo.clientHeight - nuevo.offsetHeight - 16);
+    hilo.scrollTo({ top: Math.max(0, tope), behavior: 'smooth' });
+  });
+}
+
+function escenarioAhora() {
+  const escena = document.getElementById('escena');
+  if (!escena) return null;
+  let nodo = document.getElementById('escenario-ahora');
+  if (!nodo) {
+    nodo = document.createElement('div');
+    nodo.id = 'escenario-ahora';
+    nodo.className = 'escenario-ahora';
+    nodo.hidden = true;
+    nodo.innerHTML = '<div id="ahora-media"></div><div class="ahora-velo" aria-hidden="true"></div><div class="ahora-datos" id="ahora-datos"></div>';
+    escena.prepend(nodo);
+  }
+  return nodo;
+}
+
+function mediaAhora() {
+  const stage = escenarioAhora();
+  return stage ? stage.querySelector('#ahora-media') : null;
+}
+
+function pintarCapas(capas, dedicatorias, avatares) {
+  const escena = document.getElementById('escena');
+  const escenario = escenarioAhora();
+  const lista = capas || [];
+  const { piel, fx, ajustes } = fxDeCapa(lista[0] || {});
+  const ruleta = lista.find((item) => item.tipo === 'ruleta');
+  const pilaN = Array.isArray(ruleta?.pila) ? ruleta.pila.length : 0;
+  const ruedasVivas = Array.isArray(ruleta?.ruedas) ? ruleta.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0).length : 0;
+  const rechazoId = ruleta?.rechazo?.id || '';
+  const cierre = Boolean(ruleta?.cierre) || (pilaN > 0 && ruedasVivas === 0);
+  if (ajustes.sonido && pilaN > previaPila) tocarSonido('ruleta-cae');
+  if (ajustes.sonido && cierre && !previoCierre) tocarSonido(fx.sonidos?.exito || 'neon-exito');
+  if (ajustes.sonido && rechazoId && rechazoId !== previoRechazo) tocarSonido(fx.sonidos?.decepcion || 'neon-decepcion');
+  previaPila = pilaN;
+  previoRechazo = rechazoId;
+  previoCierre = cierre;
+  escena.className = `escena ${fx.fondo}`;
+  escena.dataset.piel = piel.id;
+  aplicarFondoEscena(escena, lista[0]);
+  const pendientes = [...(avatares || [])];
+  for (const capa of lista) for (const opcion of capa.opciones || []) pendientes.push(opcion);
+  void precargarAvatares(pendientes);
+  if (lista.length === 0 && !(dedicatorias || []).length) {
+    delete escena.dataset.slots;
+    [...escena.children].forEach((nodo) => { if (nodo !== escenario) nodo.remove(); });
+    return;
+  }
+  const dedicas = (dedicatorias || []).slice(0, 4);
+  const fotosSms = [...(avatares || []), ...dedicas];
+  const listaPintar = lista.map((capa) => {
+    if (capa.tipo !== 'mensaje') return capa;
+    return { ...capa, filas: filasSmsDe(capa, dedicas).map((item, indice) => completarFilaSms(item, indice, fotosSms)) };
+  });
+  if (dedicas.length && !listaPintar.some((capa) => capa.tipo === 'mensaje')) {
+    listaPintar.push({
+      tipo: 'mensaje',
+      peso: 'accesorio',
+      piel: piel.id,
+      fondo: 'actual',
+      filas: filasSmsDe(null, dedicas).map((item, indice) => completarFilaSms(item, indice, fotosSms)),
+    });
+  }
+  [...escena.children].forEach((nodo) => { if (nodo !== escenario) nodo.remove(); });
+  const capasNodo = document.createElement('div');
+  capasNodo.className = listaPintar.length > 1 ? 'escena-capas is-varias' : 'escena-capas';
+  capasNodo.innerHTML = listaPintar.map(htmlCapa).join('');
+  escena.appendChild(capasNodo);
+  const slots = [];
+  if (listaPintar.some((capa) => capa.tipo === 'mensaje')) slots.push('rail');
+  if (listaPintar.some((capa) => capa.tipo === 'ruleta' || capa.tipo === 'votacion')) slots.push('escenario');
+  if (listaPintar.some((capa) => capa.tipo === 'match')) slots.push('chip');
+  if (slots.length) escena.dataset.slots = slots.join(' ');
+  else delete escena.dataset.slots;
+  revelarSmsNuevo();
+  if (cierre) return;
+  escena.querySelectorAll('canvas.escena-ruleta').forEach((canvas, indice) => {
+    const capa = lista.find((item) => item.tipo === 'ruleta');
+    if (!capa || capa.cierre) return;
+    const vivas = Array.isArray(capa.ruedas)
+      ? capa.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0)
+      : [];
+    const rueda = vivas[indice] || null;
+    const opciones = rueda?.opciones || [];
+    if (opciones.length === 0) {
+      canvas.dataset.sectores = '0';
+      canvas.classList.add('is-vacia');
+      canvas.style.display = 'none';
+      if (canvas.parentElement) canvas.parentElement.style.display = 'none';
+      return;
+    }
+    const hasta = rueda?.hasta || capa.hacia || capa.desde || '';
+    const animar = rueda && rueda.animar !== undefined ? rueda.animar : capa.animar;
+    void crearMotor(canvas, opciones, pielDe(capa.piel), hasta, animar);
+  });
+}
+
+function personaVista(persona) {
+  const foto = persona?.foto || (persona?.fotos && persona.fotos[0]) || '';
+  return { id: persona?.id || '', titulo: persona?.titulo || persona?.nombre || '', foto };
+}
+
+function nombreFicha(titulo, corto) {
+  if (!corto) return titulo || '';
+  const partes = String(titulo || '').trim().split(/\s+/).filter(Boolean);
+  if (partes.length < 2) return titulo || '';
+  return `${partes[0]} ${partes[1][0]}.`;
+}
+
+function htmlElegido(persona, fx, corto) {
+  const vista = personaVista(persona);
+  return `<div class="escena-elegido ${escapar(fx.foto)}">${vista.foto ? `<img src="${escapar(vista.foto)}" alt="">` : ''}<span>${escapar(nombreFicha(vista.titulo, corto))}</span></div>`;
+}
+
+function htmlPareja(grupo, fx, extra, corto) {
+  if (!Array.isArray(grupo) || grupo.length === 0) return '';
+  return `<div class="escena-pareja ${escapar(fx.ficha)} ${escapar(extra || '')}">${grupo.map((persona) => htmlElegido(persona, fx, corto)).join('')}</div>`;
+}
+
+function htmlCentro(centro, fx) {
+  if (!Array.isArray(centro) || centro.length === 0) return '';
+  return `<div class="escena-centro">${htmlPareja(centro.slice(0, 2), fx, fx.entrada)}</div>`;
+}
+
+function htmlPila(pila, fx) {
+  if (!Array.isArray(pila) || pila.length === 0) return '';
+  return `<div class="escena-pila is-tira" data-cupo="${pila.length}" style="--n:${pila.length}">${pila.map((grupo) => htmlPareja(grupo, fx, fx.apila, true)).join('')}</div>`;
+}
+
+function grillaSalon(cupo) {
+  if (cupo <= 1) return { cols: 1, filas: 1 };
+  if (cupo === 2) return { cols: 2, filas: 1 };
+  if (cupo === 3) return { cols: 3, filas: 1 };
+  if (cupo === 4) return { cols: 2, filas: 2 };
+  if (cupo <= 6) return { cols: 3, filas: 2 };
+  return { cols: 4, filas: 2 };
+}
+
+function htmlSalon(pila, fx) {
+  if (!Array.isArray(pila) || pila.length === 0) return '';
+  const grilla = grillaSalon(pila.length);
+  return `<div class="escena-pila is-salon" data-cupo="${pila.length}" style="--n:${pila.length};--cols:${grilla.cols};--filas:${grilla.filas}">${pila.map((grupo, indice) => `<div class="escena-pareja ${escapar(fx.ficha)} ${escapar(fx.entrada || '')}" style="animation-delay:${indice * 90}ms">${grupo.map((persona) => htmlElegido(persona, fx, false)).join('')}</div>`).join('')}</div>`;
+}
+
+function htmlRechazo(rechazo, fx) {
+  if (!rechazo || !rechazo.id) return '';
+  const rueda = Number(rechazo.rueda);
+  const lado = Number.isFinite(rueda) ? ` data-rueda="${rueda}"` : '';
+  return `<div class="escena-rechazo ${escapar(fx.rechazo)}"${lado}><div class="escena-pareja ${escapar(fx.ficha)}">${htmlElegido(rechazo, fx)}</div></div>`;
+}
+
+function pintarPapel(ctx, w, h) {
+  ctx.fillStyle = '#E8D4A8';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(17, 17, 17, 0.07)';
+  for (let i = 0; i < 90; i += 1) ctx.fillRect((i * 47) % w, (i * 31) % h, 2, 2);
+}
+
+function pintarTrama(ctx, cx, cy, r, a0, a1) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.arc(cx, cy, r, a0, a1);
+  ctx.closePath();
+  ctx.clip();
+  ctx.fillStyle = 'rgba(17, 17, 17, 0.34)';
+  for (let y = cy - r; y < cy + r; y += 6) {
+    for (let x = cx - r; x < cx + r; x += 6) {
+      ctx.beginPath();
+      ctx.arc(x, y, 1.15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function pintarLineasVelocidad(ctx, cx, cy, r, fuerza, estilo) {
+  ctx.save();
+  if (estilo === 'meteoro') {
+    const tintas = [`rgba(255,209,0,${0.28 + fuerza * 0.5})`, `rgba(255,255,255,${0.22 + fuerza * 0.4})`, `rgba(227,28,35,${0.2 + fuerza * 0.35})`];
+    for (let i = 0; i < 26; i += 1) {
+      const y = cy - r * 0.92 + (i / 25) * r * 1.84;
+      const largo = r * (0.28 + fuerza * 0.62 + (i % 4) * 0.06);
+      ctx.strokeStyle = tintas[i % 3];
+      ctx.lineWidth = 2 + (i % 3);
+      ctx.beginPath();
+      ctx.moveTo(cx - largo, y);
+      ctx.lineTo(cx + largo, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+    return;
+  }
+  ctx.strokeStyle = `rgba(17, 17, 17, ${0.22 + fuerza * 0.45})`;
+  ctx.lineWidth = 2.2;
+  for (let i = 0; i < 42; i += 1) {
+    const a = (i / 42) * Math.PI * 2 + fuerza * 0.4;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * r * 0.2, cy + Math.sin(a) * r * 0.2);
+    ctx.lineTo(cx + Math.cos(a) * r * (0.78 + fuerza * 0.18), cy + Math.sin(a) * r * (0.78 + fuerza * 0.18));
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+async function crearMotor(canvas, opciones, pal, hasta, animar) {
+  const ctx = canvas.getContext('2d');
+  if (!ctx || opciones.length === 0) {
+    canvas.dataset.sectores = '0';
+    canvas.classList.add('is-vacia');
+    canvas.style.display = 'none';
+    canvas.style.visibility = 'hidden';
+    canvas.style.boxShadow = 'none';
+    if (canvas.parentElement) {
+      canvas.parentElement.classList.add('is-vacia');
+      canvas.parentElement.style.display = 'none';
+    }
+    return;
+  }
+  canvas.classList.remove('is-vacia');
+  canvas.style.display = '';
+  canvas.style.visibility = 'visible';
+  canvas.dataset.sectores = String(opciones.length);
+  const giro = pal.efectos.giro;
+  await Promise.race([
+    precargarAvatares(opciones),
+    new Promise((resolve) => setTimeout(resolve, 800)),
+  ]);
+  const imagenes = opciones.map((opcion) => imagenLista(opcion.foto || (opcion.fotos && opcion.fotos[0]) || ''));
+  let angulo = 0;
+  let fuerzaGiro = 0;
+  const slice = (Math.PI * 2) / opciones.length;
+  const dibujar = () => {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const r = Math.min(cx, cy) * 0.86;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.clip();
+    if (giro.papel) pintarPapel(ctx, canvas.width, canvas.height);
+    ctx.fillStyle = pal.fondo;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    opciones.forEach((opcion, i) => {
+      const a0 = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, a0, a0 + slice);
+      ctx.closePath();
+      ctx.fillStyle = i % 2 === 0 ? pal.sectorA : pal.sectorB;
+      ctx.fill();
+      if (giro.trama && i % 2 === 1) pintarTrama(ctx, cx, cy, r, a0, a0 + slice);
+      const mid = a0 + slice / 2;
+      const x = cx + Math.cos(mid) * r * 0.52;
+      const y = cy + Math.sin(mid) * r * 0.52;
+      const lado = 56;
+      const radio = 28;
+      const foto = opciones[i].foto || (opciones[i].fotos && opciones[i].fotos[0]) || '';
+      const imagen = imagenes[i] || imagenLista(foto);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, radio, 0, Math.PI * 2);
+      ctx.clip();
+      if (imagen && imagen.naturalWidth > 0) ctx.drawImage(imagen, x - lado / 2, y - lado / 2, lado, lado);
+      else {
+        ctx.fillStyle = pal.fotoHueco;
+        ctx.beginPath();
+        ctx.arc(x, y, radio, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(x, y, radio, 0, Math.PI * 2);
+      ctx.strokeStyle = pal.texto;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = pal.texto;
+      ctx.font = pal.fuente;
+      ctx.textAlign = 'center';
+      ctx.fillText(opcion.titulo || '', cx + Math.cos(mid) * r * 0.82, cy + Math.sin(mid) * r * 0.82);
+    });
+    if (giro.lineas && ajustesDe(pal.id).efectos && fuerzaGiro > 0.05) pintarLineasVelocidad(ctx, cx, cy, r, fuerzaGiro, pal.id);
+    ctx.restore();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r - 2);
+    ctx.lineTo(cx - 10, cy - r + 16);
+    ctx.lineTo(cx + 10, cy - r + 16);
+    ctx.closePath();
+    ctx.fillStyle = pal.acento;
+    ctx.fill();
+  };
+  opciones.forEach((opcion, i) => {
+    const src = opcion.foto || (opcion.fotos && opcion.fotos[0]);
+    if (!src || imagenes[i]) return;
+    void decodificarFoto(src).then((imagen) => {
+      if (!imagen) return;
+      imagenes[i] = imagen;
+      dibujar();
+    });
+  });
+  const hastaId = String(hasta || '').split(',').pop();
+  const idx = Math.max(0, opciones.findIndex((opcion) => {
+    const id = String(opcion.id);
+    return id === String(hasta) || id === hastaId || id.endsWith(`:${hastaId}`) || id.split(':').pop() === hastaId;
+  }));
+  const destino = -idx * slice;
+  if (animar === false) {
+    angulo = destino;
+    dibujar();
+    return;
+  }
+  dibujar();
+  const t0 = performance.now();
+  const delta = destino - (Math.PI * 2 * 6);
+  let marca = 0;
+  canvas.classList.add('is-girando');
+  const paso = (ahora) => {
+    const t = Math.min(1, (ahora - t0) / 6800);
+    fuerzaGiro = 1 - t;
+    angulo = delta * (1 - Math.exp(-4.4 * t)) / (1 - Math.exp(-4.4));
+    const cruces = Math.abs(Math.floor(angulo / slice) - Math.floor(marca / slice));
+    if (cruces > 0 && ajustesDe(pal.id).sonido) tocarSonido('ruleta-clic', fuerzaGiro);
+    marca = angulo;
+    dibujar();
+    if (t < 1) requestAnimationFrame(paso);
+    else {
+      fuerzaGiro = 0;
+      canvas.classList.remove('is-girando');
+      if (ajustesDe(pal.id).sonido) tocarSonido('ruleta-cae');
+      dibujar();
+    }
+  };
+  requestAnimationFrame(paso);
+}
+
+const JUGADORES_DEMO = [
+  { id: 'p01', titulo: 'Martina López', foto: 'https://i.pravatar.cc/300?img=5', mesa: '2', genero: 'mujer' },
+  { id: 'p02', titulo: 'Santiago Ruiz', foto: 'https://i.pravatar.cc/300?img=12', mesa: '2', genero: 'hombre' },
+  { id: 'p03', titulo: 'Valentina Gómez', foto: 'https://i.pravatar.cc/300?img=9', mesa: '4', genero: 'mujer' },
+  { id: 'p04', titulo: 'Joaquín Fernández', foto: 'https://i.pravatar.cc/300?img=15', mesa: '4', genero: 'hombre' },
+  { id: 'p05', titulo: 'Camila Torres', foto: 'https://i.pravatar.cc/300?img=25', mesa: '7', genero: 'mujer' },
+  { id: 'p06', titulo: 'Mateo Herrera', foto: 'https://i.pravatar.cc/300?img=33', mesa: '7', genero: 'hombre' },
+  { id: 'p07', titulo: 'Lucía Romero', foto: 'https://i.pravatar.cc/300?img=47', mesa: '9', genero: 'mujer' },
+  { id: 'p08', titulo: 'Benjamín Díaz', foto: 'https://i.pravatar.cc/300?img=52', mesa: '9', genero: 'hombre' },
+];
+const DEDICAS_DEMO = [
+  { autor: 'Mesa 4', destinatario: 'El salón', texto: '¡Qué noche!' },
+  { autor: 'Invitado', destinatario: 'Mesa 2', texto: 'Los vemos en la pista.' },
+];
+const USUARIOS_SMS = [
+  {
+    id: 'p01',
+    titulo: 'Martina López',
+    foto: 'https://i.pravatar.cc/300?img=5',
+    lado: 'in',
+    frases: ['¿Bailamos la próxima?', 'Estoy en la mesa 2', 'Te veo en la pista'],
+  },
+  {
+    id: 'p02',
+    titulo: 'Santiago Ruiz',
+    foto: 'https://i.pravatar.cc/300?img=12',
+    lado: 'out',
+    frases: ['Dale, nos vemos', 'Ya voy para allá', 'Te espero en la barra'],
+  },
+];
+
+let capasServidor = [];
+let dedicasServidor = [];
+let avataresServidor = [];
+let smsClavesVistas = new Set();
+const smsFraseIdx = { p01: 0, p02: 0 };
+const capasDemo = new Map();
+let dedicasDemo = [];
+let demoPiel = 'nocturna';
+const demoAjustes = { cantidad: 2, rechazo: false, claseVoto: 'parejas', desde: 'Mesa 2', hacia: 'Mesa 7', texto: '¿Bailamos la próxima?', pesoMensaje: 'accesorio' };
+let demoDialogoTipo = '';
+let demoTanda = 0;
+const demoEsperas = [];
+
+function guardarServidor(capas, dedicatorias, avatares) {
+  capasServidor = capas || [];
+  dedicasServidor = dedicatorias || [];
+  avataresServidor = avatares || [];
+}
+
+function refrescarPantalla() {
+  const porTipo = new Map();
+  for (const capa of capasServidor) {
+    if (capa && capa.tipo) porTipo.set(capa.tipo, capa);
+  }
+  for (const [tipo, capa] of capasDemo) porTipo.set(tipo, capa);
+  pintarCapas([...porTipo.values()], [...dedicasServidor, ...dedicasDemo], [...avataresServidor, ...JUGADORES_DEMO]);
+  pintarBarraSmsDemo();
+}
+
+function cancelarDemo() {
+  demoTanda += 1;
+  while (demoEsperas.length) clearTimeout(demoEsperas.pop());
+}
+
+function esperarDemo(ms, id) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      const i = demoEsperas.indexOf(timer);
+      if (i >= 0) demoEsperas.splice(i, 1);
+      resolve(id === demoTanda);
+    }, ms);
+    demoEsperas.push(timer);
+  });
+}
+
+function ponerCapaDemo(capa) {
+  const pedido = { fondo: 'actual', piel: demoPiel, ajustes: ajustesDe(demoPiel), ...capa };
+  capasDemo.set(pedido.tipo, pedido);
+  refrescarPantalla();
+}
+
+function armarSectoresDemo() {
+  return JUGADORES_DEMO.map((jugador) => ({
+    id: jugador.id,
+    titulo: jugador.titulo,
+    foto: jugador.foto,
+    fotos: [jugador.foto],
+  }));
+}
+
+function armarRuedasDemo() {
+  const sectores = armarSectoresDemo();
+  const corte = Math.ceil(sectores.length / 2);
+  return [
+    { sectores: sectores.slice(0, corte) },
+    { sectores: sectores.slice(corte) },
+  ];
+}
+
+function sinRepetirDemo(sectores, cantidad) {
+  const bolsa = [...sectores];
+  const salida = [];
+  const tope = Math.max(0, Math.min(cantidad, bolsa.length));
+  while (salida.length < tope) salida.push(bolsa.splice(Math.floor(Math.random() * bolsa.length), 1)[0]);
+  return salida;
+}
+
+function escenarioRuletaDemo(ruedas, opciones, pareja, extra) {
+  const fuera = new Set([...(extra.fuera || []), ...(extra.pila || []).flat().map((item) => item.id)]);
+  return {
+    tipo: 'ruleta',
+    opciones: opciones.filter((item) => !fuera.has(item.id)),
+    ruedas: extra.cierre ? [] : ruedas.map((rueda, indice) => ({
+      opciones: rueda.sectores.filter((sector) => !fuera.has(sector.id)),
+      hasta: extra.hasta?.[indice] ?? pareja.find((persona) => persona.rueda === indice)?.id ?? '',
+      animar: extra.animar?.[indice] ?? false,
+    })),
+    pila: extra.pila || [],
+    centro: extra.centro === undefined ? pareja.slice(0, 2) : extra.centro,
+    rechazo: extra.cierre ? null : (extra.rechazo || null),
+    cierre: Boolean(extra.cierre),
+    quedaMs: extra.cierre ? undefined : 90000,
+  };
+}
+
+async function demoRuleta(id, conRechazo) {
+  const ruedas = armarRuedasDemo();
+  const listas = ruedas.map((rueda) => sinRepetirDemo(rueda.sectores, demoAjustes.cantidad));
+  const opciones = ruedas.flatMap((rueda) => rueda.sectores);
+  const pila = [];
+  const confirmados = [];
+  const vueltas = Math.max(...listas.map((lista) => lista.length));
+  for (let ronda = 0; ronda < vueltas; ronda += 1) {
+    let pareja = listas
+      .map((lista, indice) => (lista[ronda] ? { ...lista[ronda], rueda: indice } : null))
+      .filter(Boolean)
+      .slice(0, 2);
+    if (pareja.length === 0) continue;
+    ponerCapaDemo(escenarioRuletaDemo(ruedas, opciones, pareja, {
+      pila, fuera: confirmados, centro: [], animar: ruedas.map((_, indice) => Boolean(pareja.find((persona) => persona.rueda === indice))),
+    }));
+    if (!(await esperarDemo(6800, id))) return;
+    ponerCapaDemo(escenarioRuletaDemo(ruedas, opciones, pareja, { pila, fuera: confirmados }));
+    if (!(await esperarDemo(1100, id))) return;
+    if (conRechazo && ronda === 0 && pareja[0]) {
+      const persona = pareja[0];
+      ponerCapaDemo(escenarioRuletaDemo(ruedas, opciones, pareja, {
+        pila, fuera: confirmados, centro: [], rechazo: { ...persona, rueda: persona.rueda },
+      }));
+      if (!(await esperarDemo(1100, id))) return;
+      const usados = new Set([...pila.flat().map((item) => item.id), ...pareja.map((item) => item.id)]);
+      const reemplazo = (ruedas[persona.rueda]?.sectores || []).find((sector) => !usados.has(sector.id));
+      if (reemplazo) {
+        ponerCapaDemo(escenarioRuletaDemo(ruedas, opciones, pareja, {
+          pila, fuera: confirmados, centro: [],
+          animar: ruedas.map((_, indice) => indice === persona.rueda),
+          hasta: ruedas.map((_, indice) => (indice === persona.rueda ? reemplazo.id : pareja.find((item) => item.rueda === indice)?.id || '')),
+        }));
+        if (!(await esperarDemo(6800, id))) return;
+        pareja = pareja.map((item) => (item.id === persona.id ? { ...reemplazo, rueda: persona.rueda } : item));
+        ponerCapaDemo(escenarioRuletaDemo(ruedas, opciones, pareja, { pila, fuera: confirmados }));
+        if (!(await esperarDemo(900, id))) return;
+      }
+    }
+    pareja.forEach((item) => confirmados.push(item.id));
+    if (pareja.length === 2) {
+      pila.push(pareja.slice(0, 2));
+      const ultima = ronda === vueltas - 1;
+      ponerCapaDemo(escenarioRuletaDemo(ruedas, opciones, pareja, {
+        pila: pila.map((grupo) => grupo.slice(0, 2)), fuera: confirmados, centro: [], cierre: ultima,
+      }));
+      if (!(await esperarDemo(ultima ? 1400 : 800, id))) return;
+      if (ultima) return;
+    }
+  }
+}
+
+async function demoVotacion(id) {
+  const clase = demoAjustes.claseVoto;
+  const opciones = clase === 'temas'
+    ? [
+      { id: 't1', titulo: 'Levitating · Dua Lipa', foto: '', fotos: [] },
+      { id: 't2', titulo: 'As It Was · Harry Styles', foto: '', fotos: [] },
+      { id: 't3', titulo: 'Flowers · Miley Cyrus', foto: '', fotos: [] },
+    ]
+    : clase === 'videos'
+      ? [
+        { id: 'v1', titulo: 'Never Gonna Give You Up · Rick Astley', foto: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg' },
+        { id: 'v2', titulo: 'Blinding Lights · The Weeknd', foto: 'https://i.ytimg.com/vi/4NRXx6U8ABQ/hqdefault.jpg' },
+        { id: 'v3', titulo: 'Despacito · Luis Fonsi', foto: 'https://i.ytimg.com/vi/kJQP7kiw5Fk/hqdefault.jpg' },
+      ]
+      : clase === 'participantes'
+        ? JUGADORES_DEMO.slice(0, 4).map((jugador) => ({ id: jugador.id, titulo: jugador.titulo, foto: jugador.foto, fotos: [jugador.foto] }))
+        : [
+          { id: 'par1', titulo: 'Martina López y Santiago Ruiz', foto: JUGADORES_DEMO[0].foto, fotos: [JUGADORES_DEMO[0].foto, JUGADORES_DEMO[1].foto] },
+          { id: 'par2', titulo: 'Valentina Gómez y Joaquín Fernández', foto: JUGADORES_DEMO[2].foto, fotos: [JUGADORES_DEMO[2].foto, JUGADORES_DEMO[3].foto] },
+          { id: 'par3', titulo: 'Camila Torres y Mateo Herrera', foto: JUGADORES_DEMO[4].foto, fotos: [JUGADORES_DEMO[4].foto, JUGADORES_DEMO[5].foto] },
+        ];
+  const texto = clase === 'temas' ? 'La más votada entra a la cola'
+    : clase === 'videos' ? 'El video más votado'
+      : clase === 'participantes' ? 'El participante más votado'
+        : 'La pareja más votada';
+  ponerCapaDemo({ tipo: 'votacion', texto, opciones, quedaMs: 8000, ganador: '' });
+  if (!(await esperarDemo(5000, id))) return;
+  ponerCapaDemo({ tipo: 'votacion', texto, opciones, quedaMs: 1800, ganador: opciones[0].id });
+}
+
+function htmlBotonesSms() {
+  return '<div class="demo-sms-users">' + USUARIOS_SMS.map((user) => (
+    `<button type="button" data-sms-user="${escapar(user.id)}"><img src="${escapar(user.foto)}" alt=""><span>${escapar(user.titulo.split(' ')[0])}</span></button>`
+  )).join('') + '</div>';
+}
+
+function pintarBarraSmsDemo() {
+  const root = document.getElementById('demo-capas');
+  if (!root) return;
+  let barra = document.getElementById('demo-sms-bar');
+  if (!capasDemo.has('mensaje')) {
+    if (barra) barra.remove();
+    return;
+  }
+  if (!barra) {
+    barra = document.createElement('div');
+    barra.id = 'demo-sms-bar';
+    barra.className = 'demo-sms-bar';
+    root.appendChild(barra);
+  }
+  barra.innerHTML = htmlBotonesSms();
+}
+
+function demoSmsUsuario(userId) {
+  const user = USUARIOS_SMS.find((item) => item.id === userId) || USUARIOS_SMS[0];
+  const escrito = String(demoAjustes.texto || '').trim();
+  const idx = smsFraseIdx[user.id] || 0;
+  smsFraseIdx[user.id] = idx + 1;
+  const texto = escrito || user.frases[idx % user.frases.length];
+  const previa = capasDemo.get('mensaje');
+  const filas = Array.isArray(previa?.filas) ? previa.filas.map((item) => ({ ...item, nuevo: false })) : [];
+  filas.push({
+    id: `sms-${Date.now()}-${user.id}`,
+    autor: user.titulo,
+    foto: user.foto,
+    texto,
+    lado: user.lado,
+    cuando: new Date().toISOString(),
+    nuevo: true,
+  });
+  ponerCapaDemo({ tipo: 'mensaje', filas, peso: demoAjustes.pesoMensaje || 'accesorio' });
+}
+
+function demoMensaje() {
+  if (!capasDemo.has('mensaje')) ponerCapaDemo({ tipo: 'mensaje', filas: [], peso: demoAjustes.pesoMensaje || 'accesorio' });
+}
+
+function demoMatch() {
+  ponerCapaDemo({
+    tipo: 'match',
+    desde: demoAjustes.desde || 'Martina López',
+    hacia: demoAjustes.hacia || 'Santiago Ruiz',
+    texto: demoAjustes.texto || 'Se gustaron',
+    quedaMs: 12000,
+  });
+}
+
+function demoCerrar() {
+  cancelarDemo();
+  capasDemo.clear();
+  dedicasDemo = [];
+  smsClavesVistas = new Set();
+  refrescarPantalla();
+}
+
+async function correrDemo(tipo) {
+  prepararSonido();
+  if (tipo === 'cerrar') {
+    demoCerrar();
+    return;
+  }
+  if (tipo === 'mensajes') {
+    dedicasDemo = dedicasDemo.length ? [] : DEDICAS_DEMO;
+    refrescarPantalla();
+    return;
+  }
+  if (tipo === 'mensaje') {
+    demoMensaje();
+    return;
+  }
+  if (tipo === 'match') {
+    demoMatch();
+    return;
+  }
+  cancelarDemo();
+  const id = demoTanda;
+  if (tipo === 'votacion') {
+    await demoVotacion(id);
+    return;
+  }
+  await demoRuleta(id, tipo === 'rechazo');
+}
+
+const DEMO_ICONOS = {
+  ruleta: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v9l6.5 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
+  votacion: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.2 10.4 14.6 16 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  mensaje: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v9.5H9L5 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  match: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19s-7-4.4-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.6-7 9-7 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  mensajes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h11v8H8l-4 3z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 9h10v8h-6l-4 3z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+  cerrar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+};
+
+const DEMO_FICHAS = [
+  { id: 'ruleta', nombre: 'Ruleta' },
+  { id: 'votacion', nombre: 'Votación' },
+  { id: 'mensaje', nombre: 'Mensaje' },
+  { id: 'match', nombre: 'Match' },
+  { id: 'mensajes', nombre: 'Chats' },
+  { id: 'cerrar', nombre: 'Quitar' },
+];
+
+let demoDockTimer = 0;
+
+function htmlPielesDemo() {
+  const ajustes = ajustesDe(demoPiel);
+  const objetos = (pielDe(demoPiel).efectos.objetos || []).map((objeto) => (
+    `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
+  )).join('');
+  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon'].map((id) => (
+    `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
+  )).join('') + '</div>'
+    + '<label class="demo-check" data-ajuste="sonido"><input type="checkbox"' + (ajustes.sonido ? ' checked' : '') + '> Sonido de la ruleta</label>'
+    + '<label class="demo-check" data-ajuste="efectos"><input type="checkbox"' + (ajustes.efectos ? ' checked' : '') + '> Efectos y objetos</label>'
+    + (objetos ? '<div class="demo-dialog-chips">' + objetos + '</div>' : '');
+}
+
+function htmlDialogoDemo(tipo) {
+  if (tipo === 'cerrar') {
+    return '<p>Saca las capas de prueba y deja el video.</p><div class="demo-dialog-acciones"><button type="button" data-run="cerrar">Quitar capas</button></div>';
+  }
+  if (tipo === 'mensajes') {
+    return '<p>Mensajes de invitados, encima de lo que esté sonando.</p><div class="demo-dialog-acciones"><button type="button" data-run="mensajes">Mostrar u ocultar</button></div>';
+  }
+  if (tipo === 'mensaje') {
+    const peso = demoAjustes.pesoMensaje === 'destacado' ? 'destacado' : 'accesorio';
+    return htmlPielesDemo()
+      + '<p>El chat es una capa accesoria al video. Destacalo sólo cuando quieras que robe la escena.</p>'
+      + '<div class="demo-dialog-chips">'
+      + `<button type="button" data-peso="accesorio" class="${peso === 'accesorio' ? 'is-on' : ''}">Accesorio</button>`
+      + `<button type="button" data-peso="destacado" class="${peso === 'destacado' ? 'is-on' : ''}">Destacar</button>`
+      + '</div>'
+      + '<label>Texto <input id="demo-texto" value="' + escapar(demoAjustes.texto) + '" placeholder="Escribí o dejalo vacío"></label>'
+      + htmlBotonesSms();
+  }
+  if (tipo === 'ruleta') {
+    return htmlPielesDemo()
+      + '<label>Parejas <input id="demo-cantidad" type="number" min="1" max="8" value="' + demoAjustes.cantidad + '"></label>'
+      + '<label class="demo-check"><input id="demo-rechazo" type="checkbox"' + (demoAjustes.rechazo ? ' checked' : '') + '> Probar un rechazo</label>'
+      + '<div class="demo-dialog-acciones"><button type="button" data-run="ruleta">Girar</button></div>';
+  }
+  if (tipo === 'votacion') {
+    return htmlPielesDemo()
+      + '<div class="demo-dialog-chips">' + ['temas', 'videos', 'participantes', 'parejas'].map((id) => (
+        `<button type="button" data-voto="${id}" class="${id === demoAjustes.claseVoto ? 'is-on' : ''}">${id}</button>`
+      )).join('') + '</div>'
+      + '<div class="demo-dialog-acciones"><button type="button" data-run="votacion">Abrir votación</button></div>';
+  }
+  const titulo = tipo === 'match' ? 'Animar match' : 'Mostrar mensaje';
+  return htmlPielesDemo()
+    + '<label>Desde <input id="demo-desde" value="' + escapar(demoAjustes.desde) + '"></label>'
+    + '<label>Hacia <input id="demo-hacia" value="' + escapar(demoAjustes.hacia) + '"></label>'
+    + '<label>Texto <input id="demo-texto" value="' + escapar(demoAjustes.texto) + '"></label>'
+    + '<div class="demo-dialog-acciones"><button type="button" data-run="' + tipo + '">' + titulo + '</button></div>';
+}
+
+function leerAjustesDialogo(caja) {
+  const cantidad = caja.querySelector('#demo-cantidad');
+  if (cantidad) demoAjustes.cantidad = Math.max(1, Math.min(8, Number(cantidad.value) || 2));
+  const rechazo = caja.querySelector('#demo-rechazo');
+  if (rechazo) demoAjustes.rechazo = rechazo.checked;
+  const desde = caja.querySelector('#demo-desde');
+  const hacia = caja.querySelector('#demo-hacia');
+  const texto = caja.querySelector('#demo-texto');
+  if (desde) demoAjustes.desde = desde.value;
+  if (hacia) demoAjustes.hacia = hacia.value;
+  if (texto) demoAjustes.texto = texto.value;
+}
+
+function cerrarDockDemo() {
+  const root = document.getElementById('demo-capas');
+  if (!root) return;
+  root.classList.remove('is-dock');
+  clearTimeout(demoDockTimer);
+}
+
+function cerrarDialogoDemo() {
+  const root = document.getElementById('demo-capas');
+  if (!root) return;
+  demoDialogoTipo = '';
+  root.classList.remove('is-dialogo');
+  const dialogo = root.querySelector('#demo-dialogo');
+  if (dialogo) dialogo.innerHTML = '';
+}
+
+function abrirDockDemo() {
+  const root = document.getElementById('demo-capas');
+  if (!root) return;
+  cerrarDialogoDemo();
+  root.classList.add('is-dock');
+  clearTimeout(demoDockTimer);
+  demoDockTimer = setTimeout(cerrarDockDemo, 6000);
+}
+
+function abrirDialogoDemo(tipo) {
+  const root = document.getElementById('demo-capas');
+  const dialogo = root && root.querySelector('#demo-dialogo');
+  const ficha = DEMO_FICHAS.find((item) => item.id === tipo);
+  if (!root || !dialogo || !ficha) return;
+  clearTimeout(demoDockTimer);
+  demoDialogoTipo = tipo;
+  root.classList.remove('is-dock');
+  root.classList.add('is-dialogo');
+  dialogo.innerHTML = '<div class="demo-dialog-caja">'
+    + '<header><strong>' + ficha.nombre + '</strong><button type="button" data-demo="cerrar-dialogo" aria-label="Cerrar">✕</button></header>'
+    + htmlDialogoDemo(tipo)
+    + '</div>';
+}
+
+function montarBarraDemo() {
+  if (document.getElementById('demo-capas')) return;
+  const root = document.createElement('div');
+  root.id = 'demo-capas';
+  root.className = 'demo-capas';
+  root.innerHTML = '<button type="button" class="demo-mas" data-demo="toggle" aria-label="Capas de prueba">…</button>'
+    + '<div class="demo-dock" id="demo-dock">'
+    + DEMO_FICHAS.map((item) => (
+      `<button type="button" data-abrir="${item.id}" aria-label="${item.nombre}"><span>${DEMO_ICONOS[item.id]}</span><em>${item.nombre}</em></button>`
+    )).join('')
+    + '</div>'
+    + '<div class="demo-dialogo" id="demo-dialogo"></div>';
+  document.body.appendChild(root);
+  root.addEventListener('click', (evento) => {
+    const piel = evento.target.closest('[data-piel]');
+    if (piel) {
+      demoPiel = piel.getAttribute('data-piel');
+      for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, piel: demoPiel, ajustes: ajustesDe(demoPiel) });
+      refrescarPantalla();
+      if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
+      return;
+    }
+    const objeto = evento.target.closest('[data-ajuste-objeto]');
+    if (objeto) {
+      const id = objeto.getAttribute('data-ajuste-objeto');
+      const actual = ajustesDe(demoPiel);
+      guardarAjustesPiel(demoPiel, { ...actual, objetos: { ...actual.objetos, [id]: actual.objetos[id] === false } });
+      for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, piel: demoPiel, ajustes: ajustesDe(demoPiel) });
+      refrescarPantalla();
+      if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
+      return;
+    }
+    const ajuste = evento.target.closest('[data-ajuste]');
+    if (ajuste) {
+      const clave = ajuste.getAttribute('data-ajuste');
+      const input = ajuste.matches('input') ? ajuste : ajuste.querySelector('input');
+      const actual = ajustesDe(demoPiel);
+      guardarAjustesPiel(demoPiel, { ...actual, [clave]: input ? input.checked : !actual[clave] });
+      for (const [tipo, capa] of capasDemo) capasDemo.set(tipo, { ...capa, piel: demoPiel, ajustes: ajustesDe(demoPiel) });
+      refrescarPantalla();
+      if (demoDialogoTipo) abrirDialogoDemo(demoDialogoTipo);
+      return;
+    }
+    const voto = evento.target.closest('[data-voto]');
+    if (voto) {
+      demoAjustes.claseVoto = voto.getAttribute('data-voto');
+      root.querySelectorAll('[data-voto]').forEach((boton) => boton.classList.toggle('is-on', boton === voto));
+      return;
+    }
+    const peso = evento.target.closest('[data-peso]');
+    if (peso) {
+      demoAjustes.pesoMensaje = peso.getAttribute('data-peso') === 'destacado' ? 'destacado' : 'accesorio';
+      const previa = capasDemo.get('mensaje');
+      if (previa) ponerCapaDemo({ ...previa, peso: demoAjustes.pesoMensaje });
+      root.querySelectorAll('[data-peso]').forEach((boton) => boton.classList.toggle('is-on', boton === peso));
+      return;
+    }
+    const smsUser = evento.target.closest('[data-sms-user]');
+    if (smsUser) {
+      const caja = root.querySelector('.demo-dialog-caja');
+      if (caja) leerAjustesDialogo(caja);
+      cerrarDialogoDemo();
+      demoSmsUsuario(smsUser.getAttribute('data-sms-user'));
+      return;
+    }
+    const abrir = evento.target.closest('[data-abrir]');
+    if (abrir) {
+      abrirDialogoDemo(abrir.getAttribute('data-abrir'));
+      return;
+    }
+    const run = evento.target.closest('[data-run]');
+    if (run) {
+      const caja = root.querySelector('.demo-dialog-caja');
+      if (caja) leerAjustesDialogo(caja);
+      const accion = run.getAttribute('data-run');
+      cerrarDialogoDemo();
+      void correrDemo(accion === 'ruleta' && demoAjustes.rechazo ? 'rechazo' : accion);
+      return;
+    }
+    const demo = evento.target.closest('[data-demo]');
+    if (!demo) {
+      if (evento.target === root.querySelector('#demo-dialogo')) cerrarDialogoDemo();
+      return;
+    }
+    const accion = demo.getAttribute('data-demo');
+    if (accion === 'toggle') {
+      if (root.classList.contains('is-dock')) cerrarDockDemo();
+      else abrirDockDemo();
+      return;
+    }
+    if (accion === 'cerrar-dialogo') cerrarDialogoDemo();
+  });
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape') {
+      cerrarDialogoDemo();
+      cerrarDockDemo();
+    }
+  });
+}
+
+async function leer() {
+  const id = localId();
+  if (!id) return;
+  const respuesta = await fetch(`${apiBase()}/api/public/pantalla/${id}`).catch(() => null);
+  const cuerpo = respuesta ? await respuesta.json().catch(() => null) : null;
+  const avatares = cuerpo?.data?.avatares || [];
+  pielesServidor = cuerpo?.data?.pieles || {};
+  await precargarAvatares(avatares);
+  guardarServidor(cuerpo?.data?.capas || [], cuerpo?.data?.dedicatorias || [], avatares);
+  refrescarPantalla();
+  aplicarAhora(cuerpo?.data);
+}
+
+function escuchar() {
+  const id = localId();
+  if (!id) return;
+  const ws = new WebSocket(`${apiBase().replace(/^http/, 'ws')}/ws/musica?rol=pantalla&localId=${encodeURIComponent(id)}`);
+  ws.onmessage = (evento) => {
+    try {
+      const data = JSON.parse(evento.data);
+      if (data.tipo === 'avatares') void precargarAvatares(data.avatares || []);
+      if (data.tipo === 'pantalla') {
+        if (data.pieles) pielesServidor = data.pieles;
+        void precargarAvatares(data.avatares || []);
+        guardarServidor(data.capas || [], data.dedicatorias || [], data.avatares || []);
+        refrescarPantalla();
+        aplicarAhora(data);
+      }
+    } catch {
+      // el poll cubre un frame roto
+    }
+  };
+  ws.onclose = () => setTimeout(escuchar, 2000);
+}
+
+async function calentar() {
+  const id = localId();
+  if (!id) return;
+  const respuesta = await fetch(`${apiBase()}/api/public/pantalla/${id}/avatares`).catch(() => null);
+  const cuerpo = respuesta ? await respuesta.json().catch(() => null) : null;
+  await precargarAvatares(cuerpo?.data?.avatares || []);
+}
+
+function playerBase() {
+  return new URLSearchParams(location.search).get('en') || '';
+}
+
+function playerApi(path) {
+  return playerBase() + path;
+}
+
+function postEnded(uid) {
+  const base = playerBase();
+  if (!base) return;
+  fetch(playerApi('/api/playback/ended'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ trackUid: uid }),
+  }).catch(() => {});
+}
+
+function loadYoutube() {
+  if (window.YT && window.YT.Player) return Promise.resolve();
+  if (!window.fonoYt) {
+    window.fonoYt = new Promise((resolve) => {
+      window.onYouTubeIframeAPIReady = () => resolve();
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    });
+  }
+  return window.fonoYt;
+}
+
+let stageKey = '';
+let ytPlayer = null;
+
+const ORIGEN_AHORA = { REQUEST: 'Pedido', VOTE: 'Voto', AUTOFILL: 'Automático', MODERATOR: 'Sala', YOUTUBE: 'YouTube' };
+
+function aplicarAhora(data) {
+  if (!data || !Object.prototype.hasOwnProperty.call(data, 'now')) return;
+  if (!data.now) {
+    if (!playerBase()) arrancarVideoEjemplo();
+    else showStage({ now: null, paused: false });
+    return;
+  }
+  showStage({ now: data.now, paused: Boolean(data.now.paused) });
+}
+
+function pintarDatosAhora(now, paused) {
+  const caja = document.getElementById('ahora-datos');
+  if (!caja || !now) return;
+  const origen = ORIGEN_AHORA[now.origin] || now.origin || '';
+  const youtube = String(now.trackUid || '').indexOf('yt_') === 0;
+  const bits = [];
+  if (youtube) bits.push('YouTube', 'el video está en esta pantalla');
+  if (origen) bits.push(origen);
+  if (paused) bits.push('En pausa');
+  const kicker = paused ? 'EN PAUSA' : (ORIGEN_AHORA[now.origin] || 'Ahora').toUpperCase();
+  caja.innerHTML = `<p class="ahora-marca">FONOMEETS</p>`
+    + `<p class="ahora-kicker">${escapar(kicker)}</p>`
+    + `<h1 class="ahora-titulo">${escapar(now.title || 'Preparando la noche')}</h1>`
+    + `<p class="ahora-artista">${escapar(now.artist || '')}</p>`
+    + (bits.length ? `<p class="ahora-meta">${escapar(bits.join(' · '))}</p>` : '')
+    + (now.dedication ? `<p class="ahora-dedicatoria">“${escapar(now.dedication)}”</p>` : '');
+}
+
+function vaciarMedia() {
+  const media = mediaAhora();
+  if (media) media.innerHTML = '';
+  ytPlayer = null;
+}
+
+function showStage(state) {
+  const stage = escenarioAhora();
+  const media = mediaAhora();
+  if (!stage || !media) return;
+  const now = state && state.now;
+  if (!now) {
+    stageKey = '';
+    vaciarMedia();
+    stage.hidden = true;
+    return;
+  }
+  stage.hidden = false;
+  pintarDatosAhora(now, Boolean(state.paused));
+  const youtube = String(now.trackUid || '').indexOf('yt_') === 0 ? now.trackUid.slice(3) : '';
+  if (/^[A-Za-z0-9_-]{11}$/.test(youtube)) {
+    const key = 'yt:' + youtube;
+    if (stageKey !== key) {
+      stageKey = key;
+      vaciarMedia();
+      const fondo = document.createElement('img');
+      fondo.className = 'ahora-fondo';
+      fondo.alt = '';
+      fondo.src = 'https://i.ytimg.com/vi/' + youtube + '/hqdefault.jpg';
+      media.appendChild(fondo);
+      const holder = document.createElement('div');
+      holder.id = 'yt-frame';
+      media.appendChild(holder);
+      const uid = now.trackUid;
+      loadYoutube().then(() => {
+        if (stageKey !== key || !window.YT || !window.YT.Player) return;
+        ytPlayer = new window.YT.Player('yt-frame', {
+          host: 'https://www.youtube.com',
+          width: '100%',
+          height: '100%',
+          videoId: youtube,
+          playerVars: {
+            autoplay: 1, controls: 0, rel: 0, modestbranding: 1, playsinline: 1, fs: 0,
+            origin: location.origin, widget_referrer: location.origin,
+          },
+          events: {
+            onReady: (event) => {
+              try { event.target.unMute(); event.target.setVolume(100); event.target.playVideo(); } catch (error) { /* reintenta */ }
+            },
+            onStateChange: (event) => { if (event.data === 0) postEnded(uid); },
+          },
+        });
+      }).catch(() => {});
+    }
+    if (ytPlayer && ytPlayer.pauseVideo) {
+      if (state.paused) ytPlayer.pauseVideo();
+      else {
+        try { ytPlayer.unMute(); ytPlayer.playVideo(); } catch (error) { /* sigue */ }
+      }
+    }
+    return;
+  }
+  ytPlayer = null;
+  if (now.videoUrl) {
+    const key = 'url:' + now.videoUrl;
+    if (stageKey !== key) {
+      stageKey = key;
+      vaciarMedia();
+      const video = document.createElement('video');
+      video.className = 'ahora-video';
+      video.autoplay = true;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.preload = 'auto';
+      video.src = now.videoUrl;
+      video.onerror = () => { if (stageKey === key) stage.hidden = true; };
+      media.appendChild(video);
+      video.play().catch(() => {});
+    }
+    const vivo = media.querySelector('video');
+    if (vivo) {
+      if (state.paused) vivo.pause();
+      else vivo.play().catch(() => {});
+    }
+    return;
+  }
+  if (now.video && playerBase()) {
+    const key = 'file:' + now.trackUid;
+    if (stageKey !== key) {
+      stageKey = key;
+      vaciarMedia();
+      const video = document.createElement('video');
+      video.autoplay = true;
+      video.playsInline = true;
+      video.src = playerApi('/api/now/media');
+      video.onended = () => postEnded(now.trackUid);
+      media.appendChild(video);
+    }
+    const video = media.querySelector('video');
+    if (video) {
+      if (state.paused) video.pause();
+      else video.play().catch(() => {});
+    }
+    return;
+  }
+  const key = 'cover:' + now.trackUid;
+  if (stageKey !== key) {
+    stageKey = key;
+    vaciarMedia();
+    const uid = String(now.trackUid || '');
+    const src = uid.indexOf('yt_') === 0
+      ? 'https://i.ytimg.com/vi/' + uid.slice(3) + '/hqdefault.jpg'
+      : (uid ? playerApi('/api/library/' + encodeURIComponent(uid) + '/cover') : '');
+    if (!src) {
+      stage.hidden = true;
+      return;
+    }
+    const img = document.createElement('img');
+    img.alt = '';
+    img.src = src;
+    img.onerror = () => { img.remove(); if (!media.firstChild) stage.hidden = true; };
+    media.appendChild(img);
+  }
+}
+
+function conectarPlayer() {
+  const base = playerBase();
+  if (!base) return;
+  fetch(playerApi('/api/state')).then((respuesta) => respuesta.json()).then(showStage).catch(() => {});
+  let remoto;
+  try { remoto = new URL(base); } catch { return; }
+  const ws = new WebSocket((remoto.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + remoto.host + '/ws');
+  ws.onmessage = (evento) => {
+    try { showStage(JSON.parse(evento.data)); } catch { /* el siguiente frame alcanza */ }
+  };
+  ws.onclose = () => setTimeout(conectarPlayer, 1000);
+}
+
+function urlVideoEjemplo() {
+  return `${location.origin}/descargas/pieles/pieles-16x9.mp4`;
+}
+
+function arrancarVideoEjemplo() {
+  if (playerBase()) return;
+  showStage({
+    now: {
+      trackUid: 'demo_video',
+      title: 'Noche de ejemplo',
+      artist: 'FonoMeets',
+      origin: 'MODERATOR',
+      videoUrl: urlVideoEjemplo(),
+    },
+    paused: false,
+  });
+}
+
+leer();
+setInterval(leer, 4000);
+calentar();
+setInterval(calentar, 15000);
+escuchar();
+conectarPlayer();
+montarBarraDemo();
+arrancarVideoEjemplo();
+document.addEventListener('pointerdown', () => {
+  const video = document.querySelector('#ahora-media video');
+  if (!video) return;
+  video.muted = false;
+  video.play().catch(() => {});
+}, { once: true });
