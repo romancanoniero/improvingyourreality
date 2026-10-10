@@ -4,6 +4,33 @@ Este documento es el encargo para el agente de diseño. Lista cada objeto gráfi
 
 Cada elemento tiene un código (por ejemplo `A3.2`). Usalo para nombrar los archivos y las especificaciones que entregues.
 
+## Mapa rápido de la pantalla del salón
+
+| Lo que se ve en pantalla | Código | Slot de skin |
+|---|---|---|
+| Imagen de fondo de la escena | A2.9 y `fx-fondo-*`; detrás, lo que suena (A1.1) | fondo |
+| Ambiente animado detrás de los juegos (neón, líneas, nubes, velocidad) | A2.5 | ambiente |
+| Personajes y objetos que animan al costado (destello, halo, ドン, trama, rayas, bandera, GO!, nubes, hélice, gato azul, estrellas) | A2.6 | objetos |
+| Ruleta: rueda, fotos, nombres y puntero | A4.1–A4.6 | lienzo, colores, giro |
+| Participante seleccionado | A4.7 | foto |
+| Pareja formada al centro | A4.8 | ficha, entrada |
+| Tira de parejas ya formadas | A4.9 | apila |
+| Rechazo y reemplazo | A4.10 | rechazo |
+| Cierre: todas las parejas en el salón | A4.11 | ficha |
+| Chat en pantalla | A5.1–A5.5 | hoy sin skin |
+| Globos de dedicatoria | A5.6 | globo |
+| Votación de la próxima canción (o video, participantes, parejas) | A3 | foto, marco |
+| Match | A6 | ficha, impacto |
+| Sello del juego y reloj | A2.3, A2.4 | sello |
+| Golpe visual y confeti al resolver | A2.7, A2.8 | impacto, partículas |
+| Lo que suena: tema, artista y dedicatoria | A1 | hoy sin skin |
+
+**Hoy no hay ninguna imagen en estos slots.** Fondos, personajes y objetos están dibujados con degradados CSS en `display.css`: el "gato azul", por ejemplo, son nueve círculos superpuestos, y la hélice es una cruz que gira. El rediseño tiene que entregar ilustraciones reales por skin:
+- SVG o PNG @2x para lo estático;
+- SVG animado o Lottie para lo que se mueve (hoy: flotar 3,4 s y girar 1,1 s).
+
+Cada personaje u objeto tiene que funcionar a los costados sin tapar los elementos interactivos.
+
 ## 0. Regla principal: la skin cambia la estética, no los elementos
 
 La pantalla del salón tiene 4 skins (`nocturna`, `manga`, `meteoro`, `doraemon`). Todas muestran **los mismos elementos en el mismo lugar**. Una skin sólo cambia:
