@@ -1927,10 +1927,14 @@ function showStage(state) {
           playerVars: {
             autoplay: 1, controls: 0, rel: 0, modestbranding: 1, playsinline: 1, fs: 0,
             origin: location.origin, widget_referrer: location.origin,
+            ...(now.mute ? { mute: 1, loop: 1, playlist: youtube } : {}),
           },
           events: {
             onReady: (event) => {
-              try { event.target.unMute(); event.target.setVolume(100); event.target.playVideo(); } catch (error) { /* reintenta */ }
+              try {
+                if (!now.mute) { event.target.unMute(); event.target.setVolume(100); }
+                event.target.playVideo();
+              } catch (error) { /* reintenta */ }
             },
             onStateChange: (event) => { if (event.data === 0) postEnded(uid); },
           },
@@ -1940,7 +1944,10 @@ function showStage(state) {
     if (ytPlayer && ytPlayer.pauseVideo) {
       if (state.paused) ytPlayer.pauseVideo();
       else {
-        try { ytPlayer.unMute(); ytPlayer.playVideo(); } catch (error) { /* sigue */ }
+        try {
+          if (!now.mute) ytPlayer.unMute();
+          ytPlayer.playVideo();
+        } catch (error) { /* sigue */ }
       }
     }
     return;
@@ -2028,8 +2035,26 @@ function urlVideoEjemplo() {
   return `${location.origin}/descargas/pieles/pieles-16x9.mp4`;
 }
 
+const YT_DEMO = { id: 'K4DyBUG242c', titulo: 'On & On (feat. Daniel Levi)', artista: 'Cartoon, Jéja' };
+
 function arrancarVideoEjemplo() {
   if (playerBase()) return;
+  if (!localId()) {
+    const elegido = new URLSearchParams(location.search).get('yt') || '';
+    const propio = /^[A-Za-z0-9_-]{11}$/.test(elegido);
+    showStage({
+      now: {
+        trackUid: 'yt_' + (propio ? elegido : YT_DEMO.id),
+        title: propio ? 'Video de prueba' : YT_DEMO.titulo,
+        artist: propio ? 'YouTube' : YT_DEMO.artista,
+        origin: 'MODERATOR',
+        // Los navegadores sólo permiten arrancar solo sin sonido; el primer toque lo activa.
+        mute: true,
+      },
+      paused: false,
+    });
+    return;
+  }
   showStage({
     now: {
       trackUid: 'demo_video',
