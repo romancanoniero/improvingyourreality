@@ -1752,6 +1752,7 @@ function botonesRielDemo() {
     { id: 'efectos', nombre: 'Efectos', on: ajustes.efectos },
     { id: 'sonido', nombre: 'Sonido', on: ajustes.sonido },
     { id: 'grilla', nombre: 'Grilla', on: grillaVisible() },
+    { id: 'video', nombre: 'Recargar video', on: false },
     { sep: true },
     { id: 'ajustes', nombre: 'Ajustes', on: false },
   ];
@@ -1833,6 +1834,8 @@ function accionRielDemo(id) {
     cambiarPielDemo(demoPiel);
     const valor = id === 'mascota' ? nuevo.objetos.mascota : nuevo[id];
     avisoDemo(`${id === 'mascota' ? 'Mascota' : id === 'efectos' ? 'Efectos' : 'Sonido'}: ${estado(valor)}`);
+  } else if (id === 'video') {
+    avisoDemo(recargarVideo(true) ? 'Recargando el video' : 'No hay video de YouTube');
   } else if (id === 'grilla') {
     alternarGrilla();
     avisoDemo(`Grilla: ${estado(grillaVisible())}`);
@@ -1845,6 +1848,7 @@ function accionRielDemo(id) {
 }
 
 const DEMO_ICONOS = {
+  video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12a7 7 0 1 1-2.05-4.95" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17.5 3.5v4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9.2v5.6l4.6-2.8z" fill="currentColor"/></svg>',
   ruleta: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v9l6.5 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
   votacion: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.2 10.4 14.6 16 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   mensaje: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v9.5H9L5 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
@@ -2165,6 +2169,7 @@ function reproductorYoutube(holder, videoId, vars, eventos) {
   holder.replaceWith(iframe);
   const info = { playerState: -1, muted: false, volume: undefined, currentTime: 0 };
   let listo = false;
+  let ultimo = 0;
   const enviar = (mensaje) => {
     try { iframe.contentWindow?.postMessage(JSON.stringify({ ...mensaje, id, channel: 'widget' }), 'https://www.youtube.com'); } catch (error) { /* iframe ido */ }
   };
@@ -2176,6 +2181,8 @@ function reproductorYoutube(holder, videoId, vars, eventos) {
     try { datos = typeof evento.data === 'string' ? JSON.parse(evento.data) : evento.data; } catch (error) { return; }
     if (!datos || !datos.event) return;
     ytMensajes += 1;
+    ultimo = Date.now();
+    iframe.classList.add('is-vivo');
     clearInterval(escuchar);
     if ((datos.event === 'infoDelivery' || datos.event === 'initialDelivery') && datos.info) {
       const antes = info.playerState;
@@ -2202,6 +2209,7 @@ function reproductorYoutube(holder, videoId, vars, eventos) {
     getVolume: () => info.volume,
     getCurrentTime: () => Number(info.currentTime) || 0,
     getPlayerState: () => info.playerState,
+    ultimoMensaje: () => ultimo,
     destroy: () => {
       clearInterval(escuchar);
       window.removeEventListener('message', alMensaje);
@@ -2220,6 +2228,31 @@ let ytEsperaToque = false;
 let ytTocado = false;
 let ytSonidoPendiente = false;
 let ytListo = false;
+let ytActual = null;
+let ytRecargas = 0;
+
+// En tablets con poca memoria Android cierra el proceso del iframe de YouTube y queda la página de error
+// de Chrome. Si YouTube deja de hablar mientras reproduce, o nunca llegó a estar listo, se recrea.
+function vigilarYoutube() {
+  if (!ytPlayer || !ytPlayer.ultimoMensaje || !ytActual || ytActual.key !== stageKey) return;
+  const ahora = Date.now();
+  const callado = ytListo
+    ? ytEstado === 1 && !ytPausaSala && ahora - ytPlayer.ultimoMensaje() > 15000
+    : ahora - ytDesde > 25000;
+  if (callado) recargarVideo(false);
+}
+
+function recargarVideo(porToque) {
+  if (!ytActual || ytActual.key !== stageKey) return false;
+  ytRecargas += 1;
+  crearPlayerYoutube(ytActual.youtube, ytActual.now, ytActual.key, porToque && esIOS());
+  return true;
+}
+
+document.addEventListener('click', (evento) => {
+  if (!evento.target.closest('[data-recargar-video]')) return;
+  recargarVideo(true);
+});
 
 function esIOS() {
   return /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
@@ -2279,6 +2312,17 @@ function avisoReproducir() {
   capa.classList.toggle('is-al-frente', falta);
   // Si quedó sonando mudo hace falta el parlante de YouTube, que está en la barra superior.
   capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo && medioCambiadoPorJuego !== 'mudo' && !ytSonidoPendiente));
+  let recargar = capa.querySelector('.ahora-recargar');
+  if (falta && !recargar) {
+    recargar = document.createElement('button');
+    recargar.type = 'button';
+    recargar.className = 'ahora-recargar';
+    recargar.setAttribute('data-recargar-video', '');
+    recargar.textContent = '↻ Recargar video';
+    capa.appendChild(recargar);
+  } else if (!falta && recargar) {
+    recargar.remove();
+  }
   if (!falta && !pendiente) {
     if (aviso) aviso.remove();
     return;
@@ -2297,6 +2341,7 @@ function avisoReproducir() {
 }
 
 setInterval(() => {
+  vigilarYoutube();
   if (ytPlayer) avisoReproducir();
   pintarDiagnostico();
 }, 1000);
@@ -2439,6 +2484,7 @@ function pintarDiagnostico() {
     `modo toque ${ytEsperaToque}  al frente ${Boolean(capa?.classList.contains('is-al-frente'))}  visible ${capa?.style.visibility || '-'}`,
     `pausa sala ${ytPausaSala}  activación ${navigator.userActivation ? navigator.userActivation.hasBeenActive : '-'}`,
     `mensajes de YouTube ${ytMensajes}  iframe ${document.querySelector('#ahora-media iframe') ? 'sí' : 'no'}`,
+    `último mensaje ${ytPlayer?.ultimoMensaje?.() ? Math.round((Date.now() - ytPlayer.ultimoMensaje()) / 1000) + 's' : '-'}  recargas ${ytRecargas}`,
   ].join('\n');
 }
 
@@ -2600,6 +2646,7 @@ function vaciarMedia() {
   const media = mediaAhora();
   if (media) media.innerHTML = '';
   ytPlayer = null;
+  ytActual = null;
   ytEsperaToque = false;
   ytSonidoPendiente = false;
   avisoReproducir();
@@ -2629,6 +2676,7 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
   ytTocado = false;
   ytEstado = -1;
   ytDesde = Date.now();
+  ytActual = { youtube, now, key };
   const uid = now.trackUid;
   const player = reproductorYoutube(holder, youtube, {
     autoplay: esperarToque ? '0' : '1',

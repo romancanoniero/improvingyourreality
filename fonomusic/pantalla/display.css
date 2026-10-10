@@ -1100,6 +1100,7 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   top: calc(-1 * var(--yt-barra));
   height: calc(100% + 2 * var(--yt-barra));
 }
+#ahora-media iframe#yt-frame:not(.is-vivo) { opacity: 0; }
 #ahora-media img:not(.ahora-fondo) {
   position: absolute;
   inset: 0;
@@ -1472,6 +1473,19 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   max-height: min(90cqh, 100%);
 }
 
+.ahora-recargar {
+  position: absolute;
+  top: 3%;
+  right: 2%;
+  z-index: 3;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  background: rgba(14, 14, 18, .85);
+  color: #fff;
+  font: 600 15px/1.2 system-ui, sans-serif;
+  cursor: pointer;
+}
 .ahora-tocar {
   position: absolute;
   left: 50%;
