@@ -1826,6 +1826,26 @@ function loadYoutube() {
 
 let stageKey = '';
 let ytPlayer = null;
+let ytEstado = -1;
+let ytDesde = 0;
+
+// Algunos teléfonos (iOS en ahorro de batería, por ejemplo) no dejan arrancar el video solo.
+function avisoReproducir() {
+  const capa = document.getElementById('ahora-video');
+  if (!capa) return;
+  let aviso = capa.querySelector('.ahora-tocar');
+  const falta = Boolean(ytPlayer) && (ytEstado === -1 || ytEstado === 5) && Date.now() - ytDesde > 3500;
+  if (!falta) {
+    if (aviso) aviso.remove();
+    return;
+  }
+  if (!aviso) {
+    aviso = document.createElement('p');
+    aviso.className = 'ahora-tocar';
+    aviso.textContent = 'Tocá la pantalla para reproducir el video';
+    capa.appendChild(aviso);
+  }
+}
 
 const ORIGEN_AHORA = { REQUEST: 'Pedido', VOTE: 'Voto', AUTOFILL: 'Automático', MODERATOR: 'Sala', YOUTUBE: 'YouTube' };
 
@@ -1910,6 +1930,7 @@ function vaciarMedia() {
   const media = mediaAhora();
   if (media) media.innerHTML = '';
   ytPlayer = null;
+  avisoReproducir();
 }
 
 function showStage(state) {
@@ -1942,6 +1963,9 @@ function showStage(state) {
       const uid = now.trackUid;
       loadYoutube().then(() => {
         if (stageKey !== key || !window.YT || !window.YT.Player) return;
+        ytEstado = -1;
+        ytDesde = Date.now();
+        setTimeout(avisoReproducir, 4000);
         ytPlayer = new window.YT.Player('yt-frame', {
           host: 'https://www.youtube.com',
           width: '100%',
@@ -1959,7 +1983,11 @@ function showStage(state) {
                 event.target.playVideo();
               } catch (error) { /* reintenta */ }
             },
-            onStateChange: (event) => { if (event.data === 0) postEnded(uid); },
+            onStateChange: (event) => {
+              ytEstado = event.data;
+              avisoReproducir();
+              if (event.data === 0) postEnded(uid);
+            },
           },
         });
       }).catch(() => {});

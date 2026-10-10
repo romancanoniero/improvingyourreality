@@ -1411,6 +1411,46 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 /* Con fondo de juego, la ruleta y la votación tapan el video de "Ahora". */
 .escena[data-fondo='juego'][data-slots~='escenario'] .escenario-ahora { visibility: hidden; }
 
+/* Con la ruleta o la votación en escena, la reproducción se retira y el juego ocupa casi toda la pantalla. */
+.ahora-datos { transition: opacity .4s ease; }
+.ahora-velo { transition: background-color .4s ease; }
+.escena[data-slots~='escenario'] .ahora-datos { opacity: 0; }
+.escena[data-slots~='escenario'] .escenario-ahora .ahora-velo { background-color: rgba(8, 6, 16, .55); }
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='ruleta'] .escena-marco,
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] .escena-marco {
+  width: 94cqw;
+  height: 94cqh;
+  max-height: 94cqh;
+  padding: 1.5cqh 2cqw 7cqh;
+}
+.escena[data-slots~='escenario'][data-slots~='rail'] .escena-capa[data-tipo='ruleta'] .escena-marco,
+.escena[data-slots~='escenario'][data-slots~='rail'] .escena-capa[data-tipo='votacion'] .escena-marco {
+  width: calc(94cqw - var(--slot-rail-w) - 2cqw);
+  margin-right: calc(var(--slot-rail-w) + 2cqw);
+}
+.escena[data-slots~='escenario'] .escena-ruletas > [class*='fx-lienzo-'] { max-width: min(98cqh, 49%); }
+.escena[data-slots~='escenario'] .escena-ruletas .escena-ruleta,
+.escena[data-slots~='escenario'] .escena-cuerpo.is-con-pila .escena-ruletas .escena-ruleta {
+  width: min(90cqh, 100%);
+  max-height: min(90cqh, 100%);
+}
+
+.ahora-tocar {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  z-index: 3;
+  margin: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(14, 14, 18, .85);
+  color: #fff;
+  font: 600 15px/1.2 system-ui, sans-serif;
+  transform: translateX(-50%);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 /* Nocturna: arte de la plantilla */
 .escena[data-piel='nocturna'][data-fondo='juego'] {
   background: #1a1430 url('./arte/nocturna/fondo.webp') center / cover no-repeat;
@@ -1811,3 +1851,17 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 /* El chat y el chip de match se dimensionan por su contenido: sin contención de tamaño. */
 .escena-capa[data-tipo='mensaje'] .escena-cuerpo,
 .escena-capa[data-tipo='match'] .escena-cuerpo { container-type: normal; }
+
+/* La votación también crece cuando es la actividad principal (va al final para valer sobre cada piel). */
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] h2 { font-size: clamp(22px, 5cqh, 56px); }
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] .escena-opciones { gap: clamp(14px, 2.4cqw, 34px); margin-top: 3cqh; }
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] .escena-opcion {
+  width: min(28cqw, 26rem);
+  flex-basis: min(28cqw, 26rem);
+  padding: clamp(10px, 1.8cqh, 20px);
+}
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] .escena-opcion img {
+  width: min(36cqh, 22cqw);
+  height: min(36cqh, 22cqw);
+}
+.escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] .escena-opcion strong { font-size: clamp(14px, 2.6cqh, 26px); }
