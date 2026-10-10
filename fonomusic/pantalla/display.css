@@ -7,7 +7,8 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
   --marco: #ff3d8b;
   --slot-identidad-w: min(42cqw, 28rem);
   --slot-rail-w: min(28cqw, 22rem);
-  --slot-rail-h: min(48cqh, 28rem);
+  /* El chat ocupa como máximo 4 de las 9 filas de la grilla. */
+  --slot-rail-h: calc(400cqh / 9);
   --slot-escenario-w: min(78cqw, 100%);
   --slot-escenario-h: min(78cqh, 100%);
   --slot-chrome-h: 8cqh;
@@ -31,7 +32,6 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 }
 .escena:has([data-tipo='mensaje'][data-peso='destacado']) {
   --slot-rail-w: min(36cqw, 26rem);
-  --slot-rail-h: min(72cqh, 40rem);
 }
 .escena-capas {
   position: absolute;
@@ -173,29 +173,37 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
   max-width: 100%;
 }
 .sms-hilo {
+  --sms-gap: clamp(10px, 1.6cqh, 16px);
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.6cqh, 16px);
+  justify-content: flex-end;
   width: 100%;
   max-width: 100%;
-  max-height: var(--slot-rail-h, min(48cqh, 28rem));
+  max-height: var(--slot-rail-h, calc(400cqh / 9));
   margin: 0;
-  padding: 0.4cqh 0 0.8cqh;
-  overflow-x: visible;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  /* Margen lateral: el recorte del rodillo no debe comerse el corrimiento 3D de las burbujas. */
+  padding: 0.4cqh 2.2cqw 0.8cqh 1cqw;
+  box-sizing: border-box;
+  overflow: hidden;
   pointer-events: none;
-  scrollbar-width: none;
+  -webkit-mask: linear-gradient(to top, #000 62%, transparent 100%);
+  mask: linear-gradient(to top, #000 62%, transparent 100%);
+}
+.sms-cinta {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sms-gap);
   perspective: var(--sms-perspectiva);
-  perspective-origin: 44% 58%;
+  perspective-origin: 44% 100%;
   transform-style: preserve-3d;
 }
 .escena-capa[data-tipo='mensaje'][data-peso='destacado'] .sms-hilo,
 .escena[data-tipo='mensaje'][data-peso='destacado'] .sms-hilo {
   width: 100%;
   max-height: var(--slot-rail-h);
-  gap: clamp(12px, 2cqh, 18px);
-  padding: 0.6cqh 0 1cqh;
+  --sms-gap: clamp(12px, 2cqh, 18px);
+  padding: 0.6cqh 2.2cqw 1cqh 1cqw;
 }
 .sms-hilo::-webkit-scrollbar { display: none; }
 .sms-fila {
@@ -209,14 +217,18 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
   --sms-s: 1;
   --sms-ry: calc(var(--sms-dir) * var(--sms-ry-amp));
   --sms-rz: calc(var(--sms-dir) * var(--sms-rz-amp));
+  /* --rod: altura de la fila en el hilo (0 abajo, 1 borde superior); arriba de la mitad se va curvando. */
+  --rod-x: calc(max(0, var(--rod, 0) - .5) * 120deg);
+  --rod-z: calc(max(0, var(--rod, 0) - .5) * 180px);
+  opacity: calc(1 - max(0, var(--rod, 0) - .72) * 3.6);
   display: flex;
   align-items: flex-end;
   gap: clamp(8px, 1.4cqw, 14px);
   width: min(100%, 30rem);
   max-width: 100%;
   transform:
-    translate3d(var(--sms-tx), var(--sms-ty), var(--sms-tz))
-    rotateX(var(--sms-rx))
+    translate3d(var(--sms-tx), var(--sms-ty), calc(var(--sms-tz) - var(--rod-z)))
+    rotateX(calc(var(--sms-rx) + var(--rod-x)))
     rotateY(var(--sms-ry))
     rotate(var(--sms-rz))
     scale(var(--sms-s));
@@ -365,7 +377,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 .escena-capa[data-tipo='mensaje'] {
   position: absolute;
   inset: auto;
-  top: 12cqh;
+  top: auto;
   right: 3.2cqw;
   bottom: calc(var(--slot-chrome-h) + 2cqh);
   left: auto;
@@ -390,8 +402,10 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
   --sms-rx: 2deg;
   --sms-tz: 6px;
 }
-.escena-capa[data-tipo='mensaje'][data-peso='destacado'] {
-  top: 8cqh;
+/* Abajo a la derecha salvo que la zona esté ocupada (la mascota de los juegos): ahí sube arriba a la derecha. */
+.escena:has(.fx-mascota) .escena-capa[data-tipo='mensaje'] {
+  top: 12cqh;
+  bottom: auto;
 }
 .escena-capa[data-tipo='match'] {
   position: absolute;
@@ -1063,6 +1077,15 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   object-position: center;
   border: 0;
   background: transparent;
+}
+/* El iframe es más alto que la caja: el video 16:9 queda justo en la caja y la barra de título y los
+   controles de YouTube caen en las franjas negras de arriba y abajo, que quedan recortadas. */
+.ahora-video-capa.yt-recorte #ahora-media iframe#yt-frame {
+  --yt-barra: 76px;
+  inset: auto;
+  left: 0;
+  top: calc(-1 * var(--yt-barra));
+  height: calc(100% + 2 * var(--yt-barra));
 }
 #ahora-media img:not(.ahora-fondo) {
   position: absolute;

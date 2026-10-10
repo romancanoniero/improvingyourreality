@@ -503,7 +503,7 @@ function filasSmsDe(capa, extras) {
 }
 
 function htmlHiloSms(filas) {
-  return `<div class="sms-hilo">${(filas || []).map((item) => {
+  return `<div class="sms-hilo"><div class="sms-cinta">${(filas || []).map((item) => {
     const lado = item.lado === 'out' ? 'out' : 'in';
     const nuevo = item.nuevo ? ' is-nuevo' : '';
     const autor = item.autor || 'Invitado';
@@ -511,17 +511,48 @@ function htmlHiloSms(filas) {
       ? `<img class="sms-avatar" src="${escapar(item.foto)}" alt="">`
       : `<span class="sms-avatar is-hueco" aria-hidden="true">${escapar(inicialesSms(autor))}</span>`;
     return `<article class="sms-fila is-${lado}${nuevo}">${avatar}<div class="sms-cuerpo"><p class="sms-meta"><strong>${escapar(autor)}</strong> // <em>${horaSms(item.cuando)}</em></p><div class="sms-burbuja">${escapar(item.texto || '…')}</div></div></article>`;
-  }).join('')}</div>`;
+  }).join('')}</div></div>`;
+}
+
+// Rodillo: el hilo mide como máximo 4 celdas y apila desde abajo; lo viejo sube y, al acercarse al borde
+// superior, se inclina hacia atrás y se apaga como si pasara por encima de un tambor.
+let smsUltimaFila = '';
+let smsRodilloHasta = 0;
+
+function curvarRodillo(hilo) {
+  const caja = hilo.getBoundingClientRect();
+  if (!caja.height) return;
+  hilo.querySelectorAll('.sms-fila').forEach((fila) => {
+    const r = fila.getBoundingClientRect();
+    const altura = (caja.bottom - (r.top + r.height / 2)) / caja.height;
+    fila.style.setProperty('--rod', Math.max(0, Math.min(1.3, altura)).toFixed(3));
+  });
 }
 
 function revelarSmsNuevo() {
   const hilo = document.querySelector('.sms-hilo');
-  const nuevo = hilo && hilo.querySelector('.sms-fila.is-nuevo:last-of-type');
-  if (!hilo || !nuevo) return;
-  requestAnimationFrame(() => {
-    const tope = nuevo.offsetTop - Math.max(0, hilo.clientHeight - nuevo.offsetHeight - 16);
-    hilo.scrollTo({ top: Math.max(0, tope), behavior: 'smooth' });
-  });
+  const cinta = hilo && hilo.querySelector('.sms-cinta');
+  if (!hilo || !cinta) return;
+  const filas = cinta.querySelectorAll('.sms-fila');
+  const ultima = filas[filas.length - 1];
+  const clave = ultima ? ultima.textContent : '';
+  const llega = Boolean(ultima) && clave !== smsUltimaFila && smsUltimaFila !== '';
+  smsUltimaFila = clave;
+  curvarRodillo(hilo);
+  if (!llega) return;
+  const paso = ultima.offsetHeight + parseFloat(getComputedStyle(cinta).rowGap || '0');
+  cinta.style.transition = 'none';
+  cinta.style.transform = `translateY(${paso}px)`;
+  void cinta.offsetHeight;
+  cinta.style.transition = 'transform .9s cubic-bezier(.22, .8, .26, 1)';
+  cinta.style.transform = 'translateY(0)';
+  smsRodilloHasta = performance.now() + 950;
+  const cuadro = () => {
+    if (!hilo.isConnected) return;
+    curvarRodillo(hilo);
+    if (performance.now() < smsRodilloHasta) requestAnimationFrame(cuadro);
+  };
+  requestAnimationFrame(cuadro);
 }
 
 function escenarioAhora() {
@@ -1903,6 +1934,8 @@ function avisoReproducir() {
   const sonando = ytEstado === 1 && !mudo;
   const falta = Boolean(ytPlayer) && ytEsperaToque && !sonando && !juego && !ytPausaSala;
   capa.classList.toggle('is-al-frente', falta);
+  // Si quedó sonando mudo hace falta el parlante de YouTube, que está en la barra superior.
+  capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo));
   if (!falta) {
     if (aviso) aviso.remove();
     return;
