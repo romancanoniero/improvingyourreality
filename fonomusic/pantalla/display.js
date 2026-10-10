@@ -73,10 +73,14 @@ const PIELES = {
   },
   doraemon: {
     id: 'doraemon',
-    fondo: '#7EC8E8', sectorA: '#2BA4D9', sectorB: '#FFFFFF', acento: '#E31C23',
-    info: '#1A4A73', texto: '#1A4A73', colores: ['#F5C518', '#E31C23', '#2BA4D9', '#FFFFFF'],
-    fotoHueco: '#5BB3D9', fuente: '800 14px "Zen Maru Gothic", "Comic Sans MS", sans-serif',
-    sellos: { ruleta: 'ポン', votacion: 'どちら', mensaje: 'もしもし', match: '大好き' },
+    fondo: '#FFFFFF', sectorA: '#2E86DE', sectorB: '#FFFFFF', acento: '#E8433A',
+    info: '#1B3A66', texto: '#1B3A66', colores: ['#F5C518', '#E8433A', '#2E86DE', '#FFFFFF'],
+    fotoHueco: '#9ccbef', fuente: '600 19px Fredoka, "Zen Maru Gothic", sans-serif',
+    sellos: { ruleta: 'Mesa', votacion: 'Vota', mensaje: 'Chat', match: 'Pareja', cierre: '¡Listo!' },
+    rueda: 'nube',
+    mascota: 'nubi',
+    celebracion: true,
+    lemasPareja: ['¡Nubi ha unido a estas mesas!', '¡Nubi los unió!'],
     efectos: {
       fondo: 'fx-fondo-cielo', ambiente: 'fx-ambiente-nubes', marco: 'fx-marco-globo',
       sello: 'fx-sello-cascabel', foto: 'fx-foto-circulo', globo: 'fx-globo-redondo',
@@ -86,9 +90,9 @@ const PIELES = {
       particulas: { formas: ['nube', 'estrella', 'cascabel'], colores: ['#2BA4D9', '#FFFFFF', '#F5C518', '#E31C23', '#87CEEB'], cantidad: 40 },
       giro: { papel: false, trama: false, lineas: false, vineta: false },
       objetos: [
-        { id: 'nubesfx', clase: 'fx-obj-nubes', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+        { id: 'nubesfx', clase: 'fx-obj-nubes', en: ['ruleta', 'votacion'] },
         { id: 'helice', clase: 'fx-obj-helice', en: ['ruleta', 'match'] },
-        { id: 'gatoazul', clase: 'fx-obj-gatoazul', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
+        { id: 'cometa', clase: 'fx-obj-cometa', en: ['ruleta', 'votacion'] },
         { id: 'estrellas', clase: 'fx-obj-estrellas', en: ['ruleta', 'votacion', 'mensaje', 'match'] },
       ],
     },
@@ -102,7 +106,7 @@ function pielDe(id) {
 const AJUSTES_CLAVE = 'fonobar_entretenimiento_ajustes_piel';
 const OBJETO_NOMBRES = {
   destello: 'Destello', halo: 'Halo', onoma: 'Don', trama: 'Trama', bandera: 'Bandera',
-  go: 'GO!', rayas: 'Rayas', nubesfx: 'Nubes', helice: 'Hélice', gatoazul: 'Gadget', estrellas: 'Estrellas',
+  go: 'GO!', rayas: 'Rayas', nubesfx: 'Nubes', helice: 'Hélice', cometa: 'Cometa', estrellas: 'Estrellas',
   mascota: 'Mascota',
 };
 
@@ -815,8 +819,83 @@ function svgTurbo(pose) {
     + `</g></g></svg>`;
 }
 
+const NUBI_POSES = {
+  reposo: {
+    brazos: ['M76 176 Q62 190 66 210', 'M144 176 Q158 190 154 210'],
+    piernas: [[92, 236, 0], [128, 236, 0]],
+    ojos: 'abiertos',
+    boca: '<path d="M100 150 Q110 158 120 150" fill="none"/>',
+  },
+  festeja: {
+    brazos: ['M78 178 Q42 172 18 134', 'M142 178 Q178 172 202 134'],
+    piernas: [[86, 236, -14], [134, 232, 18]],
+    ojos: 'felices',
+    boca: '<path d="M96 146 Q110 172 124 146 Z" fill="#b8323a"/><path d="M102 156 Q110 164 118 156" fill="#f28b9a" stroke="none"/>',
+    chispas: 'M24 104 l-10 -6 M28 92 l-6 -10 M196 104 l10 -6 M192 92 l6 -10',
+  },
+  decepcion: {
+    brazos: ['M78 184 Q78 204 96 212', 'M142 184 Q142 204 124 212'],
+    piernas: [[70, 238, -60], [150, 238, 60]],
+    ojos: 'tristes',
+    boca: '<path d="M100 156 Q110 148 120 156" fill="none"/>',
+    cabeza: 'rotate(6 110 120) translate(0 8)',
+    orejas: 26,
+    sinHelice: true,
+  },
+  senala: {
+    brazos: ['M76 176 Q62 190 66 210', 'M144 172 Q170 166 196 158'],
+    piernas: [[94, 236, 0], [128, 236, 0]],
+    ojos: 'abiertos',
+    boca: '<path d="M98 146 Q110 166 122 146 Z" fill="#b8323a"/>',
+    dedo: [200, 156],
+  },
+};
+
+function svgNubi(pose) {
+  const p = NUBI_POSES[pose] || NUBI_POSES.reposo;
+  const gris = '#a9b5c7';
+  const claro = '#eef2f8';
+  const tinta = '#24365c';
+  const brazo = (d) => `<path d="${d}" stroke="${tinta}" stroke-width="27"/><path d="${d}" stroke="${gris}" stroke-width="19"/>`;
+  const pata = ([x, y, giro]) => `<ellipse cx="${x}" cy="${y}" rx="17" ry="11" transform="rotate(${giro} ${x} ${y})" fill="${gris}" stroke="${tinta}" stroke-width="4.5"/>`;
+  const caida = p.orejas || 0;
+  const oreja = (x, lado) => `<g transform="rotate(${caida * lado} ${x} 96)"><circle cx="${x + lado * 8}" cy="76" r="38" fill="${gris}" stroke="${tinta}" stroke-width="5"/>`
+    + `<circle cx="${x + lado * 12}" cy="78" r="22" fill="${claro}"/><path d="M${x + lado * 30} 62 q${lado * 8} 6 ${lado * 6} 16" stroke="${claro}" stroke-width="5"/></g>`;
+  const ojo = (x, y) => {
+    if (p.ojos === 'felices') return `<path d="M${x - 9} ${y + 3} Q${x} ${y - 9} ${x + 9} ${y + 3}" fill="none" stroke="${tinta}" stroke-width="5"/>`;
+    const cae = p.ojos === 'tristes' ? 3 : 0;
+    return `<ellipse cx="${x}" cy="${y + cae}" rx="7.5" ry="9" fill="#1d2235" stroke="none"/><circle cx="${x - 2.5}" cy="${y - 3 + cae}" r="2.8" fill="#fff" stroke="none"/>`;
+  };
+  const lagrimas = p.ojos === 'tristes'
+    ? `<path d="M80 122 q-6 12 0 18 q6 -6 0 -18 Z M140 122 q-6 12 0 18 q6 -6 0 -18 Z" fill="#5fb4f0" stroke="#2e86de" stroke-width="2"/><path d="M72 104 L90 96 M148 104 L130 96" stroke="${tinta}" stroke-width="4"/>`
+    : '';
+  const dedo = p.dedo ? `<g transform="translate(${p.dedo[0]} ${p.dedo[1]}) rotate(-14)"><ellipse cx="0" cy="0" rx="13" ry="11" fill="${gris}" stroke="${tinta}" stroke-width="4.5"/><path d="M8 -4 L26 -6 Q31 -2 26 2 L8 4" fill="${gris}" stroke="${tinta}" stroke-width="4.5" stroke-linejoin="round"/></g>` : '';
+  const helice = p.sinHelice ? '' : `<g class="nubi-helice"><path d="M110 30 V44" stroke="${tinta}" stroke-width="4"/><ellipse cx="92" cy="27" rx="20" ry="5.5" fill="#f39c12" stroke="${tinta}" stroke-width="3.5"/><ellipse cx="128" cy="27" rx="20" ry="5.5" fill="#f39c12" stroke="${tinta}" stroke-width="3.5"/><circle cx="110" cy="28" r="5" fill="#e8433a" stroke="${tinta}" stroke-width="3"/></g>`;
+  return `<svg class="nubi" viewBox="0 0 220 250" role="presentation">`
+    + `<g fill="none" stroke-linecap="round" stroke-linejoin="round">`
+    + (p.chispas ? `<path d="${p.chispas}" stroke="${tinta}" stroke-width="4"/>` : '')
+    + `<ellipse cx="110" cy="198" rx="46" ry="42" fill="${gris}" stroke="${tinta}" stroke-width="5"/>`
+    + `<ellipse cx="110" cy="204" rx="28" ry="28" fill="${claro}"/>`
+    + p.brazos.map(brazo).join('') + dedo + p.piernas.map(pata).join('')
+    + `<g transform="${p.cabeza || ''}">`
+    + oreja(44, -1) + oreja(176, 1)
+    + `<ellipse cx="110" cy="112" rx="70" ry="60" fill="${gris}" stroke="${tinta}" stroke-width="5"/>`
+    + `<path d="M58 92 Q62 70 82 60" stroke="${claro}" stroke-width="6" opacity=".8"/>`
+    + `<ellipse cx="70" cy="132" rx="11" ry="7" fill="#f6a6b2"/><ellipse cx="150" cy="132" rx="11" ry="7" fill="#f6a6b2"/>`
+    + ojo(84, 108) + ojo(136, 108) + lagrimas
+    + `<ellipse cx="110" cy="128" rx="14" ry="17" fill="#3d4658" stroke="${tinta}" stroke-width="3"/><ellipse cx="105" cy="120" rx="4" ry="6" fill="#8994a8"/>`
+    + `<g stroke="${tinta}" stroke-width="4">${p.boca}</g>`
+    + (p.sinHelice ? '' : `<path d="M84 58 Q110 34 136 58 Z" fill="#f5c518" stroke="${tinta}" stroke-width="4"/><path d="M80 58 H140" stroke="${tinta}" stroke-width="5"/>`)
+    + helice
+    + `</g>`
+    + `<path d="M70 166 Q110 186 150 166" stroke="${tinta}" stroke-width="15"/><path d="M70 166 Q110 186 150 166" stroke="#e8433a" stroke-width="9"/>`
+    + `<circle cx="110" cy="184" r="11" fill="#f5c518" stroke="${tinta}" stroke-width="3.5"/><path d="M101 182 H119 M110 186 V193" stroke="${tinta}" stroke-width="2.5"/><circle cx="106" cy="179" r="2.5" fill="#fff" stroke="none"/>`
+    + `</g></svg>`;
+}
+
 function svgMascota(id, pose) {
   if (id === 'sumi') return svgSumi(pose);
+  if (id === 'nubi') return svgNubi(pose);
   if (id === 'turbo') return svgTurbo(pose);
   if (id !== 'voltio') return '';
   const p = VOLTIO_POSES[pose] || VOLTIO_POSES.reposo;
@@ -879,12 +958,15 @@ function htmlBienvenida() {
 // empezó cada match para que un repintado no la reinicie.
 const CELEBRA_MS = 7000;
 const celebraciones = new Map();
+let finCelebracion = 0;
 
 function htmlCelebracion(capa, piel, fx, ajustes) {
   const clave = `${capa.desde || ''}|${capa.hacia || ''}|${capa.texto || ''}`;
   if (!celebraciones.has(clave)) {
     celebraciones.set(clave, Date.now());
     if (ajustes.sonido) tocarSonido(fx.sonidos?.exito || 'neon-exito');
+    clearTimeout(finCelebracion);
+    finCelebracion = setTimeout(refrescarPantalla, CELEBRA_MS + 60);
   }
   const pasado = Date.now() - celebraciones.get(clave);
   if (pasado > CELEBRA_MS) return '';
@@ -1259,6 +1341,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const neon = pal.rueda === 'neon';
   const tinta = pal.rueda === 'tinta';
   const llanta = pal.rueda === 'llanta';
+  const nube = pal.rueda === 'nube';
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   if (document.fonts && document.fonts.load) {
     await Promise.race([document.fonts.load(pal.fuente).catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1200))]);
@@ -1306,6 +1389,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     if (neon) decorarRuedaNeon(c, cx, cy, r, 0, slice, opciones.length, 0, 'cara');
     else if (tinta) decorarRuedaTinta(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (llanta) decorarRuedaLlanta(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+    else if (nube) decorarRuedaNube(c, cx, cy, r, 0, slice, opciones.length, 'cara');
   };
   const pintarFoto = (i) => {
     const t = (radio + margenFoto) * 2;
@@ -1348,6 +1432,14 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.arc(x, y, radio + 1, 0, Math.PI * 2);
       c.strokeStyle = '#fff';
       c.lineWidth = 3;
+    } else if (nube) {
+      c.strokeStyle = '#1B3A66';
+      c.lineWidth = 8;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 1, 0, Math.PI * 2);
+      c.strokeStyle = '#fff';
+      c.lineWidth = 3.5;
     } else {
       c.strokeStyle = pal.texto;
       c.lineWidth = 2;
@@ -1357,7 +1449,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   };
   const pintarNombre = (i) => {
     const opcion = opciones[i];
-    const nombre = neon || tinta || llanta ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const nombre = neon || tinta || llanta || nube ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
     const medida = canvas.getContext('2d');
     medida.font = pal.fuente;
     const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
@@ -1373,10 +1465,10 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.shadowColor = 'rgba(0, 0, 0, .85)';
       c.shadowBlur = 4;
     }
-    if (tinta || llanta) {
+    if (tinta || llanta || nube) {
       c.lineJoin = 'round';
-      c.lineWidth = 6;
-      c.strokeStyle = tinta ? '#FFF6DC' : '#111';
+      c.lineWidth = nube ? 7 : 6;
+      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : '#111';
       c.strokeText(nombre, nx, ny);
     }
     c.fillStyle = pal.texto;
@@ -1389,6 +1481,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     if (neon) decorarRuedaNeon(c, cx, cy, r, 0, slice, opciones.length, variante === 'reposo' ? 0 : 1, 'fijo', variante === 'impar' ? 1 : 0);
     else if (tinta) decorarRuedaTinta(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (llanta) decorarRuedaLlanta(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else if (nube) decorarRuedaNube(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else {
       c.beginPath();
       c.moveTo(cx, cy - r - 2);
@@ -1599,6 +1692,127 @@ function decorarRuedaLlanta(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = 3;
   ctx.strokeRect(cx - 2 * casilla, top, casilla * 4, casilla * 2);
+  ctx.restore();
+}
+
+function nubeCanvas(ctx, x, y, s) {
+  const bolas = [[-1, 0.25, 0.5], [-0.4, -0.2, 0.68], [0.35, -0.3, 0.74], [1, 0.15, 0.52], [0, 0.35, 0.6]];
+  ctx.fillStyle = '#F5C518';
+  bolas.forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(x + dx * s, y + dy * s + 4, r * s + 3, 0, Math.PI * 2); ctx.fill(); });
+  ctx.fillStyle = '#1B3A66';
+  bolas.forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(x + dx * s, y + dy * s, r * s + 3, 0, Math.PI * 2); ctx.fill(); });
+  ctx.fillStyle = '#fff';
+  bolas.forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(x + dx * s, y + dy * s, r * s, 0, Math.PI * 2); ctx.fill(); });
+}
+
+function decorarRuedaNube(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
+  const TAU = Math.PI * 2;
+  const tinta = '#1B3A66';
+  ctx.save();
+  if (parte !== 'fijo') {
+    ctx.strokeStyle = tinta;
+    ctx.lineWidth = 3;
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 34, 0, TAU);
+    ctx.arc(cx, cy, r, 0, TAU, true);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 7, 0, TAU);
+    ctx.lineWidth = 14;
+    ctx.strokeStyle = '#2E86DE';
+    ctx.stroke();
+    [r, r + 14, r + 34].forEach((radio) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, radio, 0, TAU);
+      ctx.lineWidth = radio === r + 34 ? 4 : 3;
+      ctx.strokeStyle = tinta;
+      ctx.stroke();
+    });
+    const remaches = 24;
+    for (let k = 0; k < remaches; k += 1) {
+      const a = angulo + (k / remaches) * TAU;
+      ctx.beginPath();
+      ctx.arc(cx + Math.cos(a) * (r + 24), cy + Math.sin(a) * (r + 24), 3.6, 0, TAU);
+      ctx.fillStyle = '#F5C518';
+      ctx.fill();
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = tinta;
+      ctx.stroke();
+    }
+  }
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
+  [[-2.5, 1], [-0.64, 1], [0.35, 0.9], [2.8, 0.9], [1.9, 1], [1.2, 0.85]].forEach(([a, k]) => {
+    nubeCanvas(ctx, cx + Math.cos(a) * (r + 30), cy + Math.sin(a) * (r + 30), 15 * k);
+  });
+  const c = r * 0.17;
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = tinta;
+  ctx.beginPath();
+  ctx.arc(cx, cy + c * 0.95, c * 0.24, 0, TAU);
+  ctx.fillStyle = '#E8433A';
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - c, cy + c * 0.75);
+  ctx.quadraticCurveTo(cx - c * 0.85, cy - c * 0.2, cx - c * 0.55, cy - c * 0.55);
+  ctx.quadraticCurveTo(cx, cy - c * 1.15, cx + c * 0.55, cy - c * 0.55);
+  ctx.quadraticCurveTo(cx + c * 0.85, cy - c * 0.2, cx + c, cy + c * 0.75);
+  ctx.closePath();
+  const oro = ctx.createLinearGradient(cx - c, cy - c, cx + c, cy + c);
+  oro.addColorStop(0, '#FFE27A');
+  oro.addColorStop(0.5, '#F5C518');
+  oro.addColorStop(1, '#D99A00');
+  ctx.fillStyle = oro;
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - c * 1.08, cy + c * 0.75);
+  ctx.lineTo(cx + c * 1.08, cy + c * 0.75);
+  ctx.lineWidth = 7;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy - c * 1.02, c * 0.16, 0, TAU);
+  ctx.fillStyle = '#F5C518';
+  ctx.lineWidth = 3;
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - c * 0.45, cy - c * 0.35);
+  ctx.quadraticCurveTo(cx - c * 0.5, cy + c * 0.1, cx - c * 0.6, cy + c * 0.4);
+  ctx.strokeStyle = 'rgba(255, 255, 255, .8)';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  const punta = cy - r + 12;
+  const gota = 15;
+  const centroGota = cy - r - 24;
+  ctx.beginPath();
+  ctx.moveTo(cx, punta);
+  ctx.bezierCurveTo(cx - gota * 0.4, centroGota + gota * 1.2, cx - gota, centroGota + gota * 0.5, cx - gota, centroGota);
+  ctx.arc(cx, centroGota, gota, Math.PI, 0);
+  ctx.bezierCurveTo(cx + gota, centroGota + gota * 0.5, cx + gota * 0.4, centroGota + gota * 1.2, cx, punta);
+  ctx.closePath();
+  ctx.fillStyle = '#E8433A';
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = tinta;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx - gota * 0.35, centroGota - gota * 0.3, gota * 0.28, 0, TAU);
+  ctx.fillStyle = 'rgba(255, 255, 255, .75)';
+  ctx.fill();
   ctx.restore();
 }
 
@@ -1981,7 +2195,7 @@ const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
   manga: { nombre: 'Manga', estado: 'Arte parcial' },
   meteoro: { nombre: 'Meteoro', estado: 'Arte parcial' },
-  doraemon: { nombre: 'Cielo', estado: 'Arte pendiente' },
+  doraemon: { nombre: 'Cielo', estado: 'Arte parcial' },
 };
 
 function mostrarElegirPiel() {
