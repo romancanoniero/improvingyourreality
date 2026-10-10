@@ -4,6 +4,8 @@ Este documento es el encargo para el agente de diseño. Lista cada objeto gráfi
 
 Cada elemento tiene un código (por ejemplo `A3.2`). Usalo para nombrar los archivos y las especificaciones que entregues.
 
+Para rediseñar la pantalla del salón por plantilla (Nocturna, Manga, Meteoro, Doraemon), usá el brief detallado: [`fonomusic-brief-plantillas.md`](./fonomusic-brief-plantillas.md).
+
 ## Mapa rápido de la pantalla del salón
 
 | Lo que se ve en pantalla | Código | Slot de skin |
