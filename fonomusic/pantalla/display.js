@@ -1809,17 +1809,70 @@ function postEnded(uid) {
   }).catch(() => {});
 }
 
-function loadYoutube() {
-  if (window.YT && window.YT.Player) return Promise.resolve();
-  if (!window.fonoYt) {
-    window.fonoYt = new Promise((resolve) => {
-      window.onYouTubeIframeAPIReady = () => resolve();
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(tag);
-    });
-  }
-  return window.fonoYt;
+// Reproductor de YouTube sin la librería iframe_api: en algunos iPhone (bloqueadores, redes móviles) esa
+// cadena de scripts no termina de cargar y el video nunca aparecía. Se habla con el iframe por postMessage,
+// el mismo protocolo que usa la librería por dentro.
+const YT_ORIGENES = ['https://www.youtube.com', 'https://www.youtube-nocookie.com'];
+let ytSiguienteId = 1;
+let ytMensajes = 0;
+
+function reproductorYoutube(holder, videoId, vars, eventos) {
+  const id = ytSiguienteId++;
+  const params = new URLSearchParams({ ...vars, enablejsapi: '1', origin: location.origin, widgetid: String(id) });
+  const iframe = document.createElement('iframe');
+  iframe.id = holder.id;
+  iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${params}`;
+  iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.title = 'Video de YouTube';
+  holder.replaceWith(iframe);
+  const info = { playerState: -1, muted: false, volume: undefined, currentTime: 0 };
+  let listo = false;
+  const enviar = (mensaje) => {
+    try { iframe.contentWindow?.postMessage(JSON.stringify({ ...mensaje, id, channel: 'widget' }), 'https://www.youtube.com'); } catch (error) { /* iframe ido */ }
+  };
+  const comando = (func, args = []) => enviar({ event: 'command', func, args });
+  const escuchar = setInterval(() => enviar({ event: 'listening' }), 250);
+  const alMensaje = (evento) => {
+    if (evento.source !== iframe.contentWindow || !YT_ORIGENES.includes(evento.origin)) return;
+    let datos;
+    try { datos = typeof evento.data === 'string' ? JSON.parse(evento.data) : evento.data; } catch (error) { return; }
+    if (!datos || !datos.event) return;
+    ytMensajes += 1;
+    clearInterval(escuchar);
+    if ((datos.event === 'infoDelivery' || datos.event === 'initialDelivery') && datos.info) {
+      const antes = info.playerState;
+      Object.assign(info, datos.info);
+      if (typeof datos.info.playerState === 'number' && datos.info.playerState !== antes) eventos.onStateChange?.({ data: info.playerState, target: api });
+    } else if (datos.event === 'onStateChange' && typeof datos.info === 'number' && datos.info !== info.playerState) {
+      info.playerState = datos.info;
+      eventos.onStateChange?.({ data: info.playerState, target: api });
+    } else if (datos.event === 'onReady' && !listo) {
+      listo = true;
+      comando('addEventListener', ['onStateChange']);
+      eventos.onReady?.({ target: api });
+    }
+  };
+  window.addEventListener('message', alMensaje);
+  iframe.addEventListener('load', () => enviar({ event: 'listening' }));
+  const api = {
+    playVideo: () => comando('playVideo'),
+    pauseVideo: () => comando('pauseVideo'),
+    unMute: () => comando('unMute'),
+    mute: () => comando('mute'),
+    setVolume: (v) => comando('setVolume', [v]),
+    isMuted: () => Boolean(info.muted),
+    getVolume: () => info.volume,
+    getCurrentTime: () => Number(info.currentTime) || 0,
+    getPlayerState: () => info.playerState,
+    destroy: () => {
+      clearInterval(escuchar);
+      window.removeEventListener('message', alMensaje);
+      iframe.remove();
+    },
+  };
+  return api;
 }
 
 let stageKey = '';
@@ -1828,6 +1881,17 @@ let ytEstado = -1;
 let ytDesde = 0;
 let ytPausaSala = false;
 let ytEsperaToque = false;
+let ytTocado = false;
+
+// Un toque dentro del iframe le da el foco: sirve para saber que se tocó aunque YouTube no informe su estado.
+window.addEventListener('blur', () => {
+  setTimeout(() => {
+    if (document.activeElement && document.activeElement.id === 'yt-frame') {
+      ytTocado = true;
+      avisoReproducir();
+    }
+  }, 0);
+});
 
 // En modo toque la capa del video pasa delante de la escena para que el toque caiga en el reproductor.
 function avisoReproducir() {
@@ -1848,6 +1912,7 @@ function avisoReproducir() {
     aviso.className = 'ahora-tocar';
     capa.appendChild(aviso);
   }
+  aviso.hidden = ytTocado && ytMensajes === 0;
   aviso.textContent = ytEstado === 1 && mudo
     ? 'Tocá el parlante del video para activar el sonido'
     : 'Tocá ▶ en el video para reproducirlo con sonido';
@@ -1876,6 +1941,7 @@ function pintarDiagnostico() {
     `estado ${ytEstado}  mudo ${ytMudo()}  vol ${vol}  t ${t}s`,
     `modo toque ${ytEsperaToque}  al frente ${Boolean(capa?.classList.contains('is-al-frente'))}  visible ${capa?.style.visibility || '-'}`,
     `pausa sala ${ytPausaSala}  activación ${navigator.userActivation ? navigator.userActivation.hasBeenActive : '-'}`,
+    `mensajes de YouTube ${ytMensajes}  iframe ${document.querySelector('#ahora-media iframe') ? 'sí' : 'no'}`,
   ].join('\n');
 }
 
@@ -2060,39 +2126,26 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
   holder.id = 'yt-frame';
   media.appendChild(holder);
   ytEsperaToque = esperarToque;
+  ytTocado = false;
   ytEstado = -1;
   ytDesde = Date.now();
   const uid = now.trackUid;
-  const player = new window.YT.Player('yt-frame', {
-    host: 'https://www.youtube.com',
-    width: '100%',
-    height: '100%',
-    videoId: youtube,
-    playerVars: {
-      autoplay: esperarToque ? 0 : 1,
-      controls: esperarToque ? 1 : 0,
-      rel: 0, modestbranding: 1, playsinline: 1, fs: 0,
-      origin: location.origin, widget_referrer: location.origin,
-      ...(now.mute ? { mute: 1 } : {}),
-      ...(now.repetir ? { loop: 1, playlist: youtube } : {}),
-    },
-    events: {
-      onReady: (event) => {
-        if (esperarToque) return;
-        try {
-          if (!now.mute) { event.target.unMute(); event.target.setVolume(100); }
-          event.target.playVideo();
-        } catch (error) { /* reintenta */ }
-      },
-      onStateChange: (event) => {
-        ytEstado = event.data;
-        if (event.data === 1 && !now.mute && ytMudo()) {
-          // En modo toque el ▶ ya fue un toque dentro del reproductor: ahí desmutear sí se permite.
-          try { event.target.unMute(); event.target.setVolume(100); } catch (error) { /* sigue mudo */ }
-        }
-        avisoReproducir();
-        if (event.data === 0) postEnded(uid);
-      },
+  const player = reproductorYoutube(holder, youtube, {
+    autoplay: esperarToque ? '0' : '1',
+    controls: esperarToque ? '1' : '0',
+    rel: '0', modestbranding: '1', playsinline: '1', fs: '0',
+    widget_referrer: location.origin,
+    ...(now.mute ? { mute: '1' } : {}),
+    ...(now.repetir ? { loop: '1', playlist: youtube } : {}),
+  }, {
+    onStateChange: (event) => {
+      ytEstado = event.data;
+      if (event.data === 1 && !now.mute && ytMudo()) {
+        // En modo toque el ▶ ya fue un toque dentro del reproductor: ahí desmutear sí se permite.
+        try { event.target.unMute(); event.target.setVolume(100); } catch (error) { /* sigue mudo */ }
+      }
+      avisoReproducir();
+      if (event.data === 0) postEnded(uid);
     },
   });
   ytPlayer = player;
@@ -2131,10 +2184,7 @@ function showStage(state) {
       fondo.alt = '';
       fondo.src = 'https://i.ytimg.com/vi/' + youtube + '/hqdefault.jpg';
       media.appendChild(fondo);
-      loadYoutube().then(() => {
-        if (stageKey !== key || !window.YT || !window.YT.Player) return;
-        crearPlayerYoutube(youtube, now, key, false);
-      }).catch(() => {});
+      crearPlayerYoutube(youtube, now, key, false);
     }
     if (ytPlayer && ytPlayer.pauseVideo) {
       try {
