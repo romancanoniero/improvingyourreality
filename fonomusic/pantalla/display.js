@@ -536,15 +536,38 @@ function escenarioAhora() {
     nodo.id = 'escenario-ahora';
     nodo.className = 'escenario-ahora';
     nodo.hidden = true;
-    nodo.innerHTML = '<div id="ahora-media"></div><div class="ahora-velo" aria-hidden="true"></div><div class="ahora-datos" id="ahora-datos"></div>';
+    nodo.innerHTML = '<div class="ahora-velo" aria-hidden="true"></div><div class="ahora-datos" id="ahora-datos"></div>';
     escena.prepend(nodo);
+    // Safari de iOS no dibuja el iframe de YouTube dentro de un elemento escalado:
+    // el video va en una capa aparte, sin transform, con la misma caja que la escena.
+    const capa = document.createElement('div');
+    capa.id = 'ahora-video';
+    capa.className = 'ahora-video-capa';
+    capa.innerHTML = '<div id="ahora-media"></div>';
+    escena.before(capa);
+    const observador = new MutationObserver(sincronizarVideo);
+    observador.observe(nodo, { attributes: true, attributeFilter: ['hidden'] });
+    observador.observe(escena, { attributes: true, attributeFilter: ['data-fondo', 'data-slots'] });
+    escalarEscena();
+    sincronizarVideo();
   }
   return nodo;
 }
 
+function sincronizarVideo() {
+  const escena = document.getElementById('escena');
+  const stage = document.getElementById('escenario-ahora');
+  const capa = document.getElementById('ahora-video');
+  if (!escena || !stage || !capa) return;
+  const tapado = escena.dataset.fondo === 'juego' && String(escena.dataset.slots || '').split(' ').includes('escenario');
+  const visible = !stage.hidden && !tapado;
+  capa.style.visibility = visible ? 'visible' : 'hidden';
+  escena.classList.toggle('con-video', visible);
+}
+
 function mediaAhora() {
-  const stage = escenarioAhora();
-  return stage ? stage.querySelector('#ahora-media') : null;
+  escenarioAhora();
+  return document.getElementById('ahora-media');
 }
 
 function poseMascota(capas) {
@@ -2071,7 +2094,17 @@ function escalarEscena() {
   const escena = document.getElementById('escena');
   if (!escena) return;
   const raiz = document.documentElement;
-  escena.style.setProperty('--escala', String(Math.min(raiz.clientWidth / 1920, raiz.clientHeight / 1080)));
+  const escala = Math.min(raiz.clientWidth / 1920, raiz.clientHeight / 1080);
+  escena.style.setProperty('--escala', String(escala));
+  const capa = document.getElementById('ahora-video');
+  if (capa) {
+    const ancho = 1920 * escala;
+    const alto = 1080 * escala;
+    capa.style.left = `${(raiz.clientWidth - ancho) / 2}px`;
+    capa.style.top = `${(raiz.clientHeight - alto) / 2}px`;
+    capa.style.width = `${ancho}px`;
+    capa.style.height = `${alto}px`;
+  }
 }
 
 escalarEscena();
