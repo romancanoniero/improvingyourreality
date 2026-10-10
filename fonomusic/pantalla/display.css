@@ -1570,3 +1570,7 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   .escena[data-piel='nocturna'] .sms-fila.is-nuevo .sms-burbuja,
   .escena[data-piel='nocturna'] .escena-pila.is-tira .fx-apila-neon:last-child { animation: none; }
 }
+
+/* El chat y el chip de match se dimensionan por su contenido: sin contención de tamaño. */
+.escena-capa[data-tipo='mensaje'] .escena-cuerpo,
+.escena-capa[data-tipo='match'] .escena-cuerpo { container-type: normal; }
