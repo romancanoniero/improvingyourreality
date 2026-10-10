@@ -405,7 +405,13 @@ function htmlCapa(capa) {
   } else if (tipo === 'mensaje') {
     interior = htmlHiloSms(Array.isArray(capa.filas) ? capa.filas : filasSmsDe(capa));
   } else {
-    interior = `<div class="escena-match"><div class="escena-match-par"><h2>${escapar(capa.desde || '')}</h2><p>${escapar(capa.texto || 'Se gustaron')}</p><h2>${escapar(capa.hacia || '')}</h2></div></div>`;
+    const fotoMatch = (nombre, lado) => {
+      const foto = fotoSmsDe(nombre);
+      return foto
+        ? `<img class="escena-match-foto is-${lado}" src="${escapar(foto)}" alt="">`
+        : `<span class="escena-match-foto is-${lado} is-hueco" aria-hidden="true">${escapar(inicialesSms(nombre))}</span>`;
+    };
+    interior = `<div class="escena-match"><div class="escena-match-par">${fotoMatch(capa.desde, 'a')}<h2>${escapar(capa.desde || '')}</h2><p>${escapar(capa.texto || 'Se gustaron')}</p><h2>${escapar(capa.hacia || '')}</h2>${fotoMatch(capa.hacia, 'b')}</div></div>`;
   }
   const pilaN = Array.isArray(capa.pila) ? capa.pila.length : 0;
   const ruedasVivas = Array.isArray(capa.ruedas) ? capa.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0).length : 0;

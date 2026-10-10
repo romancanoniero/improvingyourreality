@@ -424,6 +424,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; }
 .escena-match-nombre { font-size: clamp(14px, 2.2cqh, 20px); margin: 0; }
 .escena-cuerpo .escena-match p,
 .escena-match p { font-size: clamp(11px, 1.5cqh, 14px); margin: 0; opacity: .8; }
+.escena-match-foto { display: none; }
 .escena-capa[data-tipo='ruleta'],
 .escena-capa[data-tipo='votacion'] {
   position: relative;
@@ -1494,6 +1495,22 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   box-shadow: 0 0 18px rgba(255, 61, 139, .6), inset 0 0 0 2px rgba(34, 224, 230, .35), 0 0 34px rgba(34, 224, 230, .25) !important;
 }
 .escena[data-piel='nocturna'] .escena-match-par { gap: 16px; }
+.escena[data-piel='nocturna'] .escena-match-foto {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(40px, 6.4cqh, 68px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #241c3d;
+  color: #fff;
+  font-weight: 700;
+  border: 3px solid #ff3d8b;
+  box-shadow: 0 0 10px rgba(255, 61, 139, .8), inset 0 0 6px rgba(255, 61, 139, .5);
+}
+.escena[data-piel='nocturna'] .escena-match-foto.is-b { border-color: #22e0e6; box-shadow: 0 0 10px rgba(34, 224, 230, .8), inset 0 0 6px rgba(34, 224, 230, .5); }
+.escena[data-piel='nocturna'] .escena-capa[data-tipo='match'] .escena-marco:has(.escena-match-foto) { max-width: min(70cqw, 44rem); padding: 8px 12px; border-radius: 999px; }
 .escena[data-piel='nocturna'] .escena-match h2 { white-space: nowrap; color: #fff; text-shadow: 0 0 10px rgba(255, 61, 139, .5); }
 .escena[data-piel='nocturna'] .escena-match p {
   display: grid;
