@@ -34,3 +34,9 @@ Same image 4, but replace the match icon, both inside the chip and alone, with a
 ```
 Now make IMAGE 3 — Interface kit A, exactly as described in my first message: the main game card frame, the five game title labels ("RULETA", "VOTACIÓN", "MENSAJE", "MATCH" and one empty), the participant card with photo ring, pair separator and adornment, the small pair pill with its motion trail, and the end-of-round title "PAREJAS DE LA NOCHE" with one grid cell. Same NOCTURNA style, flat solid green #00FF00 background.
 ```
+
+## Pantallas extra (`nocturna-extra.jpg`)
+
+- **Bienvenida con QR (arriba):** aplicada. Se muestra sola en el local cuando no suena nada; el QR es real y apunta a `/app/?local=<id>` (se puede forzar con `?qr=`). El nombre del bar sale del backend o de `?bar=`. Para verla: botón "Bienvenida con QR" del riel o `?bienvenida=1`.
+- **"¡Hay pareja!" (abajo):** aplicada como pantalla completa de 6,5 s al entrar un match nuevo, con fotos, corazón, rayos, fuegos y cinta. Después queda el chip del match.
+- **Estados de interacción (centro):** botones, carga, espera, estado vacío del chat y reacciones son de la app del invitado (celular), que no está en este repositorio. Quedan como referencia para esa app.

@@ -7,6 +7,7 @@ const PIELES = {
     sellos: { ruleta: 'Ruleta', votacion: 'Votación', mensaje: 'Mensaje', match: 'Match' },
     rueda: 'neon',
     mascota: 'voltio',
+    celebracion: true,
     efectos: {
       fondo: 'fx-fondo-neon', ambiente: 'fx-ambiente-neon', marco: 'fx-marco-neon',
       sello: 'fx-sello-neon', foto: 'fx-foto-circulo', globo: 'fx-globo-neon',
@@ -827,11 +828,82 @@ function svgMascota(id, pose) {
     + `</g>${p.extra || ''}</svg>`;
 }
 
+// Pantalla de bienvenida (Nocturna, pantallas extra): invita a escanear el QR y entrar a la app desde el celular.
+const BIENVENIDA_ICONOS = {
+  vota: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M18.5 3.5l.6 1.5 1.6.2-1.2 1 .4 1.6-1.4-.8-1.4.8.4-1.6-1.2-1 1.6-.2z" fill="currentColor"/></svg>',
+  canciones: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="16.5" cy="16" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+  conecta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H10l-5 4v-4H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.5" cy="10.5" r="1.2" fill="currentColor"/><circle cx="12" cy="10.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="10.5" r="1.2" fill="currentColor"/></svg>',
+};
+let nombreLocal = '';
+const qrCache = new Map();
+
+function urlBienvenida() {
+  const pedida = new URLSearchParams(location.search).get('qr');
+  if (pedida) return pedida;
+  const id = localId();
+  return `${location.origin}/app/${id ? `?local=${encodeURIComponent(id)}` : ''}`;
+}
+
+function svgQr(texto) {
+  if (qrCache.has(texto)) return qrCache.get(texto);
+  if (typeof qrcode !== 'function') return '';
+  const qr = qrcode(0, 'M');
+  qr.addData(texto);
+  qr.make();
+  const n = qr.getModuleCount();
+  let d = '';
+  for (let y = 0; y < n; y += 1) {
+    for (let x = 0; x < n; x += 1) if (qr.isDark(y, x)) d += `M${x} ${y}h1v1h-1z`;
+  }
+  const svg = `<svg class="bienvenida-codigo" viewBox="-3 -3 ${n + 6} ${n + 6}" shape-rendering="crispEdges" role="img" aria-label="Código QR"><rect x="-3" y="-3" width="${n + 6}" height="${n + 6}" fill="#fff"/><path d="${d}" fill="#111"/></svg>`;
+  qrCache.set(texto, svg);
+  return svg;
+}
+
+function htmlBienvenida() {
+  const bar = new URLSearchParams(location.search).get('bar') || nombreLocal;
+  const item = (id, texto) => `<li><i>${BIENVENIDA_ICONOS[id]}</i><span>${texto}</span></li>`;
+  return `<section class="escena-bienvenida" aria-label="Bienvenida">`
+    + `<h1 class="bienvenida-logo"><span>Fono</span><span>music</span></h1>`
+    + (bar ? `<p class="bienvenida-bar">${escapar(bar)}</p>` : '')
+    + `<div class="bienvenida-tarjeta"><div class="bienvenida-qr">${svgQr(urlBienvenida())}<p>¡Escaneá y jugá desde tu celular!</p></div>`
+    + `<div class="bienvenida-texto"><h2>¡Jugá con tu mesa!</h2><ul>${item('vota', 'Votá')}${item('canciones', 'Canciones')}${item('conecta', 'Conectá')}</ul></div></div>`
+    + `</section>`;
+}
+
+// Celebración "¡Hay pareja!" al llegar un match: dura CELEBRA_MS y después queda el chip. Se recuerda cuándo
+// empezó cada match para que un repintado no la reinicie.
+const CELEBRA_MS = 6500;
+const celebraciones = new Map();
+
+function htmlCelebracion(capa, fx, ajustes) {
+  const clave = `${capa.desde || ''}|${capa.hacia || ''}|${capa.texto || ''}`;
+  if (!celebraciones.has(clave)) {
+    celebraciones.set(clave, Date.now());
+    if (ajustes.sonido) tocarSonido(fx.sonidos?.exito || 'neon-exito');
+  }
+  const pasado = Date.now() - celebraciones.get(clave);
+  if (pasado > CELEBRA_MS) return '';
+  const persona = (nombre) => {
+    const foto = fotoSmsDe(nombre);
+    const cara = foto ? `<img src="${escapar(foto)}" alt="">` : `<b>${escapar(inicialesSms(nombre))}</b>`;
+    return `<figure><span class="celebra-foto">${cara}</span><figcaption>${escapar(nombre || '')}</figcaption></figure>`;
+  };
+  const mesas = /^mesa\b/i.test(capa.desde || '') && /^mesa\b/i.test(capa.hacia || '');
+  const lema = mesas ? '¡El ritmo ha unido a estas mesas!' : '¡El ritmo los unió!';
+  const fuegos = ['a', 'b', 'c', 'd'].map((lado) => `<i class="celebra-fuego is-${lado}"></i>`).join('');
+  return `<div class="escena-celebra" style="--t:-${pasado}ms" aria-hidden="true">${fuegos}`
+    + `<h2 class="celebra-titulo">¡Hay pareja!</h2>`
+    + `<div class="celebra-par">${persona(capa.desde)}<i class="celebra-corazon"></i>${persona(capa.hacia)}</div>`
+    + `<p class="celebra-cinta"><span>${lema}</span></p></div>`;
+}
+
 function pintarCapas(capas, dedicatorias, avatares) {
   const escena = document.getElementById('escena');
   const escenario = escenarioAhora();
-  const lista = capas || [];
-  const { piel, fx, ajustes } = fxDeCapa(lista[0] || { piel: pielSinCapas });
+  const bienvenida = (capas || []).find((item) => item.tipo === 'bienvenida');
+  const lista = (capas || []).filter((item) => item.tipo !== 'bienvenida');
+  const { piel, fx, ajustes } = fxDeCapa(lista[0] || bienvenida || { piel: pielSinCapas });
   const ruleta = lista.find((item) => item.tipo === 'ruleta');
   const pilaN = Array.isArray(ruleta?.pila) ? ruleta.pila.length : 0;
   const ruedasVivas = Array.isArray(ruleta?.ruedas) ? ruleta.ruedas.filter((rueda) => Array.isArray(rueda?.opciones) && rueda.opciones.length > 0).length : 0;
@@ -849,7 +921,7 @@ function pintarCapas(capas, dedicatorias, avatares) {
   const pendientes = [...(avatares || [])];
   for (const capa of lista) for (const opcion of capa.opciones || []) pendientes.push(opcion);
   void precargarAvatares(pendientes);
-  if (lista.length === 0 && !(dedicatorias || []).length) {
+  if (lista.length === 0 && !bienvenida && !(dedicatorias || []).length) {
     delete escena.dataset.slots;
     [...escena.children].forEach((nodo) => { if (nodo !== escenario && nodo.id !== 'grilla') nodo.remove(); });
     actualizarJuego(false);
@@ -879,10 +951,15 @@ function pintarCapas(capas, dedicatorias, avatares) {
   if (listaPintar.some((capa) => capa.tipo === 'mensaje')) slots.push('rail');
   if (listaPintar.some((capa) => capa.tipo === 'ruleta' || capa.tipo === 'votacion')) slots.push('escenario');
   if (listaPintar.some((capa) => capa.tipo === 'match')) slots.push('chip');
+  if (bienvenida) slots.push('bienvenida');
   if (slots.length) escena.dataset.slots = slots.join(' ');
   else delete escena.dataset.slots;
   actualizarJuego(slots.includes('escenario'));
-  const pose = fx.mascota ? poseMascota(listaPintar) : '';
+  if (bienvenida) escena.insertAdjacentHTML('beforeend', htmlBienvenida());
+  const match = listaPintar.find((capa) => capa.tipo === 'match');
+  const celebra = match && piel.celebracion && ajustes.efectos ? htmlCelebracion(match, fx, ajustes) : '';
+  if (celebra) escena.insertAdjacentHTML('beforeend', celebra);
+  const pose = fx.mascota ? poseMascota(listaPintar) || (bienvenida ? 'senala' : '') : '';
   if (pose) {
     const mascota = document.createElement('div');
     mascota.className = `fx-mascota fx-mascota-${fx.mascota}`;
@@ -1664,6 +1741,8 @@ function refrescarPantalla() {
     if (capa && capa.tipo) porTipo.set(capa.tipo, capa);
   }
   for (const [tipo, capa] of capasDemo) porTipo.set(tipo, capa);
+  const forzada = new URLSearchParams(location.search).get('bienvenida') === '1';
+  if (!porTipo.size && (forzada || (localId() && !stageKey))) porTipo.set('bienvenida', { tipo: 'bienvenida', piel: pielSinCapas || demoPiel });
   pintarCapas([...porTipo.values()], [...dedicasServidor, ...dedicasDemo], [...avataresServidor, ...JUGADORES_DEMO]);
   pintarRielDemo();
 }
@@ -1972,6 +2051,7 @@ function botonesRielDemo() {
     { id: 'efectos', nombre: 'Efectos', on: ajustes.efectos },
     { id: 'sonido', nombre: 'Sonido', on: ajustes.sonido },
     { id: 'grilla', nombre: 'Grilla', on: grillaVisible() },
+    { id: 'bienvenida', nombre: 'Bienvenida con QR', on: capasDemo.has('bienvenida') },
     { id: 'video', nombre: 'Recargar video', on: false },
     { sep: true },
     { id: 'ajustes', nombre: 'Ajustes', on: false },
@@ -2054,6 +2134,11 @@ function accionRielDemo(id) {
     cambiarPielDemo(demoPiel);
     const valor = id === 'mascota' ? nuevo.objetos.mascota : nuevo[id];
     avisoDemo(`${id === 'mascota' ? 'Mascota' : id === 'efectos' ? 'Efectos' : 'Sonido'}: ${estado(valor)}`);
+  } else if (id === 'bienvenida') {
+    if (capasDemo.has('bienvenida')) capasDemo.delete('bienvenida');
+    else ponerCapaDemo({ tipo: 'bienvenida' });
+    refrescarPantalla();
+    avisoDemo(`Bienvenida: ${estado(capasDemo.has('bienvenida'))}`);
   } else if (id === 'video') {
     avisoDemo(recargarVideo(true) ? 'Recargando el video' : 'No hay video de YouTube');
   } else if (id === 'grilla') {
@@ -2068,6 +2153,7 @@ function accionRielDemo(id) {
 }
 
 const DEMO_ICONOS = {
+  bienvenida: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 6.5h1v1h-1zM16.5 6.5h1v1h-1zM6.5 16.5h1v1h-1z" fill="currentColor" stroke="currentColor" stroke-width="1"/><path d="M14 14h2.5v2.5H14zM17.5 17.5H20V20h-2.5zM14 18.5h2v1.5h-2zM18 14h2v2h-2z" fill="currentColor"/></svg>',
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12a7 7 0 1 1-2.05-4.95" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17.5 3.5v4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9.2v5.6l4.6-2.8z" fill="currentColor"/></svg>',
   ruleta: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v9l6.5 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
   votacion: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.2 10.4 14.6 16 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -2315,6 +2401,7 @@ async function leer() {
   const cuerpo = respuesta ? await respuesta.json().catch(() => null) : null;
   const avatares = cuerpo?.data?.avatares || [];
   pielesServidor = cuerpo?.data?.pieles || {};
+  nombreLocal = cuerpo?.data?.local?.nombre || cuerpo?.data?.nombreLocal || nombreLocal;
   await precargarAvatares(avatares);
   guardarServidor(cuerpo?.data?.capas || [], cuerpo?.data?.dedicatorias || [], avatares);
   refrescarPantalla();
@@ -2935,6 +3022,12 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
 }
 
 function showStage(state) {
+  const antes = Boolean(stageKey);
+  mostrarEscenario(state);
+  if (antes !== Boolean(stageKey) && localId()) refrescarPantalla();
+}
+
+function mostrarEscenario(state) {
   const stage = escenarioAhora();
   const media = mediaAhora();
   if (!stage || !media) return;
