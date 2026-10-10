@@ -35,3 +35,9 @@ En el mismo chat de Meteoro, para que mantenga el estilo:
 ```
 Now make IMAGE 1 — Scene background, exactly as described in my first message. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail. Same METEORO style.
 ```
+
+## Pantallas extra (`meteoro-extra.jpg`)
+
+- **Bienvenida con QR (arriba):** aplicada. El QR va dentro de un neumático, la tarjeta lleva esquinas a cuadros y Turbo se ubica a la izquierda señalando el QR.
+- **"¡Hay pareja!" (abajo):** aplicada. Fotos en neumáticos, placas amarillas "MESA X", banderas a cuadros cruzadas con rayos rojos y amarillos, estelas de velocidad, confeti y la cinta "¡Turbo ha unido a estas mesas!", con Turbo festejando a la izquierda. Dura 7 s y después queda el chip del match.
+- **Estados de interacción (centro):** botones "¡A jugar!" (normal, presionado, deshabilitado, cargando), la espera con el velocímetro, el estado vacío "Sin mensajes" y las reacciones rápidas son de la app del invitado (celular), que no está en este repositorio.

@@ -3011,7 +3011,7 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
   color: #fff;
   font-family: system-ui, sans-serif;
   pointer-events: none;
-  animation: celebra-vida 6.5s linear var(--t) both;
+  animation: celebra-vida 7s linear var(--t) both;
 }
 @keyframes celebra-vida { 0% { opacity: 0; } 4% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }
 .celebra-titulo {
@@ -3040,7 +3040,7 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
   background: repeating-conic-gradient(from 4deg, #ff3d8b 0 3deg, transparent 3deg 15deg, #22e0e6 15deg 18deg, transparent 18deg 30deg);
   -webkit-mask: radial-gradient(circle closest-side, transparent 0 36%, #000 40% 80%, transparent 96%);
   mask: radial-gradient(circle closest-side, transparent 0 36%, #000 40% 80%, transparent 96%);
-  animation: celebra-rayos 6.5s linear var(--t) both;
+  animation: celebra-rayos 7s linear var(--t) both;
 }
 @keyframes celebra-rayos { from { transform: rotate(0) scale(.6); } 12% { transform: rotate(10deg) scale(1); } to { transform: rotate(40deg) scale(1.05); } }
 .celebra-par figure {
@@ -3138,9 +3138,139 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
 .celebra-fuego.is-c { right: 8cqw; top: 9cqh; width: 18cqh; height: 18cqh; animation-delay: calc(var(--t) + .9s); }
 .celebra-fuego.is-d { right: 16cqw; bottom: 30cqh; width: 12cqh; height: 12cqh; animation-delay: calc(var(--t) + 1.2s); }
 @keyframes celebra-fuego { 0% { transform: scale(.2); opacity: 0; } 15% { opacity: 1; } 70% { opacity: .9; } 100% { transform: scale(1.15); opacity: 0; } }
-.escena:has(.escena-celebra) .escena-capa[data-tipo='match'] .escena-marco { animation: celebra-chip .4s ease 6.2s both; }
+.escena:has(.escena-celebra) .escena-capa[data-tipo='match'] .escena-marco { animation: celebra-chip .4s ease 6.7s both; }
 @keyframes celebra-chip { from { opacity: 0; } to { opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
   .celebra-par::before, .celebra-corazon, .celebra-fuego { animation: none; }
 }
+
+.escena[data-piel='meteoro'] .escena-bienvenida { padding-left: 24cqw; padding-right: 5cqw; }
+.escena[data-piel='meteoro'][data-slots~='bienvenida'] .fx-mascota { left: 4cqw; right: auto; bottom: 22cqh; height: 40cqh; }
+.escena[data-piel='meteoro'][data-slots~='bienvenida'] .fx-mascota .turbo { transform: none; }
+.escena[data-piel='meteoro'] .bienvenida-logo span:first-child { color: #ffd100; }
+.escena[data-piel='meteoro'] .bienvenida-logo { text-shadow: 3px 3px 0 #111, 7px 7px 0 #e31c23; }
+.escena[data-piel='meteoro'] .bienvenida-bar { margin: -3.4cqh 0 0 22cqw; background: #ffd100; border-color: #111; box-shadow: 4px 4px 0 #e31c23; }
+.escena[data-piel='meteoro'] .bienvenida-tarjeta { position: relative; border-color: #ffd100; box-shadow: 0 0 0 5px #e31c23, 0 0 0 9px #111; }
+.escena[data-piel='meteoro'] .bienvenida-tarjeta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 2.4cqh 2.4cqh;
+  -webkit-mask: linear-gradient(#000 0 0) left top / 4.8cqh 4.8cqh no-repeat, linear-gradient(#000 0 0) right top / 4.8cqh 4.8cqh no-repeat, linear-gradient(#000 0 0) left bottom / 4.8cqh 4.8cqh no-repeat, linear-gradient(#000 0 0) right bottom / 4.8cqh 4.8cqh no-repeat;
+  mask: linear-gradient(#000 0 0) left top / 4.8cqh 4.8cqh no-repeat, linear-gradient(#000 0 0) right top / 4.8cqh 4.8cqh no-repeat, linear-gradient(#000 0 0) left bottom / 4.8cqh 4.8cqh no-repeat, linear-gradient(#000 0 0) right bottom / 4.8cqh 4.8cqh no-repeat;
+  pointer-events: none;
+}
+.escena[data-piel='meteoro'] .bienvenida-qr { position: relative; }
+.escena[data-piel='meteoro'] .bienvenida-qr::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 15cqh;
+  width: 44cqh;
+  height: 44cqh;
+  margin: -22cqh 0 0 -22cqh;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle closest-side, transparent 0 74%, #e31c23 74% 77%, transparent 77%),
+    repeating-conic-gradient(#0b0b0b 0 5deg, #262626 5deg 10deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 66%, #000 66%);
+  mask: radial-gradient(circle closest-side, transparent 0 66%, #000 66%);
+  box-shadow: 0 0 0 3px #444;
+}
+.escena[data-piel='meteoro'] .bienvenida-codigo { position: relative; width: 30cqh; height: 30cqh; border: 0; border-radius: 6px; }
+.escena[data-piel='meteoro'] .bienvenida-qr p { position: relative; margin-top: 2.4cqh; }
+.escena[data-piel='meteoro'] .bienvenida-texto h2 { color: #ffd100; text-shadow: 3px 3px 0 #111, 6px 6px 0 #e31c23; }
+.escena[data-piel='meteoro'] .bienvenida-texto li { color: #fff; }
+.escena[data-piel='meteoro'] .bienvenida-texto li i { border: 4px solid #ffd100; background: #e31c23; color: #ffd100; box-shadow: 0 0 0 4px #111, 0 0 0 6px #e31c23; }
+
+.escena[data-piel='meteoro'] .escena-celebra {
+  background:
+    linear-gradient(90deg, transparent, #e31c23 70%) 0 44% / 24cqw 1.6cqh no-repeat,
+    linear-gradient(90deg, transparent, #ffd100 70%) 2cqw 49% / 18cqw 1cqh no-repeat,
+    linear-gradient(90deg, transparent, #ff7a00 70%) 0 68% / 26cqw 1.4cqh no-repeat,
+    linear-gradient(270deg, transparent, #e31c23 70%) 100% 40% / 24cqw 1.6cqh no-repeat,
+    linear-gradient(270deg, transparent, #ffd100 70%) calc(100% - 2cqw) 45% / 18cqw 1cqh no-repeat,
+    linear-gradient(270deg, transparent, #ff7a00 70%) 100% 72% / 26cqw 1.4cqh no-repeat,
+    radial-gradient(ellipse at 50% 55%, rgba(40, 40, 40, .55), rgba(12, 12, 12, .94) 70%),
+    #1a1a1a url('./arte/meteoro/fondo.webp') center / cover no-repeat;
+  font-family: var(--met-titulo);
+}
+.escena[data-piel='meteoro'] .celebra-titulo {
+  position: relative;
+  margin: 0 7cqh;
+  padding: .1em .5em .14em;
+  border: 6px solid #ffd100;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  font: italic 800 clamp(46px, 13cqh, 150px)/1 var(--met-titulo);
+  text-shadow: 4px 4px 0 #e31c23;
+  box-shadow: 6px 6px 0 #e31c23;
+  transform: skewX(-8deg);
+}
+.escena[data-piel='meteoro'] .celebra-titulo::before,
+.escena[data-piel='meteoro'] .celebra-titulo::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 8cqh;
+  height: 8cqh;
+  margin-top: -4cqh;
+  border: 3px solid #fff;
+  background: repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 4cqh 4cqh;
+}
+.escena[data-piel='meteoro'] .celebra-titulo::before { right: 100%; margin-right: 2cqh; }
+.escena[data-piel='meteoro'] .celebra-titulo::after { left: 100%; margin-left: 2cqh; }
+.escena[data-piel='meteoro'] .celebra-par::before {
+  background: repeating-conic-gradient(from 4deg, #e31c23 0 4deg, transparent 4deg 15deg, #ffd100 15deg 18deg, transparent 18deg 30deg);
+}
+.escena[data-piel='meteoro'] .celebra-par figure { --anillo: #ffd100; }
+.escena[data-piel='meteoro'] .celebra-foto {
+  border: 5px solid #ffd100;
+  box-shadow: 0 0 0 2.6cqh #141414, 0 0 0 calc(2.6cqh + 4px) #3a3a3a, 0 0 0 calc(2.6cqh + 8px) #e31c23;
+}
+.escena[data-piel='meteoro'] .celebra-par figcaption {
+  margin-top: 2.6cqh;
+  border: 3px solid #111;
+  border-radius: 3px;
+  background: #ffd100;
+  color: #111;
+  box-shadow: 4px 4px 0 #e31c23;
+  font: italic 800 clamp(16px, 3.4cqh, 38px)/1 var(--met-titulo);
+  transform: skewX(-10deg);
+}
+.escena[data-piel='meteoro'] .celebra-corazon {
+  width: 24cqh;
+  height: 24cqh;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3Cpattern id='c' width='10' height='10' patternUnits='userSpaceOnUse'%3E%3Crect width='10' height='10' fill='%23fff'/%3E%3Crect width='5' height='5' fill='%23111'/%3E%3Crect x='5' y='5' width='5' height='5' fill='%23111'/%3E%3C/pattern%3E%3C/defs%3E%3Cpath d='M22 88 L58 16' stroke='%23111' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M78 88 L42 16' stroke='%23111' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M58 16 C66 10 74 22 86 14 L82 42 C70 50 62 38 52 44Z' fill='url(%23c)' stroke='%23111' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M42 16 C34 10 26 22 14 14 L18 42 C30 50 38 38 48 44Z' fill='url(%23c)' stroke='%23111' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='62' r='11' fill='%23e31c23' stroke='%23ffd100' stroke-width='4'/%3E%3C/svg%3E");
+  filter: drop-shadow(0 0 0 #fff) drop-shadow(4px 4px 0 #e31c23);
+}
+.escena[data-piel='meteoro'] .celebra-cinta span {
+  border: 4px solid #ffd100;
+  border-radius: 4px;
+  background: #111;
+  color: #fff;
+  font: italic 800 clamp(20px, 5cqh, 56px)/1 var(--met-titulo);
+  box-shadow: 5px 5px 0 #e31c23;
+  transform: skewX(-10deg);
+}
+.escena[data-piel='meteoro'] .celebra-cinta::before,
+.escena[data-piel='meteoro'] .celebra-cinta::after { border-color: #e31c23; background: #ffd100; box-shadow: none; }
+.escena[data-piel='meteoro'] .celebra-fuego {
+  border-radius: 0;
+  background:
+    linear-gradient(30deg, transparent 46%, #e31c23 46% 54%, transparent 54%) 10% 20% / 22% 22% no-repeat,
+    linear-gradient(-40deg, transparent 44%, #ffd100 44% 56%, transparent 56%) 70% 10% / 20% 20% no-repeat,
+    linear-gradient(80deg, transparent 44%, #fff 44% 56%, transparent 56%) 40% 60% / 18% 18% no-repeat,
+    linear-gradient(-10deg, transparent 44%, #ffd100 44% 56%, transparent 56%) 85% 70% / 22% 22% no-repeat,
+    linear-gradient(55deg, transparent 44%, #e31c23 44% 56%, transparent 56%) 20% 85% / 20% 20% no-repeat,
+    linear-gradient(-70deg, transparent 44%, #ff7a00 44% 56%, transparent 56%) 55% 35% / 16% 16% no-repeat;
+  -webkit-mask: none;
+  mask: none;
+}
+.escena[data-piel='meteoro']:has(.escena-celebra) .fx-mascota { left: 3cqw; right: auto; }
+.escena[data-piel='meteoro']:has(.escena-celebra) .fx-mascota .turbo { transform: none; }
+.escena[data-piel='meteoro'] .celebra-foto { background: #2a2a2a; }
+.escena[data-piel='meteoro'] .celebra-foto b { color: #ffd100; font-family: var(--met-titulo); font-style: italic; }

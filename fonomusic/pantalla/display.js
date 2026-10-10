@@ -52,6 +52,8 @@ const PIELES = {
     sellos: { ruleta: 'GO!', votacion: 'GRID', mensaje: 'RADIO', match: 'FINISH', cierre: 'FINISH' },
     rueda: 'llanta',
     mascota: 'turbo',
+    celebracion: true,
+    lemasPareja: ['¡Turbo ha unido a estas mesas!', '¡Turbo los unió!'],
     efectos: {
       fondo: 'fx-fondo-pista', ambiente: 'fx-ambiente-velocidad', marco: 'fx-marco-carrera',
       sello: 'fx-sello-go', foto: 'fx-foto-circulo', globo: 'fx-globo-carrera',
@@ -873,10 +875,10 @@ function htmlBienvenida() {
 
 // Celebración "¡Hay pareja!" al llegar un match: dura CELEBRA_MS y después queda el chip. Se recuerda cuándo
 // empezó cada match para que un repintado no la reinicie.
-const CELEBRA_MS = 6500;
+const CELEBRA_MS = 7000;
 const celebraciones = new Map();
 
-function htmlCelebracion(capa, fx, ajustes) {
+function htmlCelebracion(capa, piel, fx, ajustes) {
   const clave = `${capa.desde || ''}|${capa.hacia || ''}|${capa.texto || ''}`;
   if (!celebraciones.has(clave)) {
     celebraciones.set(clave, Date.now());
@@ -890,7 +892,8 @@ function htmlCelebracion(capa, fx, ajustes) {
     return `<figure><span class="celebra-foto">${cara}</span><figcaption>${escapar(nombre || '')}</figcaption></figure>`;
   };
   const mesas = /^mesa\b/i.test(capa.desde || '') && /^mesa\b/i.test(capa.hacia || '');
-  const lema = mesas ? '¡El ritmo ha unido a estas mesas!' : '¡El ritmo los unió!';
+  const lemas = piel.lemasPareja || ['¡El ritmo ha unido a estas mesas!', '¡El ritmo los unió!'];
+  const lema = mesas ? lemas[0] : lemas[1];
   const fuegos = ['a', 'b', 'c', 'd'].map((lado) => `<i class="celebra-fuego is-${lado}"></i>`).join('');
   return `<div class="escena-celebra" style="--t:-${pasado}ms" aria-hidden="true">${fuegos}`
     + `<h2 class="celebra-titulo">¡Hay pareja!</h2>`
@@ -957,7 +960,7 @@ function pintarCapas(capas, dedicatorias, avatares) {
   actualizarJuego(slots.includes('escenario'));
   if (bienvenida) escena.insertAdjacentHTML('beforeend', htmlBienvenida());
   const match = listaPintar.find((capa) => capa.tipo === 'match');
-  const celebra = match && piel.celebracion && ajustes.efectos ? htmlCelebracion(match, fx, ajustes) : '';
+  const celebra = match && piel.celebracion && ajustes.efectos ? htmlCelebracion(match, piel, fx, ajustes) : '';
   if (celebra) escena.insertAdjacentHTML('beforeend', celebra);
   const pose = fx.mascota ? poseMascota(listaPintar) || (bienvenida ? 'senala' : '') : '';
   if (pose) {
