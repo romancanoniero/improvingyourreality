@@ -563,6 +563,7 @@ function sincronizarVideo() {
   const visible = !stage.hidden && !tapado;
   capa.style.visibility = visible ? 'visible' : 'hidden';
   escena.classList.toggle('con-video', visible);
+  avisoReproducir();
 }
 
 function mediaAhora() {
@@ -1836,7 +1837,8 @@ function avisoReproducir() {
   const capa = document.getElementById('ahora-video');
   if (!capa) return;
   let aviso = capa.querySelector('.ahora-tocar');
-  const falta = Boolean(ytPlayer) && !ytPausaSala && ![0, 1, 3].includes(ytEstado) && Date.now() - ytDesde > 1500;
+  const juego = String(document.getElementById('escena')?.dataset.slots || '').split(' ').includes('escenario');
+  const falta = Boolean(ytPlayer) && !juego && !ytPausaSala && ![0, 1, 3].includes(ytEstado) && Date.now() - ytDesde > 1500;
   capa.classList.toggle('is-al-frente', falta);
   if (!falta) {
     if (aviso) aviso.remove();

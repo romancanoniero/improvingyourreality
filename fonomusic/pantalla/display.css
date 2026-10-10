@@ -1683,15 +1683,35 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 .escena[data-piel='nocturna'] .sms-fila.is-nuevo .sms-burbuja { animation: fx-neon-enciende .7s steps(1, end) both; }
 @keyframes fx-neon-enciende { 0% { opacity: .2; } 12% { opacity: 1; } 22% { opacity: .35; } 34%, 100% { opacity: 1; } }
 
+/* Ráfaga de H2: aro de neón con rayos cortos, compacta y centrada (no líneas de velocidad de pantalla completa). */
 .escena[data-piel='nocturna'] .fx-impacto-flash {
-  background:
-    radial-gradient(circle, transparent 0 13%, rgba(255, 61, 139, .0) 13%, rgba(255, 61, 139, .55) 15%, transparent 17%),
-    repeating-conic-gradient(from 4deg, rgba(255, 61, 139, .4) 0 1.6deg, transparent 1.6deg 12deg, rgba(34, 224, 230, .35) 12deg 13.4deg, transparent 13.4deg 24deg);
-  -webkit-mask: radial-gradient(circle, transparent 0 18%, #000 20%, #000 34%, transparent 46%);
-  mask: radial-gradient(circle, transparent 0 18%, #000 20%, #000 34%, transparent 46%);
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 56cqh;
+  height: 56cqh;
+  margin: -28cqh 0 0 -28cqh;
+  background: none;
+  filter: drop-shadow(0 0 6px rgba(255, 61, 139, .8)) drop-shadow(0 0 14px rgba(34, 224, 230, .45));
   animation: fx-estallido-neon .9s ease-out both;
 }
-@keyframes fx-estallido-neon { 0% { transform: scale(.4); opacity: 0; } 25% { opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+.escena[data-piel='nocturna'] .fx-impacto-flash::before,
+.escena[data-piel='nocturna'] .fx-impacto-flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.escena[data-piel='nocturna'] .fx-impacto-flash::before {
+  background: repeating-conic-gradient(from -1deg, #ff3d8b 0 2.4deg, transparent 2.4deg 15deg, #22e0e6 15deg 17.4deg, transparent 17.4deg 30deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 60%, #000 62% 88%, transparent 90%);
+  mask: radial-gradient(circle closest-side, transparent 0 60%, #000 62% 88%, transparent 90%);
+}
+.escena[data-piel='nocturna'] .fx-impacto-flash::after {
+  background: radial-gradient(circle closest-side, transparent 0 44%, #ffd9ea 45%, #ff3d8b 47% 49%, transparent 51%);
+}
+@keyframes fx-estallido-neon { 0% { transform: scale(.3); opacity: 0; } 25% { opacity: 1; } 70% { opacity: 1; } 100% { transform: scale(1.25); opacity: 0; } }
 .escena[data-piel='nocturna'] .papel-picado i { filter: drop-shadow(0 0 5px rgba(255, 255, 255, .55)); }
 
 .fx-mascota {
