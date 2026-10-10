@@ -1859,9 +1859,75 @@ function aplicarAhora(data) {
   showStage({ now: data.now, paused: Boolean(data.now.paused) });
 }
 
-function pintarDatosAhora(now, paused) {
+const datosYoutubeCache = new Map();
+
+function limpiarTituloYoutube(texto) {
+  let t = String(texto || '');
+  t = t.replace(/\s*[\(\[][^\)\]]*(official|oficial|video|vídeo|clip|lyric|letra|audio|hd|4k|visuali[sz]er|מתורגם|קליפ|רשמי)[^\)\]]*[\)\]]/gi, '');
+  t = t.replace(/\s*\|.*$/, '');
+  return t.replace(/\s{2,}/g, ' ').trim();
+}
+
+function separarTituloYoutube(titulo, canal) {
+  const limpio = limpiarTituloYoutube(titulo);
+  const partes = limpio.split(/\s+[-–—]\s+/);
+  if (partes.length >= 2 && partes[0] && partes[1]) {
+    return { artista: partes[0].trim(), titulo: partes.slice(1).join(' - ').trim() };
+  }
+  const autor = String(canal || '').replace(/\s*-\s*Topic$/i, '').replace(/VEVO$/i, '').trim();
+  return { artista: autor, titulo: limpio || String(titulo || '') };
+}
+
+function datosYoutube(id) {
+  if (!datosYoutubeCache.has(id)) {
+    const url = 'https://www.youtube.com/oembed?format=json&url='
+      + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
+    datosYoutubeCache.set(id, fetch(url)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => (j && j.title ? separarTituloYoutube(j.title, j.author_name) : null))
+      .catch(() => null));
+  }
+  return datosYoutubeCache.get(id);
+}
+
+function textoGenerico(texto, id) {
+  const t = String(texto || '').trim();
+  return !t || t === id || t === 'yt_' + id || /^https?:\/\//i.test(t) || /^(youtube|video de youtube|video)$/i.test(t);
+}
+
+// Sólo completa lo que el operador dejó vacío o genérico: nunca pisa un título cargado a mano.
+function completarDatosYoutube(now) {
+  const uid = String(now.trackUid || '');
+  if (uid.indexOf('yt_') !== 0) return now;
+  const id = uid.slice(3);
+  const faltaTitulo = now.autoDatos || textoGenerico(now.title, id);
+  const faltaArtista = now.autoDatos || textoGenerico(now.artist, id);
+  if (!faltaTitulo && !faltaArtista) return now;
+  const listo = datosYoutubeCache.get(id + ':ok');
+  if (listo) {
+    return {
+      ...now,
+      title: faltaTitulo ? listo.titulo : now.title,
+      artist: faltaArtista ? listo.artista : now.artist,
+    };
+  }
+  datosYoutube(id).then((datos) => {
+    if (!datos || datosYoutubeCache.has(id + ':ok')) return;
+    datosYoutubeCache.set(id + ':ok', datos);
+    if (ultimoAhora && String(ultimoAhora.now?.trackUid || '') === uid) {
+      pintarDatosAhora(ultimoAhora.now, ultimoAhora.paused);
+    }
+  });
+  return { ...now, title: faltaTitulo ? '' : now.title, artist: faltaArtista ? '' : now.artist };
+}
+
+let ultimoAhora = null;
+
+function pintarDatosAhora(nowOriginal, paused) {
   const caja = document.getElementById('ahora-datos');
-  if (!caja || !now) return;
+  if (!caja || !nowOriginal) return;
+  ultimoAhora = { now: nowOriginal, paused };
+  const now = completarDatosYoutube(nowOriginal);
   const origen = ORIGEN_AHORA[now.origin] || now.origin || '';
   const youtube = String(now.trackUid || '').indexOf('yt_') === 0;
   const bits = [];
@@ -1875,8 +1941,8 @@ function pintarDatosAhora(now, paused) {
     + `<p class="ahora-marca">FONOMEETS</p>`
     + `<p class="ahora-sello">${paused ? 'En pausa' : 'Ahora suena'}</p>`
     + `<p class="ahora-kicker">${escapar(kicker)}</p>`
-    + `<h1 class="ahora-titulo">${escapar(now.title || 'Preparando la noche')}</h1>`
-    + `<p class="ahora-artista">${escapar(now.artist || '')}</p>`
+    + `<h1 class="ahora-titulo" dir="auto">${escapar(now.title || (youtube ? 'Cargando datos del video…' : 'Preparando la noche'))}</h1>`
+    + `<p class="ahora-artista" dir="auto">${escapar(now.artist || '')}</p>`
     + (bits.length ? `<p class="ahora-meta">${escapar(bits.join(' · '))}</p>` : '')
     + (now.dedication ? `<p class="ahora-dedicatoria">“${escapar(now.dedication)}”</p>` : '')
     + `<div class="ahora-eq${paused ? ' is-pausa' : ''}" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`;
@@ -2086,7 +2152,7 @@ function urlVideoEjemplo() {
   return `${location.origin}/descargas/pieles/pieles-16x9.mp4`;
 }
 
-const YT_DEMO = { id: 'K4DyBUG242c', titulo: 'On & On (feat. Daniel Levi)', artista: 'Cartoon, Jéja' };
+const YT_DEMO_ID = 'aYGd4HOend4';
 
 function arrancarVideoEjemplo() {
   if (playerBase()) return;
@@ -2095,9 +2161,10 @@ function arrancarVideoEjemplo() {
     const propio = /^[A-Za-z0-9_-]{11}$/.test(elegido);
     showStage({
       now: {
-        trackUid: 'yt_' + (propio ? elegido : YT_DEMO.id),
-        title: propio ? 'Video de prueba' : YT_DEMO.titulo,
-        artist: propio ? 'YouTube' : YT_DEMO.artista,
+        trackUid: 'yt_' + (propio ? elegido : YT_DEMO_ID),
+        title: '',
+        artist: '',
+        autoDatos: true,
         origin: 'MODERATOR',
         // Los navegadores sólo permiten arrancar solo sin sonido; el primer toque lo activa.
         mute: true,

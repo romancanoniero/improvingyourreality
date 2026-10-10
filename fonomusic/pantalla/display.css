@@ -1865,3 +1865,6 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   height: min(36cqh, 22cqw);
 }
 .escena[data-slots~='escenario'] .escena-capa[data-tipo='votacion'] .escena-opcion strong { font-size: clamp(14px, 2.6cqh, 26px); }
+
+/* Con dir="auto" un título en hebreo se alinearía a la derecha: se mantiene a la izquierda como el resto del bloque. */
+.ahora-datos .ahora-titulo[dir], .ahora-datos .ahora-artista[dir] { text-align: left; }
