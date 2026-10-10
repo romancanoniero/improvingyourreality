@@ -630,7 +630,7 @@ function pintarCapas(capas, dedicatorias, avatares) {
   void precargarAvatares(pendientes);
   if (lista.length === 0 && !(dedicatorias || []).length) {
     delete escena.dataset.slots;
-    [...escena.children].forEach((nodo) => { if (nodo !== escenario) nodo.remove(); });
+    [...escena.children].forEach((nodo) => { if (nodo !== escenario && nodo.id !== 'grilla') nodo.remove(); });
     return;
   }
   const dedicas = (dedicatorias || []).slice(0, 4);
@@ -648,7 +648,7 @@ function pintarCapas(capas, dedicatorias, avatares) {
       filas: filasSmsDe(null, dedicas).map((item, indice) => completarFilaSms(item, indice, fotosSms)),
     });
   }
-  [...escena.children].forEach((nodo) => { if (nodo !== escenario) nodo.remove(); });
+  [...escena.children].forEach((nodo) => { if (nodo !== escenario && nodo.id !== 'grilla') nodo.remove(); });
   const capasNodo = document.createElement('div');
   capasNodo.className = listaPintar.length > 1 ? 'escena-capas is-varias' : 'escena-capas';
   capasNodo.innerHTML = listaPintar.map(htmlCapa).join('');
@@ -1369,6 +1369,7 @@ const DEMO_ICONOS = {
   match: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19s-7-4.4-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.6-7 9-7 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   mensajes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h11v8H8l-4 3z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 9h10v8h-6l-4 3z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
   cerrar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  grilla: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
 };
 
 const DEMO_FICHAS = [
@@ -1503,6 +1504,7 @@ function montarBarraDemo() {
     + DEMO_FICHAS.map((item) => (
       `<button type="button" data-abrir="${item.id}" aria-label="${item.nombre}"><span>${DEMO_ICONOS[item.id]}</span><em>${item.nombre}</em></button>`
     )).join('')
+    + `<button type="button" data-demo="grilla" aria-label="Grilla"><span>${DEMO_ICONOS.grilla}</span><em>Grilla</em></button>`
     + '</div>'
     + '<div class="demo-dialogo" id="demo-dialogo"></div>';
   document.body.appendChild(root);
@@ -1592,12 +1594,17 @@ function montarBarraDemo() {
       return;
     }
     if (accion === 'cerrar-dialogo') cerrarDialogoDemo();
+    if (accion === 'grilla') {
+      alternarGrilla();
+      abrirDockDemo();
+    }
   });
   document.addEventListener('keydown', (evento) => {
     if (evento.key === 'Escape') {
       cerrarDialogoDemo();
       cerrarDockDemo();
     }
+    if ((evento.key === 'g' || evento.key === 'G') && !evento.target.closest('input, textarea')) alternarGrilla();
   });
 }
 
@@ -1700,12 +1707,61 @@ function pintarDatosAhora(now, paused) {
   if (origen) bits.push(origen);
   if (paused) bits.push('En pausa');
   const kicker = paused ? 'EN PAUSA' : (ORIGEN_AHORA[now.origin] || 'Ahora').toUpperCase();
-  caja.innerHTML = `<p class="ahora-marca">FONOMEETS</p>`
+  const portada = portadaAhora(now);
+  const html = `<div class="ahora-disco${paused ? ' is-pausa' : ''}" aria-hidden="true"><span class="ahora-vinilo"></span>`
+    + `<span class="ahora-funda">${portada ? `<img src="${escapar(portada)}" alt="">` : ''}</span></div>`
+    + `<p class="ahora-marca">FONOMEETS</p>`
+    + `<p class="ahora-sello">${paused ? 'En pausa' : 'Ahora suena'}</p>`
     + `<p class="ahora-kicker">${escapar(kicker)}</p>`
     + `<h1 class="ahora-titulo">${escapar(now.title || 'Preparando la noche')}</h1>`
     + `<p class="ahora-artista">${escapar(now.artist || '')}</p>`
     + (bits.length ? `<p class="ahora-meta">${escapar(bits.join(' · '))}</p>` : '')
-    + (now.dedication ? `<p class="ahora-dedicatoria">“${escapar(now.dedication)}”</p>` : '');
+    + (now.dedication ? `<p class="ahora-dedicatoria">“${escapar(now.dedication)}”</p>` : '')
+    + `<div class="ahora-eq${paused ? ' is-pausa' : ''}" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`;
+  // Cada frame del player vuelve a llamar acá: reescribir igual reinicia el giro del disco.
+  if (caja.dataset.html === html) return;
+  caja.dataset.html = html;
+  caja.innerHTML = html;
+}
+
+function portadaAhora(now) {
+  const uid = String(now?.trackUid || '');
+  if (uid.indexOf('yt_') === 0) return 'https://i.ytimg.com/vi/' + uid.slice(3) + '/hqdefault.jpg';
+  if (now?.cover) return now.cover;
+  return uid && playerBase() ? playerApi('/api/library/' + encodeURIComponent(uid) + '/cover') : '';
+}
+
+const GRILLA_COLUMNAS = 16;
+const GRILLA_FILAS = 9;
+
+function ponerGrilla(visible) {
+  const escena = document.getElementById('escena');
+  if (!escena) return;
+  let grilla = document.getElementById('grilla');
+  if (!visible) {
+    if (grilla) grilla.remove();
+    return;
+  }
+  if (!grilla) {
+    grilla = document.createElement('div');
+    grilla.id = 'grilla';
+    grilla.className = 'grilla';
+    grilla.setAttribute('aria-hidden', 'true');
+    let celdas = '';
+    for (let fila = 0; fila < GRILLA_FILAS; fila += 1) {
+      for (let col = 1; col <= GRILLA_COLUMNAS; col += 1) celdas += `<span>${String.fromCharCode(65 + fila)}${col}</span>`;
+    }
+    grilla.innerHTML = celdas;
+  }
+  escena.appendChild(grilla);
+}
+
+function grillaVisible() {
+  return Boolean(document.getElementById('grilla'));
+}
+
+function alternarGrilla() {
+  ponerGrilla(!grillaVisible());
 }
 
 function vaciarMedia() {
@@ -1874,6 +1930,7 @@ setInterval(calentar, 15000);
 escuchar();
 conectarPlayer();
 montarBarraDemo();
+if (new URLSearchParams(location.search).get('grilla') === '1') ponerGrilla(true);
 arrancarVideoEjemplo();
 document.addEventListener('pointerdown', () => {
   const video = document.querySelector('#ahora-media video');

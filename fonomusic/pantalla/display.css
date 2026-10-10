@@ -1126,6 +1126,32 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.ahora-disco,
+.ahora-sello,
+.ahora-eq { display: none; }
+
+.grilla {
+  position: absolute;
+  inset: 0;
+  z-index: 9000;
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  pointer-events: none;
+  border-right: 1px solid rgba(255, 230, 0, .55);
+  border-bottom: 1px solid rgba(255, 230, 0, .55);
+}
+.grilla span {
+  border-left: 1px solid rgba(255, 230, 0, .55);
+  border-top: 1px solid rgba(255, 230, 0, .55);
+  padding: 3px 5px;
+  color: #ffe600;
+  font: 700 clamp(10px, 1.5cqh, 18px)/1 system-ui, sans-serif;
+  text-shadow: 0 0 3px #000, 0 0 2px #000;
+  background:
+    linear-gradient(rgba(255, 230, 0, .16), rgba(255, 230, 0, .16)) center / 1px 100% no-repeat,
+    linear-gradient(rgba(255, 230, 0, .16), rgba(255, 230, 0, .16)) center / 100% 1px no-repeat;
+}
 .demo-capas {
   position: fixed;
   inset: 0;
@@ -1589,7 +1615,127 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 @keyframes voltio-apunta { 0%, 100% { transform: translateX(0) rotate(0); } 50% { transform: translateX(-1cqw) rotate(-3deg); } }
 @keyframes voltio-baja { from { transform: translateY(-2cqh); } to { transform: translateY(1cqh); } }
 
+.escena[data-piel='nocturna'] .ahora-velo {
+  background:
+    linear-gradient(90deg, rgba(14, 8, 30, .7), transparent 44%),
+    linear-gradient(to top, rgba(14, 8, 30, .9), transparent 40%);
+}
+.escena[data-piel='nocturna'] .ahora-datos { font-family: system-ui, sans-serif; }
+.escena[data-piel='nocturna'] .ahora-disco {
+  display: block;
+  position: relative;
+  width: clamp(70px, 13cqh, 150px);
+  aspect-ratio: 1;
+  margin: 0 0 1.6cqh;
+}
+.escena[data-piel='nocturna'] .ahora-funda {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 6px;
+  background: linear-gradient(150deg, #2a1d4d, #120c24);
+  border: 2px solid #22e0e6;
+  box-shadow: 0 0 12px rgba(34, 224, 230, .7), inset 0 0 10px rgba(34, 224, 230, .3);
+}
+.escena[data-piel='nocturna'] .ahora-funda img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.escena[data-piel='nocturna'] .ahora-funda:empty::before {
+  content: '';
+  position: absolute;
+  inset: 22%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M15 30V9l17-4v21' fill='none' stroke='%23ff3d8b' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='10.5' cy='30' r='4.5' fill='none' stroke='%2322e0e6' stroke-width='2.6'/%3E%3Ccircle cx='27.5' cy='26' r='4.5' fill='none' stroke='%2322e0e6' stroke-width='2.6'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 0 5px #ff3d8b);
+}
+.escena[data-piel='nocturna'] .ahora-vinilo {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  width: 92%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid #ff3d8b;
+  background:
+    radial-gradient(circle, #22e0e6 0 5%, #120e22 5.5% 7%, #ff3d8b 7.5% 17%, transparent 17.5%),
+    repeating-radial-gradient(circle, #14101f 0 2px, #3a3060 2px 3px);
+  box-shadow: 0 0 14px rgba(255, 61, 139, .85), inset 0 0 0 3px rgba(34, 224, 230, .35);
+  animation: fx-vinilo-gira 1.8s linear infinite;
+}
+.escena[data-piel='nocturna'] .ahora-vinilo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 20deg, transparent 0 12%, rgba(255, 255, 255, .14) 16%, transparent 22% 62%, rgba(255, 255, 255, .1) 66%, transparent 72%);
+}
+.escena[data-piel='nocturna'] .ahora-disco.is-pausa .ahora-vinilo { animation-play-state: paused; }
+@keyframes fx-vinilo-gira { to { transform: rotate(360deg); } }
+.escena[data-piel='nocturna'] .ahora-marca { color: #9d8fc4; }
+.escena[data-piel='nocturna'] .ahora-sello {
+  display: inline-block;
+  margin: 0 0 .9cqh;
+  padding: .45em .9em;
+  border: 2px solid #ff3d8b;
+  border-radius: 10px;
+  color: #ffd1e3;
+  font: 700 clamp(13px, 2.3cqh, 26px)/1 system-ui, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 6px #ff3d8b, 0 0 14px #ff3d8b;
+  box-shadow: 0 0 12px rgba(255, 61, 139, .75), inset 0 0 10px rgba(255, 61, 139, .45);
+  animation: fx-neon-titila 6s linear infinite;
+}
+.escena[data-piel='nocturna'] .ahora-kicker { color: #22e0e6; text-shadow: 0 0 6px rgba(34, 224, 230, .7); }
+.escena[data-piel='nocturna'] .ahora-titulo { color: #fff; text-shadow: 0 0 18px rgba(255, 61, 139, .45); }
+.escena[data-piel='nocturna'] .ahora-artista { color: #c9bdf0; }
+.escena[data-piel='nocturna'] .ahora-meta { color: #8a7fb0; }
+.escena[data-piel='nocturna'] .ahora-dedicatoria {
+  position: relative;
+  display: inline-block;
+  max-width: min(30ch, 100%);
+  overflow: visible;
+  white-space: normal;
+  margin: 1.2cqh 0 0;
+  padding: .55em .9em;
+  border: 2px solid #22e0e6;
+  border-radius: 12px;
+  background: rgba(20, 16, 40, .88);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(34, 224, 230, .6), inset 0 0 8px rgba(34, 224, 230, .25);
+}
+.escena[data-piel='nocturna'] .ahora-dedicatoria::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  bottom: -9px;
+  width: 14px;
+  height: 14px;
+  background: #15102a;
+  border-right: 2px solid #22e0e6;
+  border-bottom: 2px solid #22e0e6;
+  transform: rotate(45deg);
+}
+.escena[data-piel='nocturna'] .ahora-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(3px, .35cqw, 7px);
+  height: clamp(28px, 6cqh, 70px);
+  margin: 1.8cqh 0 0;
+}
+.escena[data-piel='nocturna'] .ahora-eq i {
+  width: clamp(6px, .75cqw, 15px);
+  height: 100%;
+  background: repeating-linear-gradient(to top, #22e0e6 0 4px, transparent 4px 6px);
+  filter: drop-shadow(0 0 4px #22e0e6);
+  animation: fx-eq calc(.7s + var(--i) * 37ms) ease-in-out calc(var(--i) * -173ms) infinite alternate;
+}
+.escena[data-piel='nocturna'] .ahora-eq i:nth-child(3n) { animation-duration: 1.05s; }
+.escena[data-piel='nocturna'] .ahora-eq.is-pausa i { animation-play-state: paused; opacity: .5; }
+@keyframes fx-eq { 0% { clip-path: inset(78% 0 0 0); } 45% { clip-path: inset(22% 0 0 0); } 70% { clip-path: inset(55% 0 0 0); } 100% { clip-path: inset(8% 0 0 0); } }
+
 @media (prefers-reduced-motion: reduce) {
+  .escena[data-piel='nocturna'] .ahora-vinilo,
+  .escena[data-piel='nocturna'] .ahora-sello,
+  .escena[data-piel='nocturna'] .ahora-eq i,
   .fx-mascota, .voltio-chispa,
   .escena[data-piel='nocturna'] .escena-centro .fx-ficha-neon::before,
   .escena[data-piel='nocturna'] .escena-match p::before,
