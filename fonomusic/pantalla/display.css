@@ -1889,3 +1889,19 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 
 /* Con dir="auto" un título en hebreo se alinearía a la derecha: se mantiene a la izquierda como el resto del bloque. */
 .ahora-datos .ahora-titulo[dir], .ahora-datos .ahora-artista[dir] { text-align: left; }
+
+.diag {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 50;
+  margin: 0;
+  padding: 8px 10px;
+  max-width: min(92vw, 560px);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .8);
+  color: #9ff;
+  font: 11px/1.4 ui-monospace, monospace;
+  white-space: pre-wrap;
+  pointer-events: none;
+}

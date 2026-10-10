@@ -204,9 +204,6 @@ function ruidoFx(duracion, volumen, frecuencia, q, cuando) {
 
 function reanudarEscenario() {
   prepararSonido();
-  if (ytPlayer && ytPlayer.playVideo) {
-    try { ytPlayer.unMute(); ytPlayer.playVideo(); } catch (error) { /* iOS pide el toque */ }
-  }
   const video = document.querySelector('#ahora-media video');
   if (video && video.paused) video.play().catch(() => {});
 }
@@ -1830,15 +1827,17 @@ let ytPlayer = null;
 let ytEstado = -1;
 let ytDesde = 0;
 let ytPausaSala = false;
+let ytEsperaToque = false;
 
-// Los navegadores sólo dejan sonar un video si el toque cae dentro del reproductor de YouTube:
-// mientras no arranca, la capa del video pasa delante de la escena para recibir ese toque.
+// En modo toque la capa del video pasa delante de la escena para que el toque caiga en el reproductor.
 function avisoReproducir() {
   const capa = document.getElementById('ahora-video');
   if (!capa) return;
   let aviso = capa.querySelector('.ahora-tocar');
   const juego = String(document.getElementById('escena')?.dataset.slots || '').split(' ').includes('escenario');
-  const falta = Boolean(ytPlayer) && !juego && !ytPausaSala && ![0, 1, 3].includes(ytEstado) && Date.now() - ytDesde > 1500;
+  const mudo = ytMudo();
+  const sonando = ytEstado === 1 && !mudo;
+  const falta = Boolean(ytPlayer) && ytEsperaToque && !sonando && !juego && !ytPausaSala;
   capa.classList.toggle('is-al-frente', falta);
   if (!falta) {
     if (aviso) aviso.remove();
@@ -1847,9 +1846,37 @@ function avisoReproducir() {
   if (!aviso) {
     aviso = document.createElement('p');
     aviso.className = 'ahora-tocar';
-    aviso.textContent = 'Tocá el video para reproducirlo con sonido';
     capa.appendChild(aviso);
   }
+  aviso.textContent = ytEstado === 1 && mudo
+    ? 'Tocá el parlante del video para activar el sonido'
+    : 'Tocá ▶ en el video para reproducirlo con sonido';
+}
+
+setInterval(() => {
+  if (ytPlayer) avisoReproducir();
+  pintarDiagnostico();
+}, 1000);
+
+function pintarDiagnostico() {
+  if (new URLSearchParams(location.search).get('diag') !== '1') return;
+  let caja = document.getElementById('diag');
+  if (!caja) {
+    caja = document.createElement('pre');
+    caja.id = 'diag';
+    caja.className = 'diag';
+    document.body.appendChild(caja);
+  }
+  let vol = '-';
+  let t = '-';
+  try { vol = ytPlayer?.getVolume?.(); t = Math.round(ytPlayer?.getCurrentTime?.() || 0); } catch (error) { /* sin player */ }
+  const capa = document.getElementById('ahora-video');
+  caja.textContent = [
+    navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 90),
+    `estado ${ytEstado}  mudo ${ytMudo()}  vol ${vol}  t ${t}s`,
+    `modo toque ${ytEsperaToque}  al frente ${Boolean(capa?.classList.contains('is-al-frente'))}  visible ${capa?.style.visibility || '-'}`,
+    `pausa sala ${ytPausaSala}  activación ${navigator.userActivation ? navigator.userActivation.hasBeenActive : '-'}`,
+  ].join('\n');
 }
 
 const ORIGEN_AHORA = { REQUEST: 'Pedido', VOTE: 'Voto', AUTOFILL: 'Automático', MODERATOR: 'Sala', YOUTUBE: 'YouTube' };
@@ -2010,6 +2037,72 @@ function vaciarMedia() {
   const media = mediaAhora();
   if (media) media.innerHTML = '';
   ytPlayer = null;
+  ytEsperaToque = false;
+  avisoReproducir();
+}
+
+function ytMudo() {
+  try { return Boolean(ytPlayer && ytPlayer.isMuted && ytPlayer.isMuted()); } catch (error) { return false; }
+}
+
+// Los navegadores sólo habilitan el sonido con un toque dentro del reproductor de YouTube. Si no arranca
+// sonando solo, se recrea en modo "toque": sin autoplay y con los controles propios de YouTube (▶ y parlante).
+function crearPlayerYoutube(youtube, now, key, esperarToque) {
+  const media = mediaAhora();
+  if (!media || stageKey !== key) return;
+  if (ytPlayer && ytPlayer.destroy) {
+    try { ytPlayer.destroy(); } catch (error) { /* ya no estaba */ }
+  }
+  ytPlayer = null;
+  const viejo = document.getElementById('yt-frame');
+  if (viejo) viejo.remove();
+  const holder = document.createElement('div');
+  holder.id = 'yt-frame';
+  media.appendChild(holder);
+  ytEsperaToque = esperarToque;
+  ytEstado = -1;
+  ytDesde = Date.now();
+  const uid = now.trackUid;
+  const player = new window.YT.Player('yt-frame', {
+    host: 'https://www.youtube.com',
+    width: '100%',
+    height: '100%',
+    videoId: youtube,
+    playerVars: {
+      autoplay: esperarToque ? 0 : 1,
+      controls: esperarToque ? 1 : 0,
+      rel: 0, modestbranding: 1, playsinline: 1, fs: 0,
+      origin: location.origin, widget_referrer: location.origin,
+      ...(now.mute ? { mute: 1 } : {}),
+      ...(now.repetir ? { loop: 1, playlist: youtube } : {}),
+    },
+    events: {
+      onReady: (event) => {
+        if (esperarToque) return;
+        try {
+          if (!now.mute) { event.target.unMute(); event.target.setVolume(100); }
+          event.target.playVideo();
+        } catch (error) { /* reintenta */ }
+      },
+      onStateChange: (event) => {
+        ytEstado = event.data;
+        if (event.data === 1 && !now.mute && ytMudo()) {
+          // En modo toque el ▶ ya fue un toque dentro del reproductor: ahí desmutear sí se permite.
+          try { event.target.unMute(); event.target.setVolume(100); } catch (error) { /* sigue mudo */ }
+        }
+        avisoReproducir();
+        if (event.data === 0) postEnded(uid);
+      },
+    },
+  });
+  ytPlayer = player;
+  if (!esperarToque && !now.mute) {
+    setTimeout(() => {
+      if (ytPlayer !== player || stageKey !== key) return;
+      const sonando = (ytEstado === 1 || ytEstado === 3) && !ytMudo();
+      if (!sonando && !ytPausaSala) crearPlayerYoutube(youtube, now, key, true);
+    }, 3500);
+  }
   avisoReproducir();
 }
 
@@ -2038,67 +2131,17 @@ function showStage(state) {
       fondo.alt = '';
       fondo.src = 'https://i.ytimg.com/vi/' + youtube + '/hqdefault.jpg';
       media.appendChild(fondo);
-      const holder = document.createElement('div');
-      holder.id = 'yt-frame';
-      media.appendChild(holder);
-      const uid = now.trackUid;
       loadYoutube().then(() => {
         if (stageKey !== key || !window.YT || !window.YT.Player) return;
-        ytEstado = -1;
-        ytDesde = Date.now();
-        setTimeout(avisoReproducir, 1600);
-        setTimeout(avisoReproducir, 4000);
-        ytPlayer = new window.YT.Player('yt-frame', {
-          host: 'https://www.youtube.com',
-          width: '100%',
-          height: '100%',
-          videoId: youtube,
-          playerVars: {
-            autoplay: 1, controls: 0, rel: 0, modestbranding: 1, playsinline: 1, fs: 0,
-            origin: location.origin, widget_referrer: location.origin,
-            ...(now.mute ? { mute: 1 } : {}),
-            ...(now.repetir ? { loop: 1, playlist: youtube } : {}),
-          },
-          events: {
-            onReady: (event) => {
-              try {
-                if (!now.mute) { event.target.unMute(); event.target.setVolume(100); }
-                event.target.playVideo();
-              } catch (error) { /* reintenta */ }
-            },
-            onStateChange: (event) => {
-              ytEstado = event.data;
-              if (event.data === 1 && !now.mute) {
-                try {
-                  if (event.target.isMuted()) {
-                    event.target.unMute();
-                    event.target.setVolume(100);
-                    // YouTube a veces arranca mudo cuando el navegador bloquea el sonido: se pausa para pedir el toque.
-                    setTimeout(() => {
-                      try {
-                        if (ytPlayer === event.target && event.target.isMuted() && event.target.getPlayerState() === 1) {
-                          event.target.pauseVideo();
-                        }
-                      } catch (error) { /* sigue mudo */ }
-                    }, 700);
-                  }
-                } catch (error) { /* reproductor recién creado */ }
-              }
-              avisoReproducir();
-              if (event.data === 0) postEnded(uid);
-            },
-          },
-        });
+        crearPlayerYoutube(youtube, now, key, false);
       }).catch(() => {});
     }
     if (ytPlayer && ytPlayer.pauseVideo) {
-      if (state.paused) ytPlayer.pauseVideo();
-      else {
-        try {
-          if (!now.mute) ytPlayer.unMute();
-          ytPlayer.playVideo();
-        } catch (error) { /* sigue */ }
-      }
+      try {
+        if (state.paused) ytPlayer.pauseVideo();
+        // Sólo se reanuda una pausa de la sala: un play desde afuera sin toque hace que YouTube arranque mudo.
+        else if (ytEstado === 2 && !ytEsperaToque) ytPlayer.playVideo();
+      } catch (error) { /* sigue */ }
     }
     return;
   }
