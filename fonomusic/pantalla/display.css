@@ -475,15 +475,18 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 .fx-lienzo-carrera:has(.is-vacia),
 .fx-lienzo-cielo:has(.is-vacia),
 .fx-lienzo-maison:has(.is-vacia),
+.fx-lienzo-kira:has(.is-vacia),
 .fx-lienzo-neon:has([data-sectores='0']),
 .fx-lienzo-tinta:has([data-sectores='0']),
 .fx-lienzo-carrera:has([data-sectores='0']),
 .fx-lienzo-cielo:has([data-sectores='0']),
 .fx-lienzo-maison:has([data-sectores='0']),
+.fx-lienzo-kira:has([data-sectores='0']),
 .fx-lienzo-neon:empty,
 .fx-lienzo-tinta:empty,
 .fx-lienzo-cielo:empty,
 .fx-lienzo-maison:empty,
+.fx-lienzo-kira:empty,
 .fx-lienzo-carrera:empty {
   display: none !important;
   width: 0 !important;
@@ -670,7 +673,8 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 .escena-pila.is-tira .fx-apila-tinta,
 .escena-pila.is-tira .fx-apila-carrera,
 .escena-pila.is-tira .fx-apila-cielo,
-.escena-pila.is-tira .fx-apila-maison {
+.escena-pila.is-tira .fx-apila-maison,
+.escena-pila.is-tira .fx-apila-kira {
   animation-name: fx-tira-entra;
   animation-duration: .32s;
   animation-timing-function: ease;
@@ -802,6 +806,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 .escena[data-fondo='actual'] .fx-marco-carrera,
 .escena[data-fondo='actual'] .fx-marco-globo,
 .escena[data-fondo='actual'] .fx-marco-cuero,
+.escena[data-fondo='actual'] .fx-marco-kira,
 .escena-capa[data-tipo='ruleta'] .escena-marco,
 .escena-capa[data-tipo='votacion'] .escena-marco {
   background: transparent;
@@ -939,7 +944,8 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
 .escena-pila .fx-ficha-tinta,
 .escena-pila .fx-ficha-carrera,
 .escena-pila .fx-ficha-cielo,
-.escena-pila .fx-ficha-maison {
+.escena-pila .fx-ficha-maison,
+.escena-pila .fx-ficha-kira {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
@@ -4614,4 +4620,625 @@ body:has(.escena[data-piel='manga']) #ahora-media .ahora-fondo { display: none; 
   .escena[data-piel='maison'] .celebra-titulo::before,
   .escena[data-piel='maison'] .celebra-titulo::after,
   .escena[data-piel='maison'] .escena-centro .fx-ficha-maison::after { animation: none; }
+}
+
+/* Kirameki: H1 (fondo), H2 (Kira y efectos), H3 y H4 (kits), H6 (bienvenida) y H7 ("¡Hay pareja!"). Anime a color: paneles
+   azul noche con borde magenta a cian, letras amarillas con borde magenta y blanco, aros arcoíris, destellos y corazones. */
+.fx-fondo-kira {
+  --papel: #2a1f6b;
+  --tinta: #fff;
+  --sello: #ff6fb5;
+  --marco: #2a2370;
+  color: var(--tinta);
+  font-family: 'Baloo 2', 'Zen Maru Gothic', sans-serif;
+  background: #3b2a8c url('./arte/kirameki/fondo.webp') center / cover no-repeat;
+}
+.fx-ambiente-kira { background: radial-gradient(ellipse at 50% 100%, rgba(255, 111, 181, .18), transparent 60%); }
+.fx-marco-kira { border: 5px solid transparent; border-radius: 26px; background: linear-gradient(rgba(27, 20, 80, .9), rgba(27, 20, 80, .9)) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box; box-shadow: 0 0 0 4px #fff; }
+.fx-sello-kira { padding: clamp(4px, 1cqh, 10px) clamp(10px, 2cqw, 20px); color: #ffd23f; font: 800 clamp(16px, 3.6cqh, 32px)/1 'Baloo 2', sans-serif; -webkit-text-stroke: 4px #e0218a; paint-order: stroke fill; }
+.fx-globo-kira { border: 4px solid #1b1450; background: #fff; border-radius: 30px; color: #1b1450; box-shadow: 0 5px 0 #ff6fb5; }
+.fx-entrada-kira { animation: kira-entra .55s cubic-bezier(.2, 1.6, .3, 1) both; }
+@keyframes kira-entra { from { transform: scale(.6) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.fx-impacto-kira { background: radial-gradient(circle, rgba(255, 111, 181, .4), transparent 55%); animation: fx-flash .8s ease both; }
+.fx-ficha-kira { --sello: #ff6fb5; padding: clamp(8px, 1.6cqh, 16px) clamp(12px, 2cqw, 22px); border: 4px solid #1b1450; border-radius: 20px; background: #fff; box-shadow: 7px 8px 0 #e0218a; color: #1b1450; font: 800 clamp(11px, 2.2cqh, 22px)/1.15 'Baloo 2', sans-serif; }
+.fx-apila-kira { animation: fx-apila-kira .7s cubic-bezier(.2, 1.6, .3, 1) both; }
+.fx-rechazo-kira { animation: fx-rechazo-kira .8s cubic-bezier(.2, 1.4, .3, 1) both; }
+@keyframes fx-apila-kira { from { transform: translate(-24cqw, -30cqh) scale(.4) rotate(-20deg); opacity: 0; } 60% { transform: scale(1.08) rotate(3deg); opacity: 1; } to { transform: none; opacity: 1; } }
+@keyframes fx-rechazo-kira { 0% { transform: translate(-50%, 30%) scale(1.2); opacity: 0; } 40% { transform: translate(calc(-50% - 10px), 0); opacity: 1; } 55% { transform: translate(calc(-50% + 10px), 0); } 70% { transform: translate(calc(-50% - 5px), 0); } 100% { transform: translate(-50%, 0); } }
+@keyframes fx-cierre-kira { from { transform: translateX(30cqw) scale(.5) rotate(10deg); opacity: 0; } 60% { transform: scale(1.06); opacity: 1; } to { transform: none; opacity: 1; } }
+.escena[data-piel='kirameki'] .is-cierre .escena-pila .escena-pareja { animation-name: fx-cierre-kira; animation-timing-function: cubic-bezier(.2, 1.6, .3, 1); animation-fill-mode: both; }
+.papel-corazon { width: 14px !important; height: 13px !important; clip-path: path('M7 13 C2 9 0 6.5 0 4 C0 1.8 1.6 0 3.6 0 C5 0 6.2 .8 7 2 C7.8 .8 9 0 10.4 0 C12.4 0 14 1.8 14 4 C14 6.5 12 9 7 13 Z'); }
+.fx-lienzo-kira canvas, canvas.fx-lienzo-kira { border-radius: 50%; box-shadow: none; outline: none; background: transparent; }
+
+.escena[data-piel='kirameki'] {
+  --kir-titulo: 'Baloo 2', 'Zen Maru Gothic', 'Arial Rounded MT Bold', sans-serif;
+  --kir-noche: #1b1450;
+  --kir-rosa: #ff6fb5;
+  --kir-arco: linear-gradient(135deg, #ff6fb5, #ffb648, #ffd23f, #7be495, #22d3ee, #a78bfa, #ff6fb5);
+  --kir-confeti: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 104 104'%3E%3Cpath d='M0 -10 L2.9 -3.1 L10 -3.1 L4.3 1.4 L6.4 8.6 L0 4.4 L-6.4 8.6 L-4.3 1.4 L-10 -3.1 L-2.9 -3.1 Z' transform='translate(12 14) scale(0.8)' fill='%23ffd23f' stroke='%231b1450' stroke-width='2.25' stroke-linejoin='round'/%3E%3Cpath d='M0 -10 L2.9 -3.1 L10 -3.1 L4.3 1.4 L6.4 8.6 L0 4.4 L-6.4 8.6 L-4.3 1.4 L-10 -3.1 L-2.9 -3.1 Z' transform='translate(80 70) scale(0.7)' fill='%2322d3ee' stroke='%231b1450' stroke-width='2.57' stroke-linejoin='round'/%3E%3Cg transform='translate(60 4) scale(0.4)'%3E%3Cpath d='M26 45 C11 35 5 26 5 18 C5 11 10 6 17 6 C21 6 24 8 26 12 C28 8 31 6 35 6 C42 6 47 11 47 18 C47 26 41 35 26 45Z' fill='%23ff6fb5' stroke='%231b1450' stroke-width='8.50' stroke-linejoin='round'/%3E%3Cpath d='M13 16 Q15 11 20 11' stroke='%23fff' stroke-width='7.50' fill='none' stroke-linecap='round'/%3E%3C/g%3E%3Cg transform='translate(6 64) scale(0.36)'%3E%3Cpath d='M26 45 C11 35 5 26 5 18 C5 11 10 6 17 6 C21 6 24 8 26 12 C28 8 31 6 35 6 C42 6 47 11 47 18 C47 26 41 35 26 45Z' fill='%23a78bfa' stroke='%231b1450' stroke-width='9.44' stroke-linejoin='round'/%3E%3Cpath d='M13 16 Q15 11 20 11' stroke='%23fff' stroke-width='8.33' fill='none' stroke-linecap='round'/%3E%3C/g%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(48 52) scale(0.8)' fill='%23fff'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(92 24) scale(0.7)' fill='%23ffd23f'/%3E%3C/svg%3E");
+  --kir-corazon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 52'%3E%3Cg transform='translate(4 2) scale(1)'%3E%3Cpath d='M26 45 C11 35 5 26 5 18 C5 11 10 6 17 6 C21 6 24 8 26 12 C28 8 31 6 35 6 C42 6 47 11 47 18 C47 26 41 35 26 45Z' fill='%23ff6fb5' stroke='%231b1450' stroke-width='3.40' stroke-linejoin='round'/%3E%3Cpath d='M13 16 Q15 11 20 11' stroke='%23fff' stroke-width='3.00' fill='none' stroke-linecap='round'/%3E%3C/g%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(52 8) scale(0.6)' fill='%23fff'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(4 40) scale(0.45)' fill='%23ffd23f'/%3E%3C/svg%3E");
+  --kir-destellos: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(14 14) scale(1.2)' fill='%23fff'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(80 30) scale(0.8)' fill='%23ffd23f'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(40 80) scale(1)' fill='%23ff6fb5'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(100 90) scale(0.7)' fill='%2322d3ee'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(70 60) scale(0.5)' fill='%23fff'/%3E%3C/svg%3E");
+}
+.escena[data-piel='kirameki'][data-fondo='juego'] { background: #3b2a8c url('./arte/kirameki/fondo.webp') center / cover no-repeat; }
+.escena[data-piel='kirameki'] .escena-iniciales { border: 5px solid #fff; box-shadow: 0 0 0 3px #1b1450; background: #a78bfa; color: #fff; font-family: var(--kir-titulo); font-weight: 800; }
+
+.escena[data-piel='kirameki'] .fx-obj-destellos {
+  inset: auto;
+  left: 3cqw;
+  top: 14cqh;
+  width: 94cqw;
+  height: 70cqh;
+  background: var(--kir-destellos) left top / 14cqh auto no-repeat, var(--kir-destellos) right 10% / 12cqh auto no-repeat, var(--kir-destellos) left bottom / 10cqh auto no-repeat;
+  animation: fx-twinkle 1.6s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .fx-obj-fugaz {
+  inset: auto;
+  right: 4cqw;
+  top: 6cqh;
+  width: 16cqh;
+  height: 11cqh;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 90'%3E%3Cpath d='M8 70 Q60 40 104 22' stroke='%23ff6fb5' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M14 80 Q64 50 104 28' stroke='%2322d3ee' stroke-width='4' fill='none' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M20 60 Q64 36 100 18' stroke='%23ffd23f' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M0 -10 L2.9 -3.1 L10 -3.1 L4.3 1.4 L6.4 8.6 L0 4.4 L-6.4 8.6 L-4.3 1.4 L-10 -3.1 L-2.9 -3.1 Z' transform='translate(110 20) scale(1.5)' fill='%23ffd23f' stroke='%231b1450' stroke-width='1.20' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: kira-fugaz 3.2s ease-in-out infinite;
+}
+@keyframes kira-fugaz { 0% { transform: translate(4cqh, 3cqh); opacity: 0; } 30%, 70% { opacity: 1; } 100% { transform: translate(-4cqh, -2cqh); opacity: 0; } }
+.escena[data-piel='kirameki'] .fx-obj-kya {
+  inset: auto;
+  left: 4cqw;
+  top: 8cqh;
+  display: block;
+  color: #ffd23f;
+  font: 800 clamp(30px, 8cqh, 90px)/1 var(--kir-titulo);
+  -webkit-text-stroke: 6px #e0218a;
+  paint-order: stroke fill;
+  text-shadow: 0 0 0 #fff, 0 6px 0 #fff;
+  transform: rotate(-10deg);
+  animation: kira-kya 1.2s cubic-bezier(.2, 1.6, .3, 1) both;
+}
+@keyframes kira-kya { from { transform: rotate(-10deg) scale(.2); opacity: 0; } to { transform: rotate(-10deg); opacity: 1; } }
+
+.escena[data-piel='kirameki']:not([data-fondo='actual']) .escena-capa:not([data-tipo='ruleta']):not([data-tipo='votacion']) .fx-marco-kira {
+  border: 6px solid transparent;
+  border-radius: 28px;
+  background: var(--kir-destellos) right 6px top 6px / 10cqh auto no-repeat, linear-gradient(170deg, rgba(60, 50, 140, .94), rgba(27, 20, 80, .94) 40%) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box;
+  box-shadow: 0 0 0 4px #fff, 0 0 28px rgba(255, 111, 181, .45);
+}
+
+.escena[data-piel='kirameki'] .fx-sello-kira,
+.escena[data-piel='kirameki'] .escena-capa[data-tipo='ruleta'] .fx-sello-kira,
+.escena[data-piel='kirameki'] .escena-capa[data-tipo='votacion'] .fx-sello-kira {
+  position: relative;
+  align-self: center;
+  margin: 0 auto 2cqh;
+  padding: 0 .3em !important;
+  color: #ffd23f;
+  font: 800 clamp(34px, 7cqh, 80px)/1 var(--kir-titulo) !important;
+  text-transform: uppercase;
+  -webkit-text-stroke: 9px #e0218a;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 0 #fff) drop-shadow(3px 3px 0 #fff) drop-shadow(-3px -3px 0 #fff) drop-shadow(0 6px 0 #1b1450);
+  transform: rotate(-4deg);
+}
+.escena[data-piel='kirameki'] .fx-sello-kira::before,
+.escena[data-piel='kirameki'] .fx-sello-kira::after {
+  content: '';
+  position: absolute;
+  width: .5em;
+  aspect-ratio: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(10 10) scale(0.9)' fill='%23ffd23f' stroke='%231b1450' stroke-width='1.78' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: fx-twinkle 1.4s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .fx-sello-kira::before { left: -.4em; top: -.1em; }
+.escena[data-piel='kirameki'] .fx-sello-kira::after { right: -.4em; bottom: 0; animation-delay: -.7s; }
+.escena[data-piel='kirameki'] .escena-capa[data-salon='1'] .fx-sello-kira { margin-bottom: 6cqh; font-size: clamp(40px, 9cqh, 104px) !important; text-transform: none; }
+.escena[data-piel='kirameki'] .escena-capa[data-salon='1'] .fx-sello-kira::after {
+  content: 'Parejas de la noche';
+  right: auto;
+  left: 50%;
+  bottom: auto;
+  top: calc(100% + 12px);
+  width: auto;
+  aspect-ratio: auto;
+  padding: .2em .9em;
+  border-radius: 999px;
+  background: #1b1450;
+  color: #fff;
+  font: 700 .3em/1.1 var(--kir-titulo);
+  -webkit-text-stroke: 0;
+  white-space: nowrap;
+  transform: translateX(-50%) rotate(4deg);
+  box-shadow: 0 0 0 3px #ff6fb5;
+  animation: none;
+}
+.escena[data-piel='kirameki'] .escena-reloj {
+  align-self: center;
+  margin: 0 auto 1cqh;
+  padding: .3em 1em;
+  border: 4px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(#1b1450, #1b1450) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box;
+  color: #fff;
+  font: 800 clamp(16px, 2.8cqh, 30px)/1 var(--kir-titulo);
+  box-shadow: 0 0 0 3px #fff;
+}
+
+.escena[data-piel='kirameki'] .fx-ficha-kira {
+  position: relative;
+  border: 4px solid #1b1450;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 9px 10px 0 #e0218a, 9px 10px 0 4px #1b1450;
+  color: #1b1450;
+  font: 800 clamp(14px, 2.5cqh, 26px)/1.1 var(--kir-titulo);
+}
+.escena[data-piel='kirameki'] .fx-ficha-kira .escena-elegido img,
+.escena[data-piel='kirameki'] .fx-ficha-kira .escena-iniciales {
+  border: 7px solid transparent;
+  background: linear-gradient(135deg, #ff6fb5, #ffb648, #ffd23f, #7be495, #22d3ee, #a78bfa, #ff6fb5) border-box;
+  box-shadow: 0 0 0 3px #1b1450, inset 0 0 0 2px #1b1450;
+}
+.escena[data-piel='kirameki'] .escena-centro .fx-ficha-kira,
+.escena[data-piel='kirameki'] .escena-pila.is-salon .fx-ficha-kira {
+  gap: clamp(34px, 5cqw, 80px);
+  padding: clamp(18px, 3cqh, 30px) clamp(20px, 2.8cqw, 36px);
+}
+.escena[data-piel='kirameki'] .escena-centro .fx-ficha-kira::after,
+.escena[data-piel='kirameki'] .escena-pila.is-salon .fx-ficha-kira::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(clamp(18px, 3cqh, 30px) + min(7cqh, 4cqw));
+  width: clamp(40px, 6.4cqh, 70px);
+  aspect-ratio: 60 / 52;
+  transform: translate(-50%, -50%);
+  background: var(--kir-corazon) center / contain no-repeat;
+  animation: fx-latido 1s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .escena-centro .fx-ficha-kira::before {
+  content: '';
+  position: absolute;
+  right: -2.4cqh;
+  top: -3cqh;
+  width: clamp(50px, 8cqh, 90px);
+  aspect-ratio: 64 / 44;
+  transform: rotate(18deg);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 44'%3E%3Cpath d='M8 36 L4 14 L20 24 L32 6 L44 24 L60 14 L56 36 Z' fill='%23ffd23f' stroke='%231b1450' stroke-width='3' stroke-linejoin='round'/%3E%3Crect x='6' y='33' width='52' height='8' rx='4' fill='%23ffd23f' stroke='%231b1450' stroke-width='3'/%3E%3Cg transform='translate(25 18) scale(0.28)'%3E%3Cpath d='M26 45 C11 35 5 26 5 18 C5 11 10 6 17 6 C21 6 24 8 26 12 C28 8 31 6 35 6 C42 6 47 11 47 18 C47 26 41 35 26 45Z' fill='%23ff6fb5' stroke='%231b1450' stroke-width='12.14' stroke-linejoin='round'/%3E%3Cpath d='M13 16 Q15 11 20 11' stroke='%23fff' stroke-width='10.71' fill='none' stroke-linecap='round'/%3E%3C/g%3E%3Ccircle cx='4' cy='13' r='3' fill='%23ff6fb5' stroke='%231b1450' stroke-width='1.6'/%3E%3Ccircle cx='60' cy='13' r='3' fill='%23ff6fb5' stroke='%231b1450' stroke-width='1.6'/%3E%3Ccircle cx='32' cy='5' r='3' fill='%2322d3ee' stroke='%231b1450' stroke-width='1.6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.escena[data-piel='kirameki'] .escena-pila.is-tira .fx-ficha-kira {
+  padding: 4px 18px 4px 5px;
+  gap: 8px;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(#1b1450, #1b1450) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box;
+  box-shadow: 0 0 0 2px #fff, 5px 5px 0 2px #e0218a;
+  color: #fff;
+  font-size: clamp(14px, 1.8cqh, 19px);
+}
+.escena[data-piel='kirameki'] .escena-pila.is-tira .fx-ficha-kira .escena-elegido span { font-size: clamp(14px, 1.8cqh, 19px); max-width: 9ch; }
+.escena[data-piel='kirameki'] .escena-pila.is-tira .fx-ficha-kira .escena-elegido img {
+  width: clamp(30px, 4cqh, 44px);
+  height: clamp(30px, 4cqh, 44px);
+  border-width: 3px;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.escena[data-piel='kirameki'] .escena-rechazo { filter: none; }
+.escena[data-piel='kirameki'] .fx-rechazo-kira .fx-ficha-kira { filter: grayscale(.4) hue-rotate(160deg) brightness(.95); box-shadow: 9px 10px 0 #38bdf8, 9px 10px 0 4px #1b1450; }
+.escena[data-piel='kirameki'] .fx-rechazo-kira::before {
+  content: '';
+  position: absolute;
+  right: -16%;
+  top: -14%;
+  z-index: 1;
+  width: 26%;
+  aspect-ratio: 56 / 36;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 36'%3E%3Cpath d='M10 4 q-6 11 0 16 q6 -5 0 -16 Z' fill='%237dd3fc' stroke='%230284c7' stroke-width='2'/%3E%3Cpath d='M28 14 q-6 11 0 16 q6 -5 0 -16 Z' fill='%237dd3fc' stroke='%230284c7' stroke-width='2'/%3E%3Cpath d='M46 2 q-6 11 0 16 q6 -5 0 -16 Z' fill='%237dd3fc' stroke='%230284c7' stroke-width='2'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: kira-gotas 1s ease-in-out .3s infinite alternate;
+}
+@keyframes kira-gotas { from { transform: translateY(-4px); } to { transform: translateY(4px); } }
+.escena[data-piel='kirameki'] .fx-rechazo-kira::after {
+  content: '¡NO!';
+  position: absolute;
+  right: -24%;
+  bottom: -22%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: clamp(130px, 22cqh, 240px);
+  aspect-ratio: 120 / 100;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cg fill='%23e0f7ff' stroke='%2338bdf8' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M10 14 L54 6 L58 40 L50 84 L8 78 L14 46 Z'/%3E%3Cpath d='M62 8 L110 16 L104 54 L112 80 L64 86 L60 44 Z'/%3E%3C/g%3E%3Cg stroke='%23fff' stroke-width='3' stroke-linecap='round' fill='none'%3E%3Cpath d='M20 22 L40 18 M70 20 L92 24'/%3E%3C/g%3E%3Cg fill='%23bae6fd' stroke='%2338bdf8' stroke-width='2'%3E%3Cpath d='M2 6 l8 2 -4 6 z'/%3E%3Cpath d='M116 4 l-6 8 8 2 z'/%3E%3Cpath d='M4 90 l10 -2 -2 8 z'/%3E%3Cpath d='M114 92 l-10 -4 2 8 z'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  color: #2563eb;
+  font: 800 clamp(34px, 6.6cqh, 74px)/1 var(--kir-titulo);
+  -webkit-text-stroke: 5px #fff;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 4px 0 #1e3a8a);
+  animation: kira-hielo .45s cubic-bezier(.2, 1.6, .4, 1) .3s both;
+}
+@keyframes kira-hielo { from { transform: scale(.3) rotate(-14deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.escena[data-piel='kirameki'] .escena-capa[data-tipo='votacion'] h2 {
+  color: #fff;
+  font: 800 clamp(26px, 4.8cqh, 54px)/1.05 var(--kir-titulo);
+  -webkit-text-stroke: 7px #1b1450;
+  paint-order: stroke fill;
+  text-shadow: 0 4px 0 #e0218a;
+}
+.escena[data-piel='kirameki'] .escena-opcion {
+  position: relative;
+  width: min(24cqw, 17rem);
+  flex-basis: min(24cqw, 17rem);
+  padding: clamp(10px, 1.6cqh, 18px);
+  border: 4px solid #1b1450;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 8px 9px 0 #a78bfa, 8px 9px 0 4px #1b1450;
+  color: #1b1450;
+  transition: transform .35s cubic-bezier(.2, 1.4, .3, 1), opacity .35s ease;
+}
+.escena[data-piel='kirameki'] .escena-opcion img {
+  width: min(22cqh, 14cqw);
+  height: min(22cqh, 14cqw);
+  border: 4px solid #1b1450;
+  border-radius: 14px;
+}
+.escena[data-piel='kirameki'] .escena-opcion strong { font: 800 clamp(16px, 2.4cqh, 25px)/1.1 var(--kir-titulo); }
+.escena[data-piel='kirameki'] .escena-opcion.is-ganador {
+  z-index: 1;
+  transform: scale(1.1) rotate(-1.5deg);
+  border: 6px solid transparent;
+  background: linear-gradient(#fff, #fff4fb) padding-box, linear-gradient(135deg, #ff6fb5, #ffb648, #ffd23f, #7be495, #22d3ee, #a78bfa, #ff6fb5) border-box;
+  box-shadow: 0 0 0 4px #1b1450, 0 0 40px 16px rgba(255, 210, 63, .55);
+}
+.escena[data-piel='kirameki'] .escena-opcion.is-ganador::before {
+  content: '¡GANADORA!';
+  position: absolute;
+  left: 50%;
+  top: -.9em;
+  padding: 0 .2em;
+  color: #ffd23f;
+  font: 800 clamp(22px, 3.8cqh, 42px)/1 var(--kir-titulo);
+  -webkit-text-stroke: 6px #e0218a;
+  paint-order: stroke fill;
+  white-space: nowrap;
+  translate: -50% 0;
+  filter: drop-shadow(2px 2px 0 #fff) drop-shadow(-2px -2px 0 #fff);
+  animation: kira-hielo .45s cubic-bezier(.2, 1.6, .4, 1) both;
+}
+.escena[data-piel='kirameki'] .escena-opcion.is-ganador::after {
+  content: '';
+  position: absolute;
+  inset: -6cqh -4cqw;
+  z-index: -1;
+  background: var(--kir-destellos) left top / 8cqh auto no-repeat, var(--kir-destellos) right bottom / 8cqh auto no-repeat;
+  pointer-events: none;
+  animation: fx-twinkle 1.2s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .escena-opciones:has(.is-ganador) .escena-opcion:not(.is-ganador) { opacity: .5; filter: grayscale(.5); }
+
+.escena[data-piel='kirameki'] .escena-capa[data-tipo='match'] .escena-marco {
+  padding: 8px 18px;
+  border: 4px solid transparent !important;
+  outline: 0 !important;
+  border-radius: 999px;
+  background: linear-gradient(#1b1450, #1b1450) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box !important;
+  box-shadow: 0 0 0 3px #fff, 0 0 24px rgba(255, 111, 181, .5) !important;
+  color: #fff;
+}
+.escena[data-piel='kirameki'] .escena-capa[data-tipo='match'] .escena-marco:has(.escena-match-foto) { max-width: min(70cqw, 44rem); }
+.escena[data-piel='kirameki'] .escena-match-par { gap: 14px; }
+.escena[data-piel='kirameki'] .escena-match-foto {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(40px, 6.4cqh, 68px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #a78bfa;
+  color: #fff;
+  font-weight: 800;
+  border: 4px solid #ff6fb5;
+  box-shadow: 0 0 0 2px #fff;
+}
+.escena[data-piel='kirameki'] .escena-match h2 { white-space: nowrap; color: #fff; font: 800 clamp(16px, 2.6cqh, 28px)/1.05 var(--kir-titulo); }
+.escena[data-piel='kirameki'] .escena-match p {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  color: #ff6fb5;
+  opacity: 1;
+  font: 700 clamp(12px, 1.6cqh, 16px)/1 var(--kir-titulo);
+}
+.escena[data-piel='kirameki'] .escena-match p::before {
+  content: '';
+  width: 44px;
+  height: 38px;
+  background: var(--kir-corazon) center / contain no-repeat;
+  animation: fx-latido 1s ease-in-out infinite;
+}
+
+.escena[data-piel='kirameki'] .sms-marco {
+  --sms-blanco-in: #fff;
+  --sms-blanco-out: linear-gradient(135deg, #c026d3, #e0218a);
+  --sms-tinta: #1b1450;
+  --sms-tinta-out: #fff;
+  --sms-vol-in: 0 0 0 4px #1b1450, 0 5px 0 4px #ff6fb5;
+  --sms-vol-out: 0 0 0 4px #1b1450, 0 5px 0 4px #a78bfa;
+  --sms-fuente: 'Baloo 2', 'Zen Maru Gothic', sans-serif;
+}
+.escena[data-piel='kirameki'] .sms-burbuja { border: 0; border-radius: 18px; font-weight: 700 !important; }
+.escena[data-piel='kirameki'] .sms-burbuja::before { content: none; }
+.escena[data-piel='kirameki'] .sms-burbuja::after { bottom: -12px; width: 20px; height: 15px; filter: drop-shadow(0 3px 0 #1b1450); }
+.escena[data-piel='kirameki'] .sms-fila.is-in .sms-burbuja::after { background: #fff; }
+.escena[data-piel='kirameki'] .sms-fila.is-out .sms-burbuja::after { background: #e0218a; }
+.escena[data-piel='kirameki'] .sms-avatar { border: 4px solid transparent; outline: 0; background: linear-gradient(135deg, #ff6fb5, #ffb648, #ffd23f, #7be495, #22d3ee, #a78bfa, #ff6fb5) border-box; box-shadow: 0 0 0 3px #1b1450; }
+.escena[data-piel='kirameki'] .sms-avatar.is-hueco { color: #fff; background: #a78bfa; }
+.escena[data-piel='kirameki'] .escena-cuerpo .sms-meta,
+.escena[data-piel='kirameki'] .sms-meta { color: #fff; font-weight: 700 !important; text-shadow: 0 2px 0 #1b1450; }
+.escena[data-piel='kirameki'] .sms-meta strong { padding: .08em .55em; border-radius: 999px; background: #1b1450; color: #ffd23f; text-shadow: none; box-shadow: 0 0 0 2px #ff6fb5; }
+.escena[data-piel='kirameki'] .sms-fila.is-out .sms-meta strong { color: #fff; box-shadow: 0 0 0 2px #22d3ee; }
+.escena[data-piel='kirameki'] .sms-fila.is-nuevo .sms-burbuja { animation: kira-entra .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+
+.escena[data-piel='kirameki'] .fx-impacto-kira {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 70cqh;
+  height: 70cqh;
+  margin: -35cqh 0 0 -35cqh;
+  background: none;
+  animation: kira-festejo .9s cubic-bezier(.2, 1.2, .3, 1) both;
+}
+.escena[data-piel='kirameki'] .fx-impacto-kira::before,
+.escena[data-piel='kirameki'] .fx-impacto-kira::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
+.escena[data-piel='kirameki'] .fx-impacto-kira::before {
+  background: repeating-conic-gradient(from 3deg, #ff6fb5 0 6deg, transparent 6deg 14deg, #22d3ee 14deg 17deg, transparent 17deg 24deg, #ffd23f 24deg 27deg, transparent 27deg 34deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 40%, #000 42% 80%, transparent 94%);
+  mask: radial-gradient(circle closest-side, transparent 0 40%, #000 42% 80%, transparent 94%);
+}
+.escena[data-piel='kirameki'] .fx-impacto-kira::after { background: var(--kir-destellos) 6% 10% / 20% auto no-repeat, var(--kir-destellos) 92% 84% / 18% auto no-repeat, var(--kir-confeti) 88% 8% / 18% auto no-repeat, var(--kir-confeti) 10% 88% / 18% auto no-repeat; }
+@keyframes kira-festejo { 0% { transform: scale(.3) rotate(-30deg); opacity: 0; } 20% { opacity: 1; } 70% { opacity: 1; } 100% { transform: scale(1.15) rotate(10deg); opacity: 0; } }
+.escena[data-piel='kirameki'] .papel-picado i { filter: drop-shadow(1px 1px 0 #1b1450); }
+
+.fx-mascota .kira { width: 100%; height: 100%; overflow: visible; transform: scaleX(-1); filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff); }
+
+.escena[data-piel='kirameki'] .ahora-velo {
+  background:
+    linear-gradient(90deg, rgba(27, 20, 80, .92) 0, rgba(27, 20, 80, .7) 26%, transparent 46%),
+    linear-gradient(to top, rgba(27, 20, 80, .92), transparent 36%);
+}
+.escena[data-piel='kirameki'] .ahora-datos { color: #fff; font-family: var(--kir-titulo); }
+.escena[data-piel='kirameki'] .ahora-disco {
+  display: block;
+  position: relative;
+  width: clamp(92px, 17cqh, 190px);
+  aspect-ratio: 1;
+  margin: 3cqh 0 4cqh 1cqw;
+  border: 6px solid transparent;
+  border-radius: 22px;
+  background: linear-gradient(#1b1450, #1b1450) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box;
+  box-shadow: 0 0 0 4px #fff, 0 0 26px rgba(255, 111, 181, .55);
+}
+.escena[data-piel='kirameki'] .ahora-disco::before {
+  content: '';
+  position: absolute;
+  inset: -22% -26% auto auto;
+  z-index: 2;
+  width: 46%;
+  aspect-ratio: 120 / 110;
+  background: var(--kir-destellos) center / contain no-repeat;
+  animation: fx-twinkle 1.6s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .ahora-disco::after {
+  content: '';
+  position: absolute;
+  left: -18%;
+  bottom: -14%;
+  z-index: 2;
+  width: 44%;
+  aspect-ratio: 60 / 52;
+  background: var(--kir-corazon) center / contain no-repeat;
+  animation: fx-latido 1.1s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .ahora-funda {
+  position: absolute;
+  inset: 6%;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #a78bfa, #e0218a);
+}
+.escena[data-piel='kirameki'] .ahora-funda img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.escena[data-piel='kirameki'] .ahora-funda:empty::before {
+  content: '♪';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 800 clamp(26px, 5cqh, 56px)/1 var(--kir-titulo);
+}
+.escena[data-piel='kirameki'] .ahora-vinilo { display: none; }
+.escena[data-piel='kirameki'] .ahora-marca { color: #c4b5fd; font-family: system-ui, sans-serif; }
+.escena[data-piel='kirameki'] .ahora-sello {
+  display: inline-block;
+  margin: 0 0 1.6cqh;
+  padding: 0 .2em;
+  color: #ffd23f;
+  font: 800 clamp(22px, 4cqh, 44px)/1 var(--kir-titulo);
+  text-transform: uppercase;
+  -webkit-text-stroke: 6px #e0218a;
+  paint-order: stroke fill;
+  filter: drop-shadow(2px 2px 0 #fff) drop-shadow(-2px -2px 0 #fff);
+  transform: rotate(-3deg);
+}
+.escena[data-piel='kirameki'] .ahora-kicker { color: #22d3ee; font-family: var(--kir-titulo); font-weight: 800; letter-spacing: .08em; }
+.escena[data-piel='kirameki'] .ahora-titulo { color: #fff; font: 800 clamp(30px, 6.2cqh, 72px)/1.02 var(--kir-titulo); letter-spacing: 0; -webkit-text-stroke: 6px #1b1450; paint-order: stroke fill; text-shadow: 0 5px 0 #e0218a; }
+.escena[data-piel='kirameki'] .ahora-artista { color: #ff6fb5; font-weight: 700; }
+.escena[data-piel='kirameki'] .ahora-meta { color: #c4b5fd; }
+.escena[data-piel='kirameki'] .ahora-dedicatoria {
+  position: relative;
+  display: inline-block;
+  max-width: min(30ch, 100%);
+  overflow: visible;
+  white-space: normal;
+  margin: 1.8cqh 0 0;
+  padding: .5em 1.1em;
+  border: 4px solid #1b1450;
+  border-radius: 30px;
+  background: #fff;
+  color: #1b1450;
+  font-weight: 700;
+  box-shadow: 0 5px 0 #ff6fb5;
+}
+.escena[data-piel='kirameki'] .ahora-dedicatoria::after {
+  content: '';
+  position: absolute;
+  left: 26px;
+  bottom: -17px;
+  width: 22px;
+  height: 16px;
+  background: #1b1450;
+  clip-path: polygon(0 0, 100% 0, 10% 100%);
+}
+.escena[data-piel='kirameki'] .ahora-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(5px, .5cqw, 10px);
+  height: clamp(30px, 6.4cqh, 74px);
+  margin: 2cqh 0 0;
+}
+.escena[data-piel='kirameki'] .ahora-eq i {
+  --eq-relleno: linear-gradient(to top, #e0218a, #ff6fb5 45%, #ffd23f);
+  width: clamp(10px, 1.1cqw, 20px);
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .14);
+}
+.escena[data-piel='kirameki'] .ahora-eq i:nth-child(3n) { --eq-relleno: linear-gradient(to top, #a78bfa, #22d3ee); }
+.escena[data-piel='kirameki'] .ahora-eq.is-pausa i { opacity: .5; }
+
+.escena[data-piel='kirameki'] .escena-bienvenida { background: #3b2a8c url('./arte/kirameki/fondo.webp') center / cover no-repeat; color: #fff; font-family: var(--kir-titulo); }
+.escena[data-piel='kirameki'] .bienvenida-logo { color: #fff; font: 800 clamp(48px, 11cqh, 130px)/1 var(--kir-titulo); font-style: italic; -webkit-text-stroke: 7px #e0218a; paint-order: stroke fill; text-shadow: 0 7px 0 #1b1450; text-transform: uppercase; letter-spacing: .02em; }
+.escena[data-piel='kirameki'] .bienvenida-logo span + span { color: #ffd23f; }
+.escena[data-piel='kirameki'] .bienvenida-bar { border: 5px solid transparent; border-radius: 999px; background: linear-gradient(#1b1450, #1b1450) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box; color: #ffd23f; font: 800 clamp(22px, 4.2cqh, 50px)/1 var(--kir-titulo); box-shadow: 0 0 0 4px #fff, 0 0 30px rgba(255, 111, 181, .55); }
+.escena[data-piel='kirameki'] .bienvenida-tarjeta { position: relative; border: 6px solid transparent; border-radius: 32px; background: linear-gradient(170deg, rgba(60, 50, 140, .94), rgba(27, 20, 80, .94) 40%) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box; box-shadow: 0 0 0 4px #fff, 0 0 40px rgba(255, 111, 181, .45); }
+.escena[data-piel='kirameki'] .bienvenida-qr { position: relative; }
+.escena[data-piel='kirameki'] .bienvenida-qr::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 17cqh;
+  width: 52cqh;
+  height: 52cqh;
+  margin: -26cqh 0 0 -26cqh;
+  z-index: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23fde68a' stroke-width='2.4' opacity='.95'%3E%3Ccircle cx='100' cy='100' r='96'/%3E%3Ccircle cx='100' cy='100' r='84'/%3E%3Ccircle cx='100' cy='100' r='60'/%3E%3Cpath d='M100 16 L172 142 L28 142 Z'/%3E%3Cpath d='M100 184 L28 58 L172 58 Z'/%3E%3C/g%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(190.0 100.0) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(177.94223124246452 145.00009543263425) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(144.9998091345291 177.94239653651888) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(99.99966941154072 189.99999999939286) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(54.999618269867774 177.94206594735851) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(22.057438170478378 144.9995228358168) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(10.000000002428635 99.99933882308144) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(22.058099348799118 54.99933197297697) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(55.00076346350263 22.05727287852727) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(100.00099176537786 10.000000005464443) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(145.0009543233067 22.05826464600841) scale(0.45)' fill='%23fff7cc'/%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(177.9428924123722 55.00104976342925) scale(0.45)' fill='%23fff7cc'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 0 8px rgba(253, 230, 138, .8));
+  animation: kira-circulo 30s linear infinite;
+  pointer-events: none;
+}
+@keyframes kira-circulo { to { transform: rotate(1turn); } }
+.escena[data-piel='kirameki'] .bienvenida-codigo { position: relative; z-index: 1; border: 6px solid #1b1450; border-radius: 12px; box-shadow: 0 0 0 4px #fde68a, 0 0 24px rgba(253, 230, 138, .8); }
+.escena[data-piel='kirameki'] .bienvenida-qr p { position: relative; z-index: 1; border: 0; border-radius: 0; background: none; color: #ffd23f; font: 800 clamp(18px, 3.2cqh, 36px)/1.05 var(--kir-titulo); -webkit-text-stroke: 5px #e0218a; paint-order: stroke fill; filter: drop-shadow(0 3px 0 #fff); }
+.escena[data-piel='kirameki'] .bienvenida-texto h2 { color: #fff; font: 800 clamp(38px, 8.6cqh, 98px)/1 var(--kir-titulo); text-transform: none; -webkit-text-stroke: 7px #1b1450; paint-order: stroke fill; text-shadow: 0 6px 0 #e0218a; }
+.escena[data-piel='kirameki'] .bienvenida-texto li { color: #fff; font: 800 clamp(15px, 2.6cqh, 30px)/1 var(--kir-titulo); text-transform: none; }
+.escena[data-piel='kirameki'] .bienvenida-texto li i { border: 5px solid transparent; background: linear-gradient(160deg, #4c3fb8, #1b1450) padding-box, linear-gradient(135deg, #e0218a, #a78bfa 50%, #22d3ee) border-box; color: #ff6fb5; box-shadow: 0 0 0 3px #fff, 0 0 18px rgba(255, 111, 181, .5); }
+.escena[data-piel='kirameki'] .bienvenida-texto li:nth-child(2) i { color: #a78bfa; }
+.escena[data-piel='kirameki'] .bienvenida-texto li:nth-child(3) i { color: #22d3ee; }
+
+.escena[data-piel='kirameki'] .escena-celebra {
+  background: repeating-conic-gradient(from 0deg at 50% 46%, rgba(255, 255, 255, .16) 0 1.2deg, transparent 1.2deg 6deg), #3b2a8c url('./arte/kirameki/fondo.webp') center / cover no-repeat;
+  color: #fff;
+  font-family: var(--kir-titulo);
+}
+.escena[data-piel='kirameki'] .escena-celebra::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 74cqh;
+  height: 74cqh;
+  margin: -37cqh 0 0 -37cqh;
+  background: radial-gradient(circle, #fff 0 8%, rgba(255, 255, 255, .9) 14%, rgba(255, 143, 199, .85) 30%, rgba(34, 211, 238, .5) 46%, transparent 62%);
+  clip-path: polygon(50% 0, 56% 34%, 78% 8%, 66% 40%, 100% 30%, 70% 52%, 98% 74%, 64% 64%, 70% 100%, 50% 70%, 30% 100%, 36% 64%, 2% 74%, 30% 52%, 0 30%, 34% 40%, 22% 8%, 44% 34%);
+  animation: celebra-pop .6s cubic-bezier(.2, 1.4, .4, 1) var(--t) both;
+}
+.escena[data-piel='kirameki'] .escena-celebra::after {
+  content: '';
+  position: absolute;
+  left: 20cqw;
+  right: 20cqw;
+  top: 34cqh;
+  height: 16cqh;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Cpath d='M0 40 C40 70 70 10 110 36 C130 48 120 70 104 64 C90 58 100 30 130 30 C170 30 190 70 240 40' fill='none' stroke='%23e11d48' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  filter: drop-shadow(0 0 6px rgba(225, 29, 72, .6));
+  pointer-events: none;
+  animation: celebra-pop .6s cubic-bezier(.2, 1.4, .4, 1) calc(var(--t) + .3s) both;
+}
+.escena[data-piel='kirameki'] .celebra-titulo,
+.escena[data-piel='kirameki'] .celebra-par,
+.escena[data-piel='kirameki'] .celebra-cinta { position: relative; z-index: 1; }
+.escena[data-piel='kirameki'] .celebra-titulo {
+  padding: 0 .2em;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: #ffd23f;
+  font: 800 clamp(46px, 12cqh, 140px)/1 var(--kir-titulo);
+  -webkit-text-stroke: 12px #e0218a;
+  paint-order: stroke fill;
+  text-shadow: none;
+  filter: drop-shadow(4px 4px 0 #fff) drop-shadow(-4px -4px 0 #fff) drop-shadow(0 8px 0 #1b1450);
+}
+.escena[data-piel='kirameki'] .celebra-titulo::before,
+.escena[data-piel='kirameki'] .celebra-titulo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: .45em;
+  aspect-ratio: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M0 -10 Q1.2 -1.2 10 0 Q1.2 1.2 0 10 Q-1.2 1.2 -10 0 Q-1.2 -1.2 0 -10 Z' transform='translate(10 10) scale(0.95)' fill='%23fff'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: fx-twinkle 1.2s ease-in-out infinite;
+}
+.escena[data-piel='kirameki'] .celebra-titulo::before { right: 100%; }
+.escena[data-piel='kirameki'] .celebra-titulo::after { left: 100%; top: 50%; animation-delay: -.6s; }
+.escena[data-piel='kirameki'] .celebra-par { align-self: start; margin-top: 2cqh; gap: 12cqw; }
+.escena[data-piel='kirameki'] .celebra-par::before { background: none; }
+.escena[data-piel='kirameki'] .celebra-par figure { --anillo: #ff6fb5; }
+.escena[data-piel='kirameki'] .celebra-foto { border: 1.6cqh solid transparent; background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #ff6fb5, #ffb648, #ffd23f, #7be495, #22d3ee, #a78bfa, #ff6fb5) border-box; box-shadow: 0 0 0 4px #fff, 0 0 0 7px #1b1450, 0 0 30px rgba(255, 111, 181, .6); }
+.escena[data-piel='kirameki'] .celebra-foto b { color: #1b1450; font: 800 9cqh/1 var(--kir-titulo); }
+.escena[data-piel='kirameki'] .celebra-par figcaption { margin-top: 1.8cqh; padding: .3em .9em; border: 4px solid transparent; border-radius: 10px 10px 4px 4px; background: linear-gradient(#ffd6ec, #c4b5fd) padding-box, linear-gradient(135deg, #ff6fb5, #ffb648, #ffd23f, #7be495, #22d3ee, #a78bfa, #ff6fb5) border-box; color: #1b1450; box-shadow: 0 0 0 3px #fff; font: 800 clamp(16px, 3.6cqh, 40px)/1 var(--kir-titulo); text-transform: none; }
+.escena[data-piel='kirameki'] .celebra-corazon { width: 20cqh; height: 19cqh; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 50'%3E%3Cpath d='M26 45 C11 35 5 26 5 18 C5 11 10 6 17 6 C21 6 24 8 26 12 C28 8 31 6 35 6 C42 6 47 11 47 18 C47 26 41 35 26 45Z' fill='rgba(255,255,255,.88)' stroke='%23e11d48' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E"); filter: drop-shadow(0 0 10px #fff) drop-shadow(0 0 18px rgba(255, 111, 181, .9)); }
+.escena[data-piel='kirameki'] .celebra-cinta { padding: 0 5cqw; transform: rotate(-3deg); }
+.escena[data-piel='kirameki'] .celebra-cinta span { border: 5px solid #1b1450; border-radius: 12px; background: linear-gradient(90deg, #ffd6ec, #fef3c7, #cffafe, #ede9fe); color: #e0218a; box-shadow: 0 0 0 4px #fff, 0 8px 0 4px #1b1450; font: 800 clamp(22px, 5.4cqh, 60px)/1 var(--kir-titulo); text-transform: none; -webkit-text-stroke: 5px #fff; paint-order: stroke fill; }
+.escena[data-piel='kirameki'] .celebra-cinta::before,
+.escena[data-piel='kirameki'] .celebra-cinta::after { border: 4px solid #1b1450; background: linear-gradient(#c4b5fd, #f9a8d4); box-shadow: none; }
+.escena[data-piel='kirameki'] .celebra-fuego { z-index: 1; border-radius: 0; background: var(--kir-confeti) center / contain no-repeat; -webkit-mask: none; mask: none; }
+.escena[data-piel='kirameki']:has(.escena-celebra) .fx-mascota { right: auto; left: 12cqw; bottom: 4cqh; height: 30cqh; }
+.escena[data-piel='kirameki']:has(.escena-celebra) .fx-mascota .kira { transform: none; }
+.escena[data-piel='kirameki'][data-slots~='bienvenida'] .fx-mascota { right: 1.5cqw; bottom: 2cqh; height: 32cqh; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-entrada-kira, .fx-impacto-kira, .fx-apila-kira, .fx-rechazo-kira,
+  .escena[data-piel='kirameki'] .is-cierre .escena-pila .escena-pareja,
+  .escena[data-piel='kirameki'] .fx-obj-destellos,
+  .escena[data-piel='kirameki'] .fx-obj-fugaz,
+  .escena[data-piel='kirameki'] .fx-obj-kya,
+  .escena[data-piel='kirameki'] .fx-sello-kira::before,
+  .escena[data-piel='kirameki'] .fx-sello-kira::after,
+  .escena[data-piel='kirameki'] .escena-match p::before,
+  .escena[data-piel='kirameki'] .sms-fila.is-nuevo .sms-burbuja,
+  .escena[data-piel='kirameki'] .fx-rechazo-kira::before,
+  .escena[data-piel='kirameki'] .fx-rechazo-kira::after,
+  .escena[data-piel='kirameki'] .escena-opcion.is-ganador::before,
+  .escena[data-piel='kirameki'] .escena-opcion.is-ganador::after,
+  .escena[data-piel='kirameki'] .ahora-disco::before,
+  .escena[data-piel='kirameki'] .ahora-disco::after,
+  .escena[data-piel='kirameki'] .bienvenida-qr::before,
+  .escena[data-piel='kirameki'] .escena-celebra::after,
+  .escena[data-piel='kirameki'] .celebra-titulo::before,
+  .escena[data-piel='kirameki'] .celebra-titulo::after,
+  .escena[data-piel='kirameki'] .escena-centro .fx-ficha-kira::after { animation: none; }
 }
