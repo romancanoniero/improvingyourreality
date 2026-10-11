@@ -200,7 +200,7 @@ IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
 Rules for all five images: no third-party characters, logos or brands; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all five images; no extra text except the one requested.
 ```
 
-## Pieles nuevas (T5–T9): prompts integrales
+## Pieles nuevas (T5–T11): prompts integrales
 
 Cada prompt genera **la piel completa en 8 imágenes**, en el mismo chat: las 5 de siempre (fondo, mascota y efectos, kit A, kit B, juegos y "Ahora suena") más las 3 pantallas que en Nocturna, Manga, Meteoro y Cielo llegaron después: la **bienvenida con QR** (6), la celebración **"¡Hay pareja!"** (7) y la hoja de **estados de la app del celular** (8).
 
@@ -215,6 +215,8 @@ Cada prompt genera **la piel completa en 8 imágenes**, en el mismo chat: las 5 
 | T7 Trazo | historieta para adultos de los 80 | El Cronista | `trazo-H1.png` … `trazo-H8.png` |
 | T8 Revista | humor gráfico argentino de los 40 | Gramo | `revista-H1.png` … `revista-H8.png` |
 | T9 Fileteado | cultura argentina | Matecito | `fileteado-H1.png` … `fileteado-H8.png` |
+| T10 Disco | pista disco de los 80 en Estados Unidos | Brillo | `disco-H1.png` … `disco-H8.png` |
+| T11 Rebobinado | cultura pop de los 90 en Estados Unidos | Rebo | `rebobinado-H1.png` … `rebobinado-H8.png` |
 
 ### T5 Maison (lujo de marroquinería)
 
@@ -457,6 +459,104 @@ IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in conte
 IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Matecito unió a estas mesas!". Fileteado scrolls and flowers bursting, two mates toasting, light blue and white ribbons, small fireworks.
 
 IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Buttons painted as fileteado signs; spinner a spinning mate; the reaction icon of the style a mate.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+### T10 Disco (pista disco de los 80 en Estados Unidos)
+
+La pista de baile de una disco o una pista de patinaje de Estados Unidos a comienzos de los 80: bola de espejos, piso de baldosas que se iluminan, cromo, patines, rayos de luz de colores y letras cromadas con destellos. Para que no se parezca a Nocturna, que es neón violeta sobre negro, esta piel es cálida y brillante: atardecer naranja, fucsia, dorado y cromo. No nombra discotecas, películas ni artistas.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+DISCO style: an early-1980s American disco and roller-rink dance floor. Warm and shiny: deep plum #2B0F3A, hot magenta #FF2E88, sunset orange #FF7A1A, golden yellow #FFC93C, turquoise #1ED6C4 and polished chrome silver. A mirror ball scattering sparkles, a light-up checkerboard dance floor in glowing colored tiles, colored spotlight beams, roller skates, glitter, sunset gradient stripes (orange to magenta to plum) and airbrushed chrome. Chrome script and bold rounded 80s display lettering with star glints and a glossy airbrush shine. Glamorous, happy and danceable. Do not copy any existing club, movie, album cover, artist or logo.
+
+Mascot (original, identical in every image): "Brillo", an original round mirror ball made of tiny reflective tiles with big friendly eyes and a wide smile, a terry-cloth headband in magenta, little arms with white gloves, and legs ending in white roller skates with orange wheels and rainbow stripes on the socks.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: A dark plum dance hall with a mirror ball high in the top center scattering small sparkles, colored spotlight beams sweeping in from the top corners, a light-up checkerboard dance floor in perspective along the bottom edge, and sunset gradient stripes along the side edges.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Glossy airbrushed chrome look, reflective tiles with sparkles, soft magenta glow.
+- Middle row, decorative side objects: 1) a pair of white roller skates with rainbow laces, 2) a chrome microphone with a star glint, 3) a stack of vinyl records with colorful labels, 4) a small mirror ball hanging from a chain.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: four-point star glints, small mirror tiles, glitter circles.
+- Bottom center, a celebration burst radiating from an empty central circle: Spotlight beams in magenta, orange and turquoise radiating from the center with mirror-ball sparkles and a chrome ring.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: The dance floor tiles under the card go dark one by one and a record scratches with a broken zigzag; the "NO" in chrome letters with a cracked shine.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Plum card with a polished chrome border, a thin sunset gradient line inside and small star glints in two corners.
+- Five game title labels with the same base shape: "¡A GIRAR!", "¡VOTÁ!", "CHAT", "¡MATCH!" and one empty. Chrome script lettering with a magenta outline and star glints on a sunset-striped plate.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Plum card with a chrome edge and a turquoise glow; photo ring a mirror-tile ring; separator a glittering magenta heart; adornment a small chrome crown with a star.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Chrome pill with a magenta border; trail rainbow roller-skate speed stripes.
+- End-of-round title "¡Última canción!" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title in chrome script under a mirror ball; the cell a glowing dance floor tile.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Rounded balloon with a chrome border and a soft magenta glow, cream inside, plum text.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming cream bubble with plum text; outgoing magenta-to-orange gradient with white text; badge a golden star "NUEVO"; panel a tall translucent plum column with a chrome edge.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two roller skates touching toes with a glittering heart between them; chip chrome with a magenta border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Plum band with a thin sunset gradient line; plate a chrome marquee sign with small bulbs "BAR LUNA".
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating magenta, orange, turquoise and golden yellow like glowing dance floor tiles, each with a generic avatar and a short name like "Mesa 3". Rim a chrome ring with small light bulbs; hub a mirror ball; pointer a white roller skate pointing down.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Plum cards with chrome borders; the winner gets spotlight beams, glitter and a golden star badge "¡GANADORA!"; bar a sunset gradient fill with sparkles; countdown ring a ring of light bulbs.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a spinning vinyl record sleeve with a chrome edge; label "AHORA SUENA" in chrome script; equalizer bars as stacks of glowing dance floor tiles.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Dance hall background with the mirror ball and light-up floor; QR inside a chrome marquee frame with light bulbs; icons as glowing round dance floor tiles.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Brillo los puso a bailar!". Spotlight beams crossing, the mirror ball exploding in sparkles, the dance floor lighting up in a heart shape, glitter falling.
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Chrome buttons with a magenta glow; spinner a spinning mirror ball; the reaction icon of the style a roller skate.
+
+Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
+```
+
+### T11 Rebobinado (cultura pop de los 90 en Estados Unidos)
+
+Los 90 en Estados Unidos: estampados geométricos de colores con garabatos y triángulos, papel picado de confeti, casetes, walkman, CD, beeper, VHS y consolas, letras de grafiti y stickers. Es plana y gráfica, sin cromo ni neón, para que no se confunda con Disco ni con Nocturna. No nombra programas de TV, marcas ni bandas.
+
+```
+You are the art director for "Fonomusic", an entertainment screen shown on a big TV or projector in a bar (1920x1080). Guests play from their phones: a prize wheel that picks tables or people and forms pairs, song voting, chat between tables and matches. I need the complete art kit for ONE style.
+
+REBOBINADO style: 1990s American pop culture, bold and flat. Off-white #FFF6E5 and black backgrounds with loud geometric patterns: squiggles, zigzags, triangles, dots and confetti shapes in teal #00A6A6, purple #6B3FA0, hot pink #FF3E8A, lime #B5E61D and yellow #FFD23F. Thick black outlines, flat colors with hard offset shadows, sticker-like shapes with white borders, spray-paint graffiti lettering and chunky rounded display type. Objects of the era: cassette tapes and a pencil to rewind them, portable cassette players with foam headphones, CDs, pagers, VHS tapes, a boombox, a chunky game controller, a skateboard and slap bracelets. Fun, loud and nostalgic. Do not copy any existing TV show, brand, band, console or logo.
+
+Mascot (original, identical in every image): "Rebo", an original cassette tape with two reel eyes that spin, a big grin under the label, a backwards cap in teal, foam headphones around the neck, skinny arms and legs and chunky high-top sneakers; the tape ribbon sometimes curls out like a ponytail.
+
+Generate 8 separate images, in this order, each one complete and on its own. If you can only make one image per reply, make IMAGE 1 now and make the next one each time I write "siguiente".
+
+IMAGE 1 — Scene background. 16:9, full screen, background only: no text, no UI, no characters. Keep the central 78% calm and low-detail (game cards go on top); decoration near the edges and corners. Look: An off-white wall with a loud 90s geometric pattern (squiggles, zigzags, triangles and dots) concentrated in the four corners and fading toward a calm center, a strip of graffiti-style shapes and a boombox, skateboard and cassettes stuck like stickers along the bottom edge.
+
+IMAGE 2 — Characters and effects sheet. 16:9, on flat solid green #00FF00.
+- Top row: the mascot four times at the same size, labeled "reposo" (idle), "festeja" (jumping, arms up), "decepcion" (slumped, sad but cute), "señala" (pointing right, excited). Thick black outline, flat colors, hard offset shadow and a white sticker border.
+- Middle row, decorative side objects: 1) a boombox, 2) a portable cassette player with foam headphones, 3) a pager with a tiny screen showing "143", 4) a skateboard with a squiggle pattern.
+- Bottom left, confetti, five variants of each shape, single flat colors. Shapes: squiggles, triangles, small CDs.
+- Bottom center, a celebration burst radiating from an empty central circle: A pop-art burst of zigzags, triangles and squiggles in all the palette colors with a thick black outline.
+- Bottom right, a rejection effect over an empty card plus a "NO" label: The card gets the tape pulled out in a tangled mess and a "pause" symbol; the "NO" in graffiti letters with a drip.
+
+IMAGE 3 — Interface kit A. 16:9, on flat solid green #00FF00. Empty containers with decoration only on borders and corners, so they can be stretched (9-slice).
+- Main game card frame, a wide rectangle with a flat interior: Off-white card with a thick black border, a hard purple offset shadow and geometric squiggles in two corners.
+- Five game title labels with the same base shape: "¡A GIRAR!", "¡VOTÁ!", "CHAT", "¡MATCH!" and one empty. Graffiti-style lettering in hot pink and yellow with a black outline on a teal sticker with a white border.
+- Participant card with a 160 px round photo ring on top and a name bar ("Lucía"), plus the ring alone, a pair separator icon and a small adornment for the chosen one: Off-white card with a black border and a hard teal shadow; photo ring a CD-like ring with a rainbow shine; separator a pink heart sticker; adornment a small yellow crown sticker.
+- Small pair pill about 44 px tall with two tiny avatar slots ("Lucía + Martín") and a motion trail: Purple pill with a black border; trail a curl of cassette tape ribbon.
+- End-of-round title "¡Fin del lado A!" with the subtitle "Parejas de la noche" and one small grid cell with two avatars ("Ana", "Juan"): The title as a handwritten cassette label with a marker underline; the cell a sticker card.
+
+IMAGE 4 — Interface kit B. 16:9, on flat solid green #00FF00. Stretchable containers.
+- Dedication speech balloon, empty body plus separate tail (left and right), and one example "Para Caro, ¡feliz cumple!": Chunky balloon with a thick black outline and a hard pink offset shadow, off-white inside, marker handwriting.
+- Chat between tables: incoming bubble (tail left) and outgoing bubble (tail right), each with a 48 px round avatar, author "Mesa 4", text "¿Bailamos?" and time "23:41"; a 48 px avatar ring alone; a "NUEVO" badge; a tall chat column background. Incoming off-white bubble with black text; outgoing teal with white text; badge a lime starburst sticker "NUEVO"; panel a tall pager-screen green column with a black frame.
+- Match: a 64 px top chip with two round avatar slots joined by the match icon, the icon alone, and two avatars coming together: Two cassette tapes joined by one tape ribbon that forms a heart; chip black with a pink border.
+- A subtle top strip (1920x86 proportion) and a logo plate with the fictional text "BAR LUNA": Black band with a thin zigzag line in the palette colors; plate a big cassette label sticker "BAR LUNA".
+
+IMAGE 5 — Wheel, voting and now playing. 16:9, on flat solid green #00FF00.
+- Left: prize wheel parts, perfectly circular, front view: outer rim with empty center, center hub, pointer at the top pointing down, small photo ring for each segment, and one assembled wheel with 8 segments alternating teal, purple, hot pink and yellow with small geometric patterns, each with a generic avatar and a short name like "Mesa 3". Rim a thick black ring with white dots; hub a CD with a rainbow shine; pointer a pencil pointing down.
+- Center: song voting: an option card with an invented square album cover and the title "Noche de Verano" in normal state, the same card in winner state (bigger, stronger border), a winner badge, a vote bar empty and 60% filled, a countdown ring. Off-white sticker cards with black borders; the winner gets a lime starburst "¡GANADORA!" and a zigzag frame; bar a fill in teal with squiggles; countdown ring a cassette reel.
+- Right: now playing: a frame for a square album cover with an invented cover, the label "AHORA SUENA", a small balloon "Dedicado a la Mesa 12", equalizer bars. Cover framed as a CD case with a hard shadow; label "AHORA SUENA" on a cassette label; equalizer bars as a boombox LED meter in blocky segments.
+
+IMAGE 6 — Welcome and QR onboarding screen, a full 16:9 screen mockup in context (this is what the TV shows while nothing is playing). The fictional bar name "BAR LUNA" on a plate; the logo "FONOMUSIC"; a big card with an empty white square for the QR code on the left, the caption "¡Escaneá y jugá desde tu celular!" next to it, the headline "¡Jugá con tu mesa!" on the right and three round icons with the labels "Votá", "Canciones" and "Conectá". The mascot in pose "señala" pointing at the QR. Leave the QR square plain white with no code inside. Geometric pattern background; QR shown on the screen of a chunky retro TV set; icons as round stickers.
+
+IMAGE 7 — "¡HAY PAREJA!" celebration overlay, a full 16:9 screen mockup in context that takes over the screen for 7 seconds when two tables match. Big title "¡HAY PAREJA!"; two big round photo frames with generic illustrated avatars and the name plates "Mesa 4" and "Mesa 8"; the style's match icon between them with a celebration burst; confetti; the mascot in pose "festeja"; a ribbon at the bottom with the text "¡Rebo les grabó un compilado!". A pop-art burst, tape ribbon forming hearts, squiggles and triangles as confetti, a pager showing "143".
+
+IMAGE 8 — Phone app states sheet, on flat solid green #00FF00 (these go in the guests' phone app). A pill button "¡A JUGAR!" in four states labeled "normal", "presionado", "deshabilitado" (gray) and "cargando" (with a small spinner); a loading indicator with the label "Espera..."; the mascot dizzy as a loading animation; an empty-state card with the mascot sleeping and the text "Sin mensajes. ¡Enviá el primero!"; four quick chat reaction buttons (heart, star, laughing face and one icon of the style). Chunky sticker buttons with a hard shadow; spinner a rewinding cassette reel; the reaction icon of the style a cassette.
 
 Rules for all eight images: no third-party characters, logos, monograms or brands, and no imitation of any existing logo, pattern or character; no photos of real people (participants are generic illustrated avatars in circles); invented album covers only; everyone fully clothed and nothing suggestive; high contrast, readable on a TV from 10 meters; no lines thinner than 4 px; on the green sheets, pieces well separated with empty green space around them and nothing touching the image edges; the green must be flat with no shadows; same style, palette and mascot in all eight images; no extra text except the one requested.
 ```
