@@ -1525,6 +1525,18 @@ canvas.is-girando, .escena-ruleta.is-girando { animation: fx-giro-vivo .28s line
   pointer-events: none;
   white-space: nowrap;
 }
+.is-sin-youtube .ahora-tocar {
+  position: fixed;
+  top: 3%;
+  bottom: auto;
+  z-index: 60;
+  padding: 14px 26px;
+  border: 2px solid #fbbf24;
+  background: #111;
+  color: #fde68a;
+  font-size: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .6);
+}
 
 /* Nocturna: arte de la plantilla */
 .escena[data-piel='nocturna'][data-fondo='juego'] {

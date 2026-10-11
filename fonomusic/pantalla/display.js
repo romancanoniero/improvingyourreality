@@ -3879,16 +3879,28 @@ let ytSonidoPendiente = false;
 let ytListo = false;
 let ytActual = null;
 let ytRecargas = 0;
+let ytFallosSeguidos = 0;
+
+function esperaYoutube() {
+  return Math.min(25000 * 2 ** ytFallosSeguidos, 180000);
+}
+
+function youtubeNoResponde() {
+  return Boolean(ytPlayer) && !ytListo && (ytFallosSeguidos > 0 || Date.now() - ytDesde > 15000);
+}
 
 // En tablets con poca memoria Android cierra el proceso del iframe de YouTube y queda la página de error
 // de Chrome. Si YouTube deja de hablar mientras reproduce, o nunca llegó a estar listo, se recrea.
+// Si la red no llega a YouTube, cada intento deja otro pedido colgado: se espera cada vez más.
 function vigilarYoutube() {
   if (!ytPlayer || !ytPlayer.ultimoMensaje || !ytActual || ytActual.key !== stageKey) return;
   const ahora = Date.now();
-  const callado = ytListo
-    ? ytEstado === 1 && !ytPausaSala && ahora - ytPlayer.ultimoMensaje() > 15000
-    : ahora - ytDesde > 25000;
-  if (callado) recargarVideo(false);
+  if (ytListo) {
+    if (ytEstado === 1 && !ytPausaSala && ahora - ytPlayer.ultimoMensaje() > 15000) recargarVideo(false);
+  } else if (ahora - ytDesde > esperaYoutube()) {
+    ytFallosSeguidos += 1;
+    recargarVideo(false);
+  }
 }
 
 function recargarVideo(porToque) {
@@ -3958,6 +3970,8 @@ function avisoReproducir() {
   const sonando = ytEstado === 1 && !mudo;
   const falta = Boolean(ytPlayer) && ytListo && ytEsperaToque && !sonando && !juego && !ytPausaSala;
   const pendiente = Boolean(ytPlayer) && ytSonidoPendiente && !juego && !ytPausaSala;
+  const sinYoutube = youtubeNoResponde() && !juego;
+  capa.classList.toggle('is-sin-youtube', sinYoutube);
   capa.classList.toggle('is-al-frente', falta);
   // Si quedó sonando mudo hace falta el parlante de YouTube, que está en la barra superior.
   capa.classList.toggle('yt-recorte', !(ytEstado === 1 && mudo && medioCambiadoPorJuego !== 'mudo' && !ytSonidoPendiente));
@@ -3972,7 +3986,7 @@ function avisoReproducir() {
   } else if (!falta && recargar) {
     recargar.remove();
   }
-  if (!falta && !pendiente) {
+  if (!falta && !pendiente && !sinYoutube) {
     if (aviso) aviso.remove();
     return;
   }
@@ -3981,8 +3995,10 @@ function avisoReproducir() {
     aviso.className = 'ahora-tocar';
     capa.appendChild(aviso);
   }
-  aviso.hidden = ytTocado && ytMensajes === 0;
-  aviso.textContent = pendiente
+  aviso.hidden = !sinYoutube && ytTocado && ytMensajes === 0;
+  aviso.textContent = sinYoutube
+    ? `YouTube no responde desde esta red · reintento en ${Math.max(1, Math.ceil((ytDesde + esperaYoutube() - Date.now()) / 1000))} s`
+    : pendiente
     ? 'Tocá la pantalla para activar el sonido'
     : ytEstado === 1 && mudo
     ? 'Tocá el parlante del video para activar el sonido'
@@ -4181,10 +4197,21 @@ function datosYoutube(id) {
   if (!datosYoutubeCache.has(id)) {
     const url = 'https://www.youtube.com/oembed?format=json&url='
       + encodeURIComponent('https://www.youtube.com/watch?v=' + id);
-    datosYoutubeCache.set(id, fetch(url)
+    // Sin límite, en una red que no llega a YouTube el pedido queda abierto para siempre.
+    const corte = new AbortController();
+    const reloj = setTimeout(() => corte.abort(), 8000);
+    datosYoutubeCache.set(id, fetch(url, { signal: corte.signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => (j && j.title ? separarTituloYoutube(j.title, j.author_name) : null))
-      .catch(() => null));
+      .catch(() => null)
+      .then((datos) => {
+        clearTimeout(reloj);
+        if (!datos) {
+          datosYoutubeCache.set(id + ':fallo', true);
+          setTimeout(() => datosYoutubeCache.delete(id), 30000);
+        }
+        return datos;
+      }));
   }
   return datosYoutubeCache.get(id);
 }
@@ -4210,13 +4237,17 @@ function completarDatosYoutube(now) {
       artist: faltaArtista ? listo.artista : now.artist,
     };
   }
-  datosYoutube(id).then((datos) => {
-    if (!datos || datosYoutubeCache.has(id + ':ok')) return;
-    datosYoutubeCache.set(id + ':ok', datos);
-    if (ultimoAhora && String(ultimoAhora.now?.trackUid || '') === uid) {
-      pintarDatosAhora(ultimoAhora.now, ultimoAhora.paused);
-    }
-  });
+  if (!datosYoutubeCache.has(id)) {
+    datosYoutube(id).then((datos) => {
+      if (datos) {
+        datosYoutubeCache.delete(id + ':fallo');
+        datosYoutubeCache.set(id + ':ok', datos);
+      }
+      if (ultimoAhora && String(ultimoAhora.now?.trackUid || '') === uid) {
+        pintarDatosAhora(ultimoAhora.now, ultimoAhora.paused);
+      }
+    });
+  }
   return { ...now, title: faltaTitulo ? '' : now.title, artist: faltaArtista ? '' : now.artist };
 }
 
@@ -4229,6 +4260,7 @@ function pintarDatosAhora(nowOriginal, paused) {
   const now = completarDatosYoutube(nowOriginal);
   const origen = ORIGEN_AHORA[now.origin] || now.origin || '';
   const youtube = String(now.trackUid || '').indexOf('yt_') === 0;
+  const sinDatos = youtube && datosYoutubeCache.has(String(now.trackUid).slice(3) + ':fallo');
   const bits = [];
   if (youtube) bits.push('YouTube', 'el video está en esta pantalla');
   if (origen) bits.push(origen);
@@ -4240,7 +4272,7 @@ function pintarDatosAhora(nowOriginal, paused) {
     + `<p class="ahora-marca">FONOMEETS</p>`
     + `<p class="ahora-sello">${paused ? 'En pausa' : 'Ahora suena'}</p>`
     + `<p class="ahora-kicker">${escapar(kicker)}</p>`
-    + `<h1 class="ahora-titulo" dir="auto">${escapar(now.title || (youtube ? 'Cargando datos del video…' : 'Preparando la noche'))}</h1>`
+    + `<h1 class="ahora-titulo" dir="auto">${escapar(now.title || (youtube ? (sinDatos ? 'Video de YouTube' : 'Cargando datos del video…') : 'Preparando la noche'))}</h1>`
     + `<p class="ahora-artista" dir="auto">${escapar(now.artist || '')}</p>`
     + (bits.length ? `<p class="ahora-meta">${escapar(bits.join(' · '))}</p>` : '')
     + (now.dedication ? `<p class="ahora-dedicatoria">“${escapar(now.dedication)}”</p>` : '')
@@ -4348,6 +4380,7 @@ function crearPlayerYoutube(youtube, now, key, esperarToque) {
     onReady: () => {
       if (ytPlayer !== player) return;
       ytListo = true;
+      ytFallosSeguidos = 0;
       avisoReproducir();
       if (esperarToque || now.mute) return;
       setTimeout(() => {
