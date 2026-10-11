@@ -4706,7 +4706,6 @@ escuchar();
 conectarPlayer();
 montarBarraDemo();
 if (pielSinCapas) refrescarPantalla();
-if (new URLSearchParams(location.search).get('grilla') === '1') ponerGrilla(true);
 pintarRielDemo();
 arrancarVideoEjemplo();
 document.addEventListener('pointerdown', () => {
