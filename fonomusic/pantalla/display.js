@@ -173,6 +173,32 @@ const PIELES = {
       ],
     },
   },
+  revista: {
+    id: 'revista',
+    fondo: '#F4E9CF', sectorA: '#2E2C29', sectorB: '#F4E9CF', acento: '#B5332A',
+    info: '#1A1A1A', texto: '#FBF3DD', colores: ['#E3A82B', '#B5332A', '#2F6F76', '#1A1A1A'],
+    fotoHueco: '#cdbf9c', fuente: '700 21px "Comic Neue", Kalam, sans-serif',
+    sellos: { ruleta: '¡La ruleta!', votacion: '¡A votar!', mensaje: 'Chismes', match: '¡Flechazo!', cierre: '¡Se acabó el baile!' },
+    rueda: 'deco',
+    mascota: 'gramo',
+    celebracion: true,
+    lemasPareja: ['¡Flechazo en el salón!', '¡Don Gramo los flechó!'],
+    efectos: {
+      fondo: 'fx-fondo-revista', ambiente: 'fx-ambiente-revista', marco: 'fx-marco-revista',
+      sello: 'fx-sello-revista', foto: 'fx-foto-circulo', globo: 'fx-globo-revista',
+      impacto: 'fx-impacto-revista', entrada: 'fx-entrada-revista',
+      apila: 'fx-apila-revista', rechazo: 'fx-rechazo-revista', ficha: 'fx-ficha-revista', lienzo: 'fx-lienzo-revista',
+      sonidos: { clic: 'revista-clic', exito: 'revista-exito', decepcion: 'revista-decepcion' },
+      particulas: { formas: ['redondo', 'nota', 'serpentina'], colores: ['#E3A82B', '#B5332A', '#1A1A1A', '#2F6F76', '#F4E9CF'], cantidad: 40 },
+      giro: { papel: false, trama: false, lineas: false, vineta: false },
+      objetos: [
+        { id: 'bandoneon', clase: 'fx-obj-bandoneon', en: ['ruleta', 'votacion'] },
+        { id: 'microfono', clase: 'fx-obj-microfono', en: ['ruleta', 'votacion'] },
+        { id: 'notasfx', clase: 'fx-obj-notasfx', en: ['ruleta', 'votacion'] },
+        { id: 'plaf', clase: 'fx-obj-plaf', texto: '¡PLAF!', en: ['match'] },
+      ],
+    },
+  },
 };
 
 function pielDe(id) {
@@ -186,6 +212,7 @@ const OBJETO_NOMBRES = {
   candado: 'Candado', etiqueta: 'Etiqueta', notas: 'Notas',
   destellos: 'Destellos', fugaz: 'Estrella fugaz', kya: '¡KYA!',
   lluvia: 'Lluvia', maquina: 'Máquina de escribir', trompeta: 'Trompeta', extra: '¡EXTRA!',
+  bandoneon: 'Bandoneón', microfono: 'Micrófono', notasfx: 'Notas', plaf: '¡PLAF!',
   mascota: 'Mascota',
 };
 
@@ -382,6 +409,21 @@ function tocarSonido(motor, fuerza = 1) {
     [392, 370, 349, 294].forEach((frecuencia, indice) => {
       notaFx(frecuencia, 'triangle', 0.07, cuando + indice * 0.22, indice === 3 ? 0.7 : 0.2);
       notaFx(frecuencia, 'sawtooth', 0.018, cuando + indice * 0.22, indice === 3 ? 0.6 : 0.18);
+    });
+    return;
+  }
+  if (motor === 'revista-exito') {
+    [[392, 494, 587], [523, 659, 784]].forEach((acorde, indice) => acorde.forEach((frecuencia) => {
+      notaFx(frecuencia, 'sawtooth', 0.016, cuando + indice * 0.2, indice ? 0.55 : 0.16);
+      notaFx(frecuencia, 'triangle', 0.035, cuando + indice * 0.2, indice ? 0.6 : 0.18);
+    }));
+    return;
+  }
+  if (motor === 'revista-decepcion') {
+    ruidoFx(0.09, 0.3, 300, 1.4, cuando);
+    [233, 220, 208, 185].forEach((frecuencia, indice) => {
+      notaFx(frecuencia, 'sawtooth', 0.03, cuando + 0.1 + indice * 0.2, indice === 3 ? 0.6 : 0.18);
+      notaFx(frecuencia / 2, 'triangle', 0.05, cuando + 0.1 + indice * 0.2, indice === 3 ? 0.6 : 0.18);
     });
     return;
   }
@@ -1250,8 +1292,96 @@ function svgCronista(pose) {
     + `</g></g>` + papeles + suspiro + `</g></svg>`;
 }
 
+const GRAMO_POSES = {
+  reposo: {
+    brazos: ['M66 120 Q46 142 72 158', 'M154 120 Q166 146 158 170'],
+    manos: [[160, 172]],
+    piernas: ['M100 194 L122 230', 'M120 194 L100 232'],
+    zapatos: [[128, 236, 1], [94, 238, -1]],
+    ojos: 'guino',
+    boca: '<path d="M100 97 Q110 104 120 97" fill="none"/>',
+  },
+  festeja: {
+    brazos: ['M68 116 Q48 90 42 62', 'M152 116 Q172 90 178 62'],
+    manos: [[40, 56], [180, 56]],
+    piernas: ['M98 194 Q86 214 70 222', 'M122 194 Q140 212 152 230'],
+    zapatos: [[62, 226, -1], [158, 236, 1]],
+    ojos: 'felices',
+    boca: '<path d="M98 96 Q110 116 122 96 Z" fill="#7a2420"/>',
+    cuerpo: 'translate(0 -10)',
+    sombrero: 'translate(26 -36) rotate(22 110 40)',
+    notas: true,
+  },
+  decepcion: {
+    brazos: ['M70 118 Q58 96 90 66', 'M152 122 Q160 150 152 172'],
+    manos: [[92, 64], [152, 174]],
+    piernas: ['M98 196 L96 232', 'M122 196 L124 232'],
+    zapatos: [[90, 238, -1], [130, 238, 1]],
+    ojos: 'tristes',
+    boca: '<path d="M102 101 Q110 96 118 101" fill="none"/>',
+    cabeza: 'rotate(12 110 100) translate(0 6)',
+    gota: true,
+  },
+  senala: {
+    brazos: ['M68 120 Q64 152 96 158', 'M152 116 Q178 108 196 102'],
+    manos: [[98, 158]],
+    piernas: ['M98 194 L88 232', 'M122 194 L132 232'],
+    zapatos: [[82, 238, -1], [138, 238, 1]],
+    ojos: 'abiertos',
+    boca: '<path d="M98 96 Q110 112 122 96 Z" fill="#7a2420"/>',
+    dedo: [198, 101],
+  },
+};
+
+function svgGramo(pose) {
+  const p = GRAMO_POSES[pose] || GRAMO_POSES.reposo;
+  const tinta = '#1A1A1A';
+  const piel = '#F2D3B0';
+  const trazo = (d, ancho) => `<path d="${d}" stroke="${tinta}" stroke-width="${ancho + 6}" fill="none"/><path d="${d}" stroke="url(#gramo-raya)" stroke-width="${ancho}" fill="none"/>`;
+  const zapato = ([x, y, lado]) => `<path d="M${x - 10 * lado} ${y - 5} Q${x + 4 * lado} ${y - 8} ${x + 14 * lado} ${y - 1} Q${x + 16 * lado} ${y + 5} ${x} ${y + 5} L${x - 10 * lado} ${y + 5} Z" fill="${tinta}" stroke="${tinta}" stroke-width="2.5"/>`
+    + `<path d="M${x - 9 * lado} ${y - 6} Q${x + 2 * lado} ${y - 10} ${x + 8 * lado} ${y - 4} L${x + 6 * lado} ${y - 13} Q${x} ${y - 16} ${x - 8 * lado} ${y - 13} Z" fill="#FBF3DD" stroke="${tinta}" stroke-width="2.5"/>`;
+  const mano = ([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/>`;
+  const dedo = p.dedo ? `<g transform="translate(${p.dedo[0]} ${p.dedo[1]}) rotate(-12)"><circle r="8.5" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/><path d="M5 -4 H19 Q22 -1 19 2 H5" fill="${piel}" stroke="${tinta}" stroke-width="3.5" stroke-linejoin="round"/></g>` : '';
+  let ojos;
+  if (p.ojos === 'felices') ojos = `<path d="M93 66 Q99 58 105 66 M115 66 Q121 58 127 66" fill="none" stroke-width="3.6"/>`;
+  else if (p.ojos === 'tristes') ojos = `<path d="M93 66 Q99 71 105 66 M115 66 Q121 71 127 66" fill="none" stroke-width="3.2"/><path d="M92 56 L104 60 M128 56 L116 60" stroke-width="4"/>`;
+  else if (p.ojos === 'guino') ojos = `<circle cx="99" cy="65" r="3.6" fill="${tinta}"/><path d="M115 66 Q121 60 127 66" fill="none" stroke-width="3.6"/><path d="M92 55 Q99 50 106 55 M114 55 Q121 50 128 55" fill="none" stroke-width="4"/>`;
+  else ojos = `<circle cx="99" cy="65" r="3.8" fill="${tinta}"/><circle cx="121" cy="65" r="3.8" fill="${tinta}"/><path d="M92 54 Q99 48 106 54 M114 54 Q121 48 128 54" fill="none" stroke-width="4"/>`;
+  const bigote = `<path d="M110 86 C98 78 86 82 80 90 C76 96 68 93 69 86 C70 81 76 81 76 86 C82 80 96 84 110 92 Z" fill="${tinta}"/>`;
+  const notas = p.notas ? [[28, 110, 1], [192, 120, .9], [22, 160, .8]].map(([x, y, k]) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="0" cy="12" rx="6.5" ry="5" transform="rotate(-20 0 12)" fill="${tinta}"/><path d="M5.5 11 V-8 Q13 -4 15 3" stroke="${tinta}" stroke-width="3" fill="none"/></g>`).join('') : '';
+  const gota = p.gota ? `<path d="M146 50 q-5 9 0 13 q5 -4 0 -13 Z" fill="#9cc3e0" stroke="${tinta}" stroke-width="2.2"/><path d="M62 96 q8 -6 14 0" fill="none" stroke="${tinta}" stroke-width="2.4"/>` : '';
+  return `<svg class="gramo" viewBox="0 0 220 250" role="presentation"><defs>`
+    + `<pattern id="gramo-raya" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#9C968A"/><path d="M1 0 V7" stroke="#5f5a50" stroke-width="1.3"/></pattern>`
+    + `<pattern id="gramo-trama" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.4" fill="${tinta}" opacity=".45"/></pattern>`
+    + `<clipPath id="gramo-panza"><ellipse cx="110" cy="150" rx="50" ry="52"/></clipPath>`
+    + `</defs><g stroke-linecap="round" stroke-linejoin="round">`
+    + `<g transform="${p.cuerpo || ''}">`
+    + p.piernas.map((d) => trazo(d, 16)).join('') + p.zapatos.map(zapato).join('')
+    + `<ellipse cx="110" cy="150" rx="50" ry="52" fill="url(#gramo-raya)"/>`
+    + `<g clip-path="url(#gramo-panza)"><ellipse cx="136" cy="164" rx="40" ry="50" fill="url(#gramo-trama)"/></g>`
+    + `<ellipse cx="110" cy="150" rx="50" ry="52" fill="none" stroke="${tinta}" stroke-width="4"/>`
+    + `<path d="M96 102 L110 134 L124 102 Z" fill="#FBF3DD" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M90 102 L110 142 L100 150 L80 110 Z M130 102 L110 142 L120 150 L140 110 Z" fill="url(#gramo-raya)" stroke="${tinta}" stroke-width="3"/>`
+    + `<circle cx="110" cy="164" r="3.4" fill="${tinta}"/><circle cx="110" cy="180" r="3.4" fill="${tinta}"/>`
+    + `<path d="M110 106 L96 98 L96 114 Z M110 106 L124 98 L124 114 Z" fill="${tinta}" stroke="${tinta}" stroke-width="2"/><circle cx="110" cy="106" r="4" fill="${tinta}"/>`
+    + p.brazos.map((d) => trazo(d, 15)).join('') + (p.manos || []).map(mano).join('') + dedo
+    + `<g transform="${p.cabeza || ''}">`
+    + `<circle cx="80" cy="72" r="7" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/><circle cx="140" cy="72" r="7" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/>`
+    + `<circle cx="110" cy="70" r="31" fill="${piel}" stroke="${tinta}" stroke-width="4"/>`
+    + `<path d="M84 54 Q90 40 110 40 Q130 40 136 54 Q124 46 110 47 Q96 46 84 54 Z" fill="${tinta}"/>`
+    + `<circle cx="90" cy="82" r="6" fill="#E89A86" opacity=".55"/><circle cx="130" cy="82" r="6" fill="#E89A86" opacity=".55"/>`
+    + `<g stroke="${tinta}">${ojos}${p.boca ? `<g stroke-width="3.2">${p.boca}</g>` : ''}</g>`
+    + `<g transform="translate(110 86) scale(.8) translate(-110 -86)">${bigote}<g transform="translate(220 0) scale(-1 1)">${bigote}</g></g>`
+    + `<ellipse cx="110" cy="77" rx="9" ry="8" fill="#EDB396" stroke="${tinta}" stroke-width="3.2"/>`
+    + `<g transform="${p.sombrero || ''}"><ellipse cx="110" cy="50" rx="42" ry="8" fill="${tinta}"/>`
+    + `<path d="M82 50 C82 14 138 14 138 50 Z" fill="${tinta}"/><path d="M83 42 Q110 36 137 42 L138 49 Q110 43 82 49 Z" fill="#4a4540"/>`
+    + `<path d="M94 28 Q102 22 112 22" stroke="#8a857c" stroke-width="3" fill="none"/></g>`
+    + `</g></g>` + notas + gota + `</g></svg>`;
+}
+
 function svgMascota(id, pose) {
   if (id === 'sumi') return svgSumi(pose);
+  if (id === 'gramo') return svgGramo(pose);
   if (id === 'cronista') return svgCronista(pose);
   if (id === 'kira') return svgKira(pose);
   if (id === 'bauli') return svgBauli(pose);
@@ -1705,6 +1835,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const baul = pal.rueda === 'baul';
   const kira = pal.rueda === 'kira';
   const pluma = pal.rueda === 'pluma';
+  const deco = pal.rueda === 'deco';
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   if (document.fonts && document.fonts.load) {
     await Promise.race([document.fonts.load(pal.fuente).catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1200))]);
@@ -1756,6 +1887,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (baul) decorarRuedaBaul(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (kira) decorarRuedaKira(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+    else if (deco) decorarRuedaDeco(c, cx, cy, r, 0, slice, opciones.length, 'cara');
   };
   const pintarFoto = (i) => {
     const t = (radio + margenFoto) * 2;
@@ -1830,6 +1962,14 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
       c.strokeStyle = '#FBF5E8';
       c.lineWidth = 3.5;
+    } else if (deco) {
+      c.strokeStyle = '#1A1A1A';
+      c.lineWidth = 8;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
+      c.strokeStyle = '#E3A82B';
+      c.lineWidth = 3.5;
     } else {
       c.strokeStyle = pal.texto;
       c.lineWidth = 2;
@@ -1839,7 +1979,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   };
   const pintarNombre = (i) => {
     const opcion = opciones[i];
-    const nombre = neon || tinta || llanta || nube || baul || kira || pluma ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const nombre = neon || tinta || llanta || nube || baul || kira || pluma || deco ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
     const medida = canvas.getContext('2d');
     medida.font = pal.fuente;
     const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
@@ -1855,10 +1995,10 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.shadowColor = 'rgba(0, 0, 0, .85)';
       c.shadowBlur = 4;
     }
-    if (tinta || llanta || nube || baul || kira || pluma) {
+    if (tinta || llanta || nube || baul || kira || pluma || deco) {
       c.lineJoin = 'round';
-      c.lineWidth = nube || kira || pluma ? 7 : 6;
-      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : pluma ? '#1C1C1C' : '#111';
+      c.lineWidth = nube || kira || pluma || deco ? 7 : 6;
+      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : pluma ? '#1C1C1C' : deco ? '#1A1A1A' : '#111';
       c.strokeText(nombre, nx, ny);
     }
     c.fillStyle = pal.texto;
@@ -1875,6 +2015,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (baul) decorarRuedaBaul(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (kira) decorarRuedaKira(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else if (deco) decorarRuedaDeco(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else {
       c.beginPath();
       c.moveTo(cx, cy - r - 2);
@@ -2529,6 +2670,150 @@ function decorarRuedaPluma(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   ctx.restore();
 }
 
+function decorarRuedaDeco(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
+  const TAU = Math.PI * 2;
+  const tinta = '#1A1A1A';
+  ctx.save();
+  if (parte !== 'fijo') {
+    for (let i = 0; i < n; i += 1) {
+      const a0 = angulo + i * slice - Math.PI / 2;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, a0, a0 + slice);
+      ctx.closePath();
+      ctx.clip();
+      const oscuro = i % 2 === 0;
+      ctx.fillStyle = oscuro ? 'rgba(255, 245, 220, .16)' : 'rgba(26, 26, 26, .1)';
+      const paso = 9;
+      for (let y = cy - r; y < cy + r; y += paso) {
+        for (let x = cx - r + ((y / paso) % 2 ? paso / 2 : 0); x < cx + r; x += paso) {
+          const d = Math.hypot(x - cx, y - cy) / r;
+          if (d > 1) continue;
+          ctx.beginPath();
+          ctx.arc(x, y, 0.6 + d * 1.8, 0, TAU);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
+    ctx.strokeStyle = tinta;
+    ctx.lineWidth = 4;
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 30, 0, TAU);
+    ctx.arc(cx, cy, r, 0, TAU, true);
+    const bronce = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+    bronce.addColorStop(0, '#f3dc9c');
+    bronce.addColorStop(0.45, '#c99a3c');
+    bronce.addColorStop(1, '#7a5a1e');
+    ctx.fillStyle = bronce;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 15, 0, TAU);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(26, 26, 26, .45)';
+    ctx.stroke();
+    [r, r + 30].forEach((radio) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, radio, 0, TAU);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = tinta;
+      ctx.stroke();
+    });
+    const remaches = 20;
+    for (let k = 0; k < remaches; k += 1) {
+      const a = angulo + (k / remaches) * TAU;
+      const x = cx + Math.cos(a) * (r + 15);
+      const y = cy + Math.sin(a) * (r + 15);
+      const brillo = ctx.createRadialGradient(x - 1.5, y - 1.5, 0.5, x, y, 5.5);
+      brillo.addColorStop(0, '#fff6d6');
+      brillo.addColorStop(1, '#8a6420');
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, TAU);
+      ctx.fillStyle = brillo;
+      ctx.fill();
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = tinta;
+      ctx.stroke();
+    }
+  }
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
+  const c = r * 0.19;
+  ctx.beginPath();
+  ctx.arc(cx, cy, c, 0, TAU);
+  ctx.fillStyle = '#141414';
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = '#F4E9CF';
+  ctx.stroke();
+  ctx.lineWidth = 1;
+  for (let radio = c * 0.48; radio < c - 2; radio += 2.6) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, radio, 0, TAU);
+    ctx.strokeStyle = 'rgba(255, 255, 255, .12)';
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(cx, cy, c * 0.95, -2.5, -1.7);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(255, 255, 255, .18)';
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, c * 0.4, 0, TAU);
+  ctx.fillStyle = '#B5332A';
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = tinta;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, c * 0.08, 0, TAU);
+  ctx.fillStyle = '#F4E9CF';
+  ctx.fill();
+
+  const top = cy - r - 54;
+  const fin = cy - r + 22;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const baston = new Path2D();
+  baston.moveTo(cx, fin - 12);
+  baston.lineTo(cx, top + 10);
+  baston.arc(cx + 11, top + 10, 11, Math.PI, 0);
+  baston.lineTo(cx + 22, top + 16);
+  ctx.lineWidth = 12;
+  ctx.strokeStyle = tinta;
+  ctx.stroke(baston);
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = '#5a3a22';
+  ctx.stroke(baston);
+  ctx.beginPath();
+  ctx.moveTo(cx - 2, fin - 16);
+  ctx.lineTo(cx - 2, top + 12);
+  ctx.lineWidth = 1.6;
+  ctx.strokeStyle = 'rgba(255, 230, 190, .55)';
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - 11, fin - 14);
+  ctx.lineTo(cx + 11, fin - 14);
+  ctx.lineTo(cx, fin + 2);
+  ctx.closePath();
+  ctx.fillStyle = '#E3A82B';
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = tinta;
+  ctx.stroke();
+  ctx.restore();
+}
+
 function nubeCanvas(ctx, x, y, s) {
   const bolas = [[-1, 0.25, 0.5], [-0.4, -0.2, 0.68], [0.35, -0.3, 0.74], [1, 0.15, 0.52], [0, 0.35, 0.6]];
   ctx.fillStyle = '#F5C518';
@@ -2770,7 +3055,7 @@ const CLAVE_PIEL = 'fonomeets.pantalla.piel';
 function pielGuardada() {
   try {
     const valor = new URLSearchParams(location.search).get('piel') || localStorage.getItem(CLAVE_PIEL);
-    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo'].includes(valor) ? valor : '';
+    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista'].includes(valor) ? valor : '';
   } catch (error) {
     return '';
   }
@@ -3024,7 +3309,7 @@ async function correrDemo(tipo) {
   await demoRuleta(id, tipo === 'rechazo');
 }
 
-const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo'];
+const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista'];
 const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
   manga: { nombre: 'Manga', estado: 'Arte parcial' },
@@ -3033,6 +3318,7 @@ const PIELES_INFO = {
   maison: { nombre: 'Maison', estado: 'Arte parcial' },
   kirameki: { nombre: 'Kirameki', estado: 'Arte parcial' },
   trazo: { nombre: 'Trazo', estado: 'Arte final' },
+  revista: { nombre: 'Revista', estado: 'Arte final' },
 };
 
 function mostrarElegirPiel() {
@@ -3244,7 +3530,7 @@ function htmlPielesDemo() {
   const objetos = [...(piel.efectos.objetos || []), ...(piel.mascota ? [{ id: 'mascota' }] : [])].map((objeto) => (
     `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
   )).join('');
-  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo'].map((id) => (
+  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista'].map((id) => (
     `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
   )).join('') + '</div>'
     + '<div class="demo-dialog-chips">'
