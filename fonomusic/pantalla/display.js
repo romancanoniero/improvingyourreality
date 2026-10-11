@@ -199,6 +199,32 @@ const PIELES = {
       ],
     },
   },
+  fileteado: {
+    id: 'fileteado',
+    fondo: '#111111', sectorA: '#C8302A', sectorB: '#1E7A3E', acento: '#F6C700',
+    info: '#FBF3DC', texto: '#FFF8E6', colores: ['#D52B1E', '#1E8C45', '#F6C700', '#6CACE4'],
+    fotoHueco: '#3a2a1a', fuente: '700 21px "Playfair Display", Georgia, serif',
+    sellos: { ruleta: 'Ruleta', votacion: '¡Votá!', mensaje: 'Chamuyo', match: 'Flechazo', cierre: '¡Qué noche, che!' },
+    rueda: 'filete',
+    mascota: 'matecito',
+    celebracion: true,
+    lemasPareja: ['¡Matecito unió a estas mesas!', '¡Matecito los juntó!'],
+    efectos: {
+      fondo: 'fx-fondo-fileteado', ambiente: 'fx-ambiente-fileteado', marco: 'fx-marco-fileteado',
+      sello: 'fx-sello-fileteado', foto: 'fx-foto-circulo', globo: 'fx-globo-fileteado',
+      impacto: 'fx-impacto-fileteado', entrada: 'fx-entrada-fileteado',
+      apila: 'fx-apila-fileteado', rechazo: 'fx-rechazo-fileteado', ficha: 'fx-ficha-fileteado', lienzo: 'fx-lienzo-fileteado',
+      sonidos: { clic: 'fileteado-clic', exito: 'fileteado-exito', decepcion: 'fileteado-decepcion' },
+      particulas: { formas: ['flor', 'serpentina', 'alfajor'], colores: ['#D52B1E', '#F6C700', '#6CACE4', '#FFFFFF', '#1E8C45'], cantidad: 40 },
+      giro: { papel: false, trama: false, lineas: false, vineta: false },
+      objetos: [
+        { id: 'termo', clase: 'fx-obj-termo', en: ['ruleta', 'votacion'] },
+        { id: 'parrilla', clase: 'fx-obj-parrilla', en: ['ruleta', 'votacion'] },
+        { id: 'flor', clase: 'fx-obj-florfx', en: ['ruleta', 'votacion', 'mensaje'] },
+        { id: 'bandoneon', clase: 'fx-obj-bandofx', en: ['match'] },
+      ],
+    },
+  },
 };
 
 function pielDe(id) {
@@ -213,6 +239,7 @@ const OBJETO_NOMBRES = {
   destellos: 'Destellos', fugaz: 'Estrella fugaz', kya: '¡KYA!',
   lluvia: 'Lluvia', maquina: 'Máquina de escribir', trompeta: 'Trompeta', extra: '¡EXTRA!',
   bandoneon: 'Bandoneón', microfono: 'Micrófono', notasfx: 'Notas', plaf: '¡PLAF!',
+  termo: 'Termo y mate', parrilla: 'Parrilla', flor: 'Flor y pajarito',
   mascota: 'Mascota',
 };
 
@@ -424,6 +451,20 @@ function tocarSonido(motor, fuerza = 1) {
     [233, 220, 208, 185].forEach((frecuencia, indice) => {
       notaFx(frecuencia, 'sawtooth', 0.03, cuando + 0.1 + indice * 0.2, indice === 3 ? 0.6 : 0.18);
       notaFx(frecuencia / 2, 'triangle', 0.05, cuando + 0.1 + indice * 0.2, indice === 3 ? 0.6 : 0.18);
+    });
+    return;
+  }
+  if (motor === 'fileteado-exito') {
+    [[294, 370, 440], [392, 494, 587], [440, 554, 659]].forEach((acorde, indice) => acorde.forEach((frecuencia) => {
+      notaFx(frecuencia, 'sawtooth', 0.014, cuando + indice * 0.17, indice === 2 ? 0.6 : 0.15);
+      notaFx(frecuencia * 1.003, 'square', 0.008, cuando + indice * 0.17, indice === 2 ? 0.55 : 0.14);
+    }));
+    return;
+  }
+  if (motor === 'fileteado-decepcion') {
+    [330, 311, 294, 220].forEach((frecuencia, indice) => {
+      notaFx(frecuencia, 'sawtooth', 0.022, cuando + indice * 0.24, indice === 3 ? 0.75 : 0.2);
+      notaFx(frecuencia * 1.004, 'square', 0.01, cuando + indice * 0.24, indice === 3 ? 0.7 : 0.18);
     });
     return;
   }
@@ -1312,7 +1353,27 @@ function svgGramo(pose) {
     + `<image href="arte/revista/gramo-${nombre}.webp" x="${(110 - ancho / 2).toFixed(1)}" y="${(250 - alto).toFixed(1)}" width="${ancho}" height="${alto}"/></svg>`;
 }
 
+const MATE_POSES = {
+  reposo: [182.8, 235.1],
+  festeja: [216.1, 246.5],
+  decepcion: [174.3, 237.5],
+  senala: [224.6, 238.0],
+};
+let matePrecargado = false;
+
+function svgMatecito(pose) {
+  const nombre = MATE_POSES[pose] ? pose : 'reposo';
+  if (!matePrecargado) {
+    matePrecargado = true;
+    Object.keys(MATE_POSES).forEach((n) => { new Image().src = `arte/fileteado/mate-${n}.webp`; });
+  }
+  const [ancho, alto] = MATE_POSES[nombre];
+  return `<svg class="matecito" viewBox="0 0 220 250" role="presentation">`
+    + `<image href="arte/fileteado/mate-${nombre}.webp" x="${(110 - ancho / 2).toFixed(1)}" y="${(250 - alto).toFixed(1)}" width="${ancho}" height="${alto}"/></svg>`;
+}
+
 function svgMascota(id, pose) {
+  if (id === 'matecito') return svgMatecito(pose);
   if (id === 'sumi') return svgSumi(pose);
   if (id === 'gramo') return svgGramo(pose);
   if (id === 'cronista') return svgCronista(pose);
@@ -1769,13 +1830,15 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const kira = pal.rueda === 'kira';
   const pluma = pal.rueda === 'pluma';
   const deco = pal.rueda === 'deco';
+  const filete = pal.rueda === 'filete';
+  if (filete) await Promise.race([cargarFilete(), new Promise((resolve) => setTimeout(resolve, 1500))]);
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   if (document.fonts && document.fonts.load) {
     await Promise.race([document.fonts.load(pal.fuente).catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1200))]);
   }
   const cx = canvas.width / 2;
   const cy = canvas.height / 2;
-  const r = Math.min(cx, cy) * 0.86;
+  const r = Math.min(cx, cy) * (filete ? 0.6 : 0.86);
   const lienzo = (w, h) => {
     const c = document.createElement('canvas');
     c.width = Math.ceil(w);
@@ -1821,6 +1884,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (kira) decorarRuedaKira(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (deco) decorarRuedaDeco(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+    else if (filete) decorarRuedaFilete(c, cx, cy, r, 0, slice, opciones.length, 'cara');
   };
   const pintarFoto = (i) => {
     const t = (radio + margenFoto) * 2;
@@ -1895,6 +1959,14 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
       c.strokeStyle = '#FBF5E8';
       c.lineWidth = 3.5;
+    } else if (filete) {
+      c.strokeStyle = '#111';
+      c.lineWidth = 9;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
+      c.strokeStyle = '#E5B53A';
+      c.lineWidth = 4;
     } else if (deco) {
       c.strokeStyle = '#1A1A1A';
       c.lineWidth = 8;
@@ -1912,7 +1984,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   };
   const pintarNombre = (i) => {
     const opcion = opciones[i];
-    const nombre = neon || tinta || llanta || nube || baul || kira || pluma || deco ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const nombre = neon || tinta || llanta || nube || baul || kira || pluma || deco || filete ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
     const medida = canvas.getContext('2d');
     medida.font = pal.fuente;
     const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
@@ -1928,9 +2000,9 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.shadowColor = 'rgba(0, 0, 0, .85)';
       c.shadowBlur = 4;
     }
-    if (tinta || llanta || nube || baul || kira || pluma || deco) {
+    if (tinta || llanta || nube || baul || kira || pluma || deco || filete) {
       c.lineJoin = 'round';
-      c.lineWidth = nube || kira || pluma || deco ? 7 : 6;
+      c.lineWidth = nube || kira || pluma || deco || filete ? 7 : 6;
       c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : pluma ? '#1C1C1C' : deco ? '#1A1A1A' : '#111';
       c.strokeText(nombre, nx, ny);
     }
@@ -1949,6 +2021,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (kira) decorarRuedaKira(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (deco) decorarRuedaDeco(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else if (filete) decorarRuedaFilete(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else {
       c.beginPath();
       c.moveTo(cx, cy - r - 2);
@@ -2603,6 +2676,124 @@ function decorarRuedaPluma(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   ctx.restore();
 }
 
+const FILETE_RUEDA = { aro: 'rueda-aro', centro: 'rueda-centro', puntero: 'rueda-puntero' };
+const fileteImagenes = {};
+let fileteCarga = null;
+
+function cargarFilete() {
+  if (!fileteCarga) {
+    fileteCarga = Promise.all(Object.entries(FILETE_RUEDA).map(([clave, archivo]) => new Promise((resolve) => {
+      const imagen = new Image();
+      imagen.onload = () => { fileteImagenes[clave] = imagen; resolve(); };
+      imagen.onerror = () => resolve();
+      imagen.src = `arte/fileteado/${archivo}.webp`;
+    })));
+  }
+  return fileteCarga;
+}
+
+// El aro recortado de la H5 tiene el hueco al 63 % de su diámetro.
+const FILETE_HUECO_ARO = 0.632;
+
+function decorarRuedaFilete(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
+  const TAU = Math.PI * 2;
+  ctx.save();
+  if (parte !== 'fijo') {
+    for (let i = 0; i < n; i += 1) {
+      const medio = angulo + (i + 0.5) * slice - Math.PI / 2;
+      const rr = r * 0.8;
+      const x = cx + Math.cos(medio) * rr;
+      const y = cy + Math.sin(medio) * rr;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(medio + Math.PI / 2);
+      const escala = Math.min(1, (slice * r * 0.7) / 70);
+      ctx.scale(escala, escala);
+      [-1, 1].forEach((lado) => {
+        const voluta = new Path2D();
+        voluta.moveTo(0, -4);
+        voluta.bezierCurveTo(lado * 12, -16, lado * 30, -6, lado * 26, 8);
+        voluta.bezierCurveTo(lado * 22, 18, lado * 10, 14, lado * 13, 6);
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 7;
+        ctx.strokeStyle = '#111';
+        ctx.stroke(voluta);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = i % 2 === 0 ? '#F6C700' : '#9BD35A';
+        ctx.stroke(voluta);
+        ctx.lineWidth = 1.4;
+        ctx.strokeStyle = 'rgba(255, 255, 255, .8)';
+        ctx.stroke(voluta);
+      });
+      ctx.beginPath();
+      ctx.moveTo(0, -12);
+      ctx.bezierCurveTo(6, -4, 4, 6, 0, 10);
+      ctx.bezierCurveTo(-4, 6, -6, -4, 0, -12);
+      ctx.fillStyle = i % 2 === 0 ? '#6CACE4' : '#F6C700';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#111';
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#111';
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#E5B53A';
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+  }
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
+  const { aro, centro, puntero } = fileteImagenes;
+  if (aro) {
+    const lado = (2 * (r + 2)) / FILETE_HUECO_ARO;
+    ctx.drawImage(aro, cx - lado / 2, cy - lado / 2, lado, lado);
+  } else {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 18, 0, TAU);
+    ctx.lineWidth = 36;
+    ctx.strokeStyle = '#111';
+    ctx.stroke();
+  }
+  if (centro) {
+    const ancho = r * 0.5;
+    const alto = ancho * (centro.naturalHeight / centro.naturalWidth);
+    ctx.drawImage(centro, cx - ancho / 2, cy - alto * 0.55, ancho, alto);
+  } else {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.2, 0, TAU);
+    ctx.fillStyle = '#6b3a1e';
+    ctx.fill();
+  }
+  if (puntero) {
+    const alto = r * 0.62;
+    const ancho = alto * (puntero.naturalWidth / puntero.naturalHeight);
+    const punta = cy - r + r * 0.16;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, .6)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 4;
+    ctx.drawImage(puntero, cx - ancho / 2, punta - alto, ancho, alto);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
 function decorarRuedaDeco(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   const TAU = Math.PI * 2;
   const tinta = '#1A1A1A';
@@ -2988,7 +3179,7 @@ const CLAVE_PIEL = 'fonomeets.pantalla.piel';
 function pielGuardada() {
   try {
     const valor = new URLSearchParams(location.search).get('piel') || localStorage.getItem(CLAVE_PIEL);
-    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista'].includes(valor) ? valor : '';
+    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado'].includes(valor) ? valor : '';
   } catch (error) {
     return '';
   }
@@ -3242,7 +3433,7 @@ async function correrDemo(tipo) {
   await demoRuleta(id, tipo === 'rechazo');
 }
 
-const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista'];
+const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado'];
 const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
   manga: { nombre: 'Manga', estado: 'Arte parcial' },
@@ -3252,6 +3443,7 @@ const PIELES_INFO = {
   kirameki: { nombre: 'Kirameki', estado: 'Arte parcial' },
   trazo: { nombre: 'Trazo', estado: 'Arte final' },
   revista: { nombre: 'Revista', estado: 'Arte final' },
+  fileteado: { nombre: 'Fileteado', estado: 'Arte final' },
 };
 
 function mostrarElegirPiel() {
@@ -3463,7 +3655,7 @@ function htmlPielesDemo() {
   const objetos = [...(piel.efectos.objetos || []), ...(piel.mascota ? [{ id: 'mascota' }] : [])].map((objeto) => (
     `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
   )).join('');
-  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista'].map((id) => (
+  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado'].map((id) => (
     `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
   )).join('') + '</div>'
     + '<div class="demo-dialog-chips">'
