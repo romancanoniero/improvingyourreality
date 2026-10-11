@@ -1294,89 +1294,170 @@ function svgCronista(pose) {
 
 const GRAMO_POSES = {
   reposo: {
-    brazos: ['M66 120 Q46 142 72 158', 'M154 120 Q166 146 158 170'],
-    manos: [[160, 172]],
-    piernas: ['M100 194 L122 230', 'M120 194 L100 232'],
-    zapatos: [[128, 236, 1], [94, 238, -1]],
+    cuerpo: 'rotate(-7 116 238)',
+    brazos: [
+      { d: 'M80 118 Q50 122 44 136 Q54 142 66 142', mano: [67, 144, 92, 'caida'] },
+      { d: 'M142 118 Q164 130 160 150 Q156 160 148 164', mano: [146, 165, 200, 'puno'] },
+    ],
+    piernas: [
+      { d: 'M124 178 Q132 204 144 220', zapato: [146, 224, 1, -38] },
+      { d: 'M100 178 Q104 208 116 232', zapato: [120, 236, 1, 0] },
+    ],
+    cabeza: 'rotate(-4)',
     ojos: 'guino',
-    boca: '<path d="M100 97 Q110 104 120 97" fill="none"/>',
+    boca: 'sonrisa',
   },
   festeja: {
-    brazos: ['M68 116 Q48 90 42 62', 'M152 116 Q172 90 178 62'],
-    manos: [[40, 56], [180, 56]],
-    piernas: ['M98 194 Q86 214 70 222', 'M122 194 Q140 212 152 230'],
-    zapatos: [[62, 226, -1], [158, 236, 1]],
+    cuerpo: 'translate(0 -6)',
+    brazos: [
+      { d: 'M80 116 Q60 98 44 74', mano: [42, 70, -58, 'abierta'] },
+      { d: 'M140 116 Q160 98 176 74', mano: [178, 70, -122, 'abierta', true] },
+    ],
+    piernas: [
+      { d: 'M102 178 Q86 200 96 222', zapato: [94, 228, -1, 6] },
+      { d: 'M120 178 Q146 192 160 206', zapato: [166, 208, 1, -28] },
+    ],
+    cabeza: 'rotate(3)',
     ojos: 'felices',
-    boca: '<path d="M98 96 Q110 116 122 96 Z" fill="#7a2420"/>',
-    cuerpo: 'translate(0 -10)',
-    sombrero: 'translate(26 -36) rotate(22 110 40)',
-    notas: true,
+    boca: 'carcajada',
+    sinSombrero: true,
+    patada: true,
   },
   decepcion: {
-    brazos: ['M70 118 Q58 96 90 66', 'M152 122 Q160 150 152 172'],
-    manos: [[92, 64], [152, 174]],
-    piernas: ['M98 196 L96 232', 'M122 196 L124 232'],
-    zapatos: [[90, 238, -1], [130, 238, 1]],
+    cuerpo: 'rotate(5 110 238)',
+    brazos: [
+      { d: 'M78 120 Q68 150 70 176', mano: [70, 180, 90, 'caida'] },
+      { d: 'M142 120 Q176 116 160 78', mano: [150, 62, -128, 'caida', true], delante: true },
+    ],
+    piernas: [
+      { d: 'M102 178 Q106 206 98 232', zapato: [94, 236, -1, 0] },
+      { d: 'M118 178 Q114 206 122 232', zapato: [126, 236, 1, 0] },
+    ],
+    cabeza: 'translate(6 8) rotate(16)',
     ojos: 'tristes',
-    boca: '<path d="M102 101 Q110 96 118 101" fill="none"/>',
-    cabeza: 'rotate(12 110 100) translate(0 6)',
-    gota: true,
+    boca: 'puchero',
   },
   senala: {
-    brazos: ['M68 120 Q64 152 96 158', 'M152 116 Q178 108 196 102'],
-    manos: [[98, 158]],
-    piernas: ['M98 194 L88 232', 'M122 194 L132 232'],
-    zapatos: [[82, 238, -1], [138, 238, 1]],
-    ojos: 'abiertos',
-    boca: '<path d="M98 96 Q110 112 122 96 Z" fill="#7a2420"/>',
-    dedo: [198, 101],
+    brazos: [
+      { d: 'M80 118 Q52 116 30 112', mano: [26, 112, 180, 'indice'] },
+      { d: 'M142 118 Q162 136 150 146 Q138 150 126 144', mano: [122, 143, 200, 'indice', true] },
+    ],
+    piernas: [
+      { d: 'M100 178 Q82 204 66 230', zapato: [62, 234, -1, 0] },
+      { d: 'M122 178 Q142 204 156 230', zapato: [160, 234, 1, 0] },
+    ],
+    cabeza: 'rotate(-5)',
+    ojos: 'guino',
+    boca: 'sonrisa',
   },
 };
 
 function svgGramo(pose) {
   const p = GRAMO_POSES[pose] || GRAMO_POSES.reposo;
-  const tinta = '#1A1A1A';
-  const piel = '#F2D3B0';
-  const trazo = (d, ancho) => `<path d="${d}" stroke="${tinta}" stroke-width="${ancho + 6}" fill="none"/><path d="${d}" stroke="url(#gramo-raya)" stroke-width="${ancho}" fill="none"/>`;
-  const zapato = ([x, y, lado]) => `<path d="M${x - 10 * lado} ${y - 5} Q${x + 4 * lado} ${y - 8} ${x + 14 * lado} ${y - 1} Q${x + 16 * lado} ${y + 5} ${x} ${y + 5} L${x - 10 * lado} ${y + 5} Z" fill="${tinta}" stroke="${tinta}" stroke-width="2.5"/>`
-    + `<path d="M${x - 9 * lado} ${y - 6} Q${x + 2 * lado} ${y - 10} ${x + 8 * lado} ${y - 4} L${x + 6 * lado} ${y - 13} Q${x} ${y - 16} ${x - 8 * lado} ${y - 13} Z" fill="#FBF3DD" stroke="${tinta}" stroke-width="2.5"/>`;
-  const mano = ([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/>`;
-  const dedo = p.dedo ? `<g transform="translate(${p.dedo[0]} ${p.dedo[1]}) rotate(-12)"><circle r="8.5" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/><path d="M5 -4 H19 Q22 -1 19 2 H5" fill="${piel}" stroke="${tinta}" stroke-width="3.5" stroke-linejoin="round"/></g>` : '';
+  const tinta = '#1C1914';
+  const piel = '#F2E4C1';
+  const camisa = '#FBF5E4';
+  const contorno = (d, ancho, relleno) => `<path d="${d}" stroke="${tinta}" stroke-width="${ancho + 6}" fill="none"/><path d="${d}" stroke="${relleno}" stroke-width="${ancho}" fill="none"/>`;
+  const dedo = (largo, ang, grueso = 4.6) => {
+    const r = (ang * Math.PI) / 180;
+    const d = `M0 0 L${(Math.cos(r) * largo).toFixed(1)} ${(Math.sin(r) * largo).toFixed(1)}`;
+    return { fondo: `<path d="${d}" stroke="${tinta}" stroke-width="${grueso + 4.4}"/>`, frente: `<path d="${d}" stroke="${piel}" stroke-width="${grueso}"/>` };
+  };
+  const mano = ([x, y, ang, tipo, espejo]) => {
+    let dedos;
+    if (tipo === 'abierta') dedos = [dedo(14, -38), dedo(16, -12), dedo(15, 12), dedo(12, 36), dedo(10, -86)];
+    else if (tipo === 'caida') dedos = [dedo(12, -14), dedo(13, -2), dedo(12, 10), dedo(10, 22), dedo(8, -62)];
+    else if (tipo === 'indice') dedos = [dedo(18, 0, 4.4), dedo(8, -70)];
+    else dedos = [];
+    const palma = `<circle r="8" fill="${piel}" stroke="${tinta}" stroke-width="3.2"/>`;
+    const nudillos = tipo === 'indice' || tipo === 'puno' ? `<path d="M-3 -5 Q2 -6 4 -2 M-3 1 Q2 0 4 4" fill="none" stroke="${tinta}" stroke-width="1.6"/>` : '';
+    const puno = `<g transform="rotate(${ang}) translate(3 0)${espejo ? ' scale(1 -1)' : ''}">${dedos.map((d) => d.fondo).join('')}${palma}${dedos.map((d) => d.frente).join('')}${nudillos}</g>`;
+    return `<g transform="translate(${x} ${y})" stroke-linecap="round">${puno}<circle r="6.2" transform="rotate(${ang}) translate(-4 0) scale(.7 1)" fill="${camisa}" stroke="${tinta}" stroke-width="2.6"/></g>`;
+  };
+  const zapato = ([x, y, lado, ang]) => `<g transform="translate(${x} ${y}) rotate(${ang}) scale(${lado} 1)">`
+    + `<path d="M-9 -2 Q-8 7 0 7 L19 7 Q24 6 22 1 Q18 -4 8 -5 L-6 -6 Z" fill="${tinta}"/>`
+    + `<path d="M15 0 Q19 1 20 3" stroke="#6a645a" stroke-width="1.6" fill="none"/>`
+    + `<path d="M-9 -12 L6 -13 Q10 -8 8 -3 L-8 -1 Q-11 -6 -9 -12 Z" fill="${camisa}" stroke="${tinta}" stroke-width="2.4"/>`
+    + `<circle cx="3" cy="-8" r="1.3" fill="${tinta}"/><circle cx="3" cy="-4.5" r="1.3" fill="${tinta}"/></g>`;
+  const pierna = (pi) => contorno(pi.d, 19, 'url(#gramo-tweed)');
+  const brazo = (b) => contorno(b.d, 16, 'url(#gramo-tweed)');
+
   let ojos;
-  if (p.ojos === 'felices') ojos = `<path d="M93 66 Q99 58 105 66 M115 66 Q121 58 127 66" fill="none" stroke-width="3.6"/>`;
-  else if (p.ojos === 'tristes') ojos = `<path d="M93 66 Q99 71 105 66 M115 66 Q121 71 127 66" fill="none" stroke-width="3.2"/><path d="M92 56 L104 60 M128 56 L116 60" stroke-width="4"/>`;
-  else if (p.ojos === 'guino') ojos = `<circle cx="99" cy="65" r="3.6" fill="${tinta}"/><path d="M115 66 Q121 60 127 66" fill="none" stroke-width="3.6"/><path d="M92 55 Q99 50 106 55 M114 55 Q121 50 128 55" fill="none" stroke-width="4"/>`;
-  else ojos = `<circle cx="99" cy="65" r="3.8" fill="${tinta}"/><circle cx="121" cy="65" r="3.8" fill="${tinta}"/><path d="M92 54 Q99 48 106 54 M114 54 Q121 48 128 54" fill="none" stroke-width="4"/>`;
-  const bigote = `<path d="M110 86 C98 78 86 82 80 90 C76 96 68 93 69 86 C70 81 76 81 76 86 C82 80 96 84 110 92 Z" fill="${tinta}"/>`;
-  const notas = p.notas ? [[28, 110, 1], [192, 120, .9], [22, 160, .8]].map(([x, y, k]) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="0" cy="12" rx="6.5" ry="5" transform="rotate(-20 0 12)" fill="${tinta}"/><path d="M5.5 11 V-8 Q13 -4 15 3" stroke="${tinta}" stroke-width="3" fill="none"/></g>`).join('') : '';
-  const gota = p.gota ? `<path d="M146 50 q-5 9 0 13 q5 -4 0 -13 Z" fill="#9cc3e0" stroke="${tinta}" stroke-width="2.2"/><path d="M62 96 q8 -6 14 0" fill="none" stroke="${tinta}" stroke-width="2.4"/>` : '';
+  if (p.ojos === 'felices') {
+    ojos = `<path d="M-19 -9 Q-13 -16 -7 -9 M7 -9 Q13 -16 19 -9" fill="none" stroke-width="3.4"/>`
+      + `<path d="M-22 -18 Q-14 -25 -5 -20 M5 -20 Q14 -25 22 -18" fill="none" stroke-width="4.6"/>`;
+  } else if (p.ojos === 'tristes') {
+    ojos = `<path d="M-19 -9 Q-13 -5 -7 -9 M7 -9 Q13 -5 19 -9" fill="none" stroke-width="3.2"/>`
+      + `<path d="M-20 -13 Q-14 -15 -8 -12 M8 -12 Q14 -15 20 -13" fill="none" stroke-width="1.6"/>`
+      + `<path d="M-21 -16 Q-14 -22 -5 -21 M5 -21 Q14 -22 21 -16" fill="none" stroke-width="4.6" transform="rotate(0)"/>`;
+  } else {
+    const abierto = (cx) => `<ellipse cx="${cx}" cy="-10" rx="5" ry="6" fill="#fff" stroke-width="2.2"/><circle cx="${cx + 1.2}" cy="-9.5" r="2.6" fill="${tinta}" stroke="none"/>`;
+    ojos = p.ojos === 'guino'
+      ? abierto(-13) + `<path d="M7 -10 Q13 -15 19 -9" fill="none" stroke-width="3.4"/><path d="M8 -6 Q13 -4 17 -6" fill="none" stroke-width="1.6"/>`
+        + `<path d="M-22 -19 Q-14 -26 -5 -20 M5 -18 Q14 -21 22 -16" fill="none" stroke-width="4.6"/>`
+      : abierto(-13) + abierto(13) + `<path d="M-22 -19 Q-14 -26 -5 -20 M5 -20 Q14 -26 22 -19" fill="none" stroke-width="4.6"/>`;
+  }
+  let boca;
+  if (p.boca === 'carcajada') {
+    boca = `<path d="M-14 17 Q0 42 14 17 Q0 21 -14 17 Z" fill="#4a1f17" stroke-width="2.8"/><path d="M-12 18 Q0 22 12 18 L11 22 Q0 25 -11 22 Z" fill="#fff" stroke="none"/><path d="M-6 32 Q0 27 7 32 Q2 37 -6 32 Z" fill="#b5524a" stroke="none"/>`;
+  } else if (p.boca === 'puchero') {
+    boca = `<path d="M-7 27 Q0 22 7 27" fill="none" stroke-width="2.8"/>`;
+  } else {
+    boca = `<path d="M-12 18 Q2 34 16 16 Q2 21 -12 18 Z" fill="#4a1f17" stroke-width="2.8"/><path d="M-10 19 Q2 22 14 17 L13 21 Q2 25 -9 22 Z" fill="#fff" stroke="none"/>`;
+  }
+  const media = `M0 17 C-9 20 -20 18 -26 11 C-30 6 -31 -2 -27 -5 C-23 -7 -19 -3 -21 0 C-22 2 -24 1 -24 -1 C-24 5 -20 8 -13 6 C-8 4.5 -3 5.5 0 7.5 Z`;
+  const bigote = `<g stroke-width="2"><path d="${media}" fill="${tinta}"/><path d="${media}" fill="${tinta}" transform="scale(-1 1)"/></g>`
+    + `<path d="M-18 13 Q-11 14 -5 12 M5 12 Q11 14 18 13" stroke="#6a645a" stroke-width="1.2" fill="none"/>`;
+  const sombrero = `<path d="M-27 -30 C-29 -66 29 -66 28 -32 Z" fill="url(#gramo-copa)" stroke="${tinta}" stroke-width="3"/>`
+    + `<path d="M-27 -31 Q0 -38 28 -33 L28 -40 Q0 -45 -27 -38 Z" fill="url(#gramo-trama)" stroke="${tinta}" stroke-width="2.4"/>`
+    + `<path d="M-40 -26 Q-40 -35 -28 -32 Q0 -38 30 -34 Q42 -33 41 -25 Q37 -21 29 -26 Q0 -31 -27 -26 Q-36 -21 -40 -26 Z" fill="${tinta}" stroke="${tinta}" stroke-width="2.4"/>`
+    + `<path d="M-14 -56 Q-4 -60 6 -58" stroke="#6d675d" stroke-width="2.6" fill="none"/>`;
+  const pelo = p.sinSombrero
+    ? `<path d="M-30 -16 C-34 -44 32 -46 31 -16 Q26 -30 12 -32 Q14 -27 8 -26 Q4 -32 -6 -32 Q-22 -32 -30 -16 Z" fill="${tinta}"/>`
+      + `<path d="M-2 -40 q6 -8 12 -2" stroke="${tinta}" stroke-width="2.6" fill="none"/>`
+    : '';
+  const cabeza = `<g transform="translate(110 72) ${p.cabeza || ''}">`
+    + `<ellipse cx="-33" cy="-1" rx="6" ry="8.5" fill="${piel}" stroke="${tinta}" stroke-width="3"/><path d="M-34 -4 q-3 3 0 6" stroke="${tinta}" stroke-width="1.6" fill="none"/>`
+    + `<ellipse cx="33" cy="-1" rx="6" ry="8.5" fill="${piel}" stroke="${tinta}" stroke-width="3"/><path d="M34 -4 q3 3 0 6" stroke="${tinta}" stroke-width="1.6" fill="none"/>`
+    + `<path d="M-31 -16 C-33 -38 31 -38 32 -16 C35 2 31 22 15 31 C5 36 -6 36 -16 31 C-31 22 -35 2 -31 -16 Z" fill="${piel}"/>`
+    + `<path d="M-31 -16 C-33 -38 31 -38 32 -16 C35 2 31 22 15 31 C5 36 -6 36 -16 31 C-31 22 -35 2 -31 -16 Z" fill="url(#gramo-trama-cara)" clip-path="url(#gramo-sombra-cara)"/>`
+    + `<path d="M-31 -16 C-33 -38 31 -38 32 -16 C35 2 31 22 15 31 C5 36 -6 36 -16 31 C-31 22 -35 2 -31 -16 Z" fill="none" stroke="${tinta}" stroke-width="3.4"/>`
+    + `<path d="M-31 -18 Q-35 -8 -30 2 L-27 -4 Q-28 -12 -24 -18 Z M31 -18 Q35 -8 31 2 L28 -4 Q28 -12 24 -18 Z" fill="${tinta}"/>`
+    + `<path d="M-14 26 Q0 31 14 26" stroke="${tinta}" stroke-width="1.8" fill="none"/>`
+    + `<g stroke="${tinta}" stroke-linecap="round">${ojos}${boca}</g>`
+    + bigote
+    + `<path d="M-2 -8 C-10 0 -10 10 -1 11 C7 12 11 6 8 -1 C6 -6 2 -9 -2 -8 Z" fill="${piel}" stroke="${tinta}" stroke-width="3"/><path d="M4 -4 Q8 0 6 5" stroke="${tinta}" stroke-width="1.4" fill="none"/>`
+    + pelo + (p.sinSombrero ? '' : sombrero)
+    + `</g>`;
+  const torso = `<path d="M74 112 Q92 102 110 104 Q128 102 146 112 Q154 140 150 176 Q130 184 110 182 Q90 184 70 176 Q66 140 74 112 Z" fill="url(#gramo-tweed)"/>`
+    + `<path d="M74 112 Q92 102 110 104 Q128 102 146 112 Q154 140 150 176 Q130 184 110 182 Q90 184 70 176 Q66 140 74 112 Z" fill="url(#gramo-trama)" clip-path="url(#gramo-sombra-saco)"/>`
+    + `<path d="M74 112 Q92 102 110 104 Q128 102 146 112 Q154 140 150 176 Q130 184 110 182 Q90 184 70 176 Q66 140 74 112 Z" fill="none" stroke="${tinta}" stroke-width="3.6"/>`
+    + `<path d="M98 105 L110 136 L122 105 Z" fill="${camisa}" stroke="${tinta}" stroke-width="2.6"/>`
+    + `<path d="M98 105 L88 112 L96 126 L91 130 L110 152 Z M122 105 L132 112 L124 126 L129 130 L110 152 Z" fill="url(#gramo-tweed)" stroke="${tinta}" stroke-width="2.8"/>`
+    + `<path d="M110 152 Q108 168 103 182" stroke="${tinta}" stroke-width="2.6" fill="none"/>`
+    + `<circle cx="113" cy="158" r="2.6" fill="${tinta}"/><circle cx="111" cy="170" r="2.6" fill="${tinta}"/>`
+    + `<path d="M128 138 L144 136" stroke="${tinta}" stroke-width="2.2"/><path d="M131 138 L134 131 L137 135 L141 130 L142 137 Z" fill="${camisa}" stroke="${tinta}" stroke-width="1.8"/>`
+    + `<path d="M76 160 L90 159" stroke="${tinta}" stroke-width="2.2"/>`
+    + `<path d="M110 110 L95 102 Q92 110 95 118 Z M110 110 L125 102 Q128 110 125 118 Z" fill="url(#gramo-mono)" stroke="${tinta}" stroke-width="2.6" stroke-linejoin="round"/>`
+    + `<rect x="105.5" y="106" width="9" height="8" rx="2" fill="url(#gramo-mono)" stroke="${tinta}" stroke-width="2.4"/>`;
+  const sombraPiso = `<ellipse cx="112" cy="243" rx="${p.sinSombrero ? 30 : 46}" ry="4" fill="url(#gramo-trama)" opacity=".8"/>`;
+  const sombreroVolando = p.sinSombrero ? `<g transform="translate(54 58) rotate(-26) scale(.82)">${sombrero}</g>` : '';
+  const patada = p.patada ? `<path d="M178 198 q6 4 4 12 M184 192 q8 6 6 16 M162 220 l-2 6 M170 222 l2 5" stroke="${tinta}" stroke-width="2.4" fill="none" stroke-linecap="round"/>` : '';
   return `<svg class="gramo" viewBox="0 0 220 250" role="presentation"><defs>`
-    + `<pattern id="gramo-raya" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#9C968A"/><path d="M1 0 V7" stroke="#5f5a50" stroke-width="1.3"/></pattern>`
-    + `<pattern id="gramo-trama" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.4" fill="${tinta}" opacity=".45"/></pattern>`
-    + `<clipPath id="gramo-panza"><ellipse cx="110" cy="150" rx="50" ry="52"/></clipPath>`
-    + `</defs><g stroke-linecap="round" stroke-linejoin="round">`
-    + `<g transform="${p.cuerpo || ''}">`
-    + p.piernas.map((d) => trazo(d, 16)).join('') + p.zapatos.map(zapato).join('')
-    + `<ellipse cx="110" cy="150" rx="50" ry="52" fill="url(#gramo-raya)"/>`
-    + `<g clip-path="url(#gramo-panza)"><ellipse cx="136" cy="164" rx="40" ry="50" fill="url(#gramo-trama)"/></g>`
-    + `<ellipse cx="110" cy="150" rx="50" ry="52" fill="none" stroke="${tinta}" stroke-width="4"/>`
-    + `<path d="M96 102 L110 134 L124 102 Z" fill="#FBF3DD" stroke="${tinta}" stroke-width="3"/>`
-    + `<path d="M90 102 L110 142 L100 150 L80 110 Z M130 102 L110 142 L120 150 L140 110 Z" fill="url(#gramo-raya)" stroke="${tinta}" stroke-width="3"/>`
-    + `<circle cx="110" cy="164" r="3.4" fill="${tinta}"/><circle cx="110" cy="180" r="3.4" fill="${tinta}"/>`
-    + `<path d="M110 106 L96 98 L96 114 Z M110 106 L124 98 L124 114 Z" fill="${tinta}" stroke="${tinta}" stroke-width="2"/><circle cx="110" cy="106" r="4" fill="${tinta}"/>`
-    + p.brazos.map((d) => trazo(d, 15)).join('') + (p.manos || []).map(mano).join('') + dedo
-    + `<g transform="${p.cabeza || ''}">`
-    + `<circle cx="80" cy="72" r="7" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/><circle cx="140" cy="72" r="7" fill="${piel}" stroke="${tinta}" stroke-width="3.5"/>`
-    + `<circle cx="110" cy="70" r="31" fill="${piel}" stroke="${tinta}" stroke-width="4"/>`
-    + `<path d="M84 54 Q90 40 110 40 Q130 40 136 54 Q124 46 110 47 Q96 46 84 54 Z" fill="${tinta}"/>`
-    + `<circle cx="90" cy="82" r="6" fill="#E89A86" opacity=".55"/><circle cx="130" cy="82" r="6" fill="#E89A86" opacity=".55"/>`
-    + `<g stroke="${tinta}">${ojos}${p.boca ? `<g stroke-width="3.2">${p.boca}</g>` : ''}</g>`
-    + `<g transform="translate(110 86) scale(.8) translate(-110 -86)">${bigote}<g transform="translate(220 0) scale(-1 1)">${bigote}</g></g>`
-    + `<ellipse cx="110" cy="77" rx="9" ry="8" fill="#EDB396" stroke="${tinta}" stroke-width="3.2"/>`
-    + `<g transform="${p.sombrero || ''}"><ellipse cx="110" cy="50" rx="42" ry="8" fill="${tinta}"/>`
-    + `<path d="M82 50 C82 14 138 14 138 50 Z" fill="${tinta}"/><path d="M83 42 Q110 36 137 42 L138 49 Q110 43 82 49 Z" fill="#4a4540"/>`
-    + `<path d="M94 28 Q102 22 112 22" stroke="#8a857c" stroke-width="3" fill="none"/></g>`
-    + `</g></g>` + notas + gota + `</g></svg>`;
+    + `<pattern id="gramo-tweed" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#CEC5AC"/><path d="M1 0 V6" stroke="#7d7563" stroke-width=".9"/><circle cx="4" cy="1.5" r=".8" fill="#5c5546"/><circle cx="4" cy="4.5" r=".8" fill="#5c5546"/></pattern>`
+    + `<pattern id="gramo-trama" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="${tinta}" opacity=".55"/></pattern>`
+    + `<pattern id="gramo-trama-cara" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#7a6a4c" opacity=".7"/></pattern>`
+    + `<pattern id="gramo-mono" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#8f897c"/><circle cx="2" cy="2" r=".9" fill="#2b2722"/></pattern>`
+    + `<radialGradient id="gramo-copa" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#5a544b"/><stop offset=".55" stop-color="#25211c"/><stop offset="1" stop-color="${tinta}"/></radialGradient>`
+    + `<clipPath id="gramo-sombra-cara"><path d="M8 34 C30 26 40 2 34 -20 L40 -20 L40 40 L0 40 Z M-31 18 C-26 28 -16 34 -6 35 L-40 40 Z"/></clipPath>`
+    + `<clipPath id="gramo-sombra-saco"><path d="M134 106 Q156 140 150 182 L160 190 L160 100 Z M66 168 Q90 186 120 184 L120 200 L60 200 Z"/></clipPath>`
+    + `</defs>` + sombraPiso + `<g stroke-linecap="round" stroke-linejoin="round" transform="${p.cuerpo || ''}">`
+    + p.piernas.map(pierna).join('') + p.piernas.map((pi) => zapato(pi.zapato)).join('')
+    + torso
+    + p.brazos.filter((b) => !b.delante).map((b) => brazo(b) + mano(b.mano)).join('')
+    + cabeza
+    + p.brazos.filter((b) => b.delante).map((b) => brazo(b) + mano(b.mano)).join('')
+    + `</g>` + sombreroVolando + patada + `</svg>`;
 }
 
 function svgMascota(id, pose) {
