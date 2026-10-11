@@ -225,6 +225,32 @@ const PIELES = {
       ],
     },
   },
+  disco80: {
+    id: 'disco80',
+    fondo: '#2B0F3A', sectorA: '#FF2E88', sectorB: '#FF7A1A', acento: '#FF2E88',
+    info: '#FFF3E8', texto: '#FFFFFF', colores: ['#FF2E88', '#FF7A1A', '#1ED6C4', '#B03CE0'],
+    fotoHueco: '#4a1d5e', fuente: 'italic 800 21px "Exo 2", Fredoka, sans-serif',
+    sellos: { ruleta: '¡A girar!', votacion: '¡Votá!', mensaje: 'Chat', match: '¡Match!', cierre: '¡Última canción!' },
+    rueda: 'disco',
+    mascota: 'brillo',
+    celebracion: true,
+    lemasPareja: ['¡Brillo los puso a bailar!', '¡Brillo los puso a bailar!'],
+    efectos: {
+      fondo: 'fx-fondo-disco80', ambiente: 'fx-ambiente-disco80', marco: 'fx-marco-disco80',
+      sello: 'fx-sello-disco80', foto: 'fx-foto-circulo', globo: 'fx-globo-disco80',
+      impacto: 'fx-impacto-disco80', entrada: 'fx-entrada-disco80',
+      apila: 'fx-apila-disco80', rechazo: 'fx-rechazo-disco80', ficha: 'fx-ficha-disco80', lienzo: 'fx-lienzo-disco80',
+      sonidos: { clic: 'disco80-clic', exito: 'disco80-exito', decepcion: 'disco80-decepcion' },
+      particulas: { formas: ['chispa', 'espejo', 'redondo'], colores: ['#FF2E88', '#FFC93C', '#1ED6C4', '#FFFFFF', '#FF7A1A', '#B03CE0'], cantidad: 40 },
+      giro: { papel: false, trama: false, lineas: false, vineta: false },
+      objetos: [
+        { id: 'patines', clase: 'fx-obj-patines', en: ['ruleta', 'votacion'] },
+        { id: 'microfono', clase: 'fx-obj-micro80', en: ['ruleta', 'votacion'] },
+        { id: 'discos', clase: 'fx-obj-discos80', en: ['ruleta', 'votacion', 'mensaje'] },
+        { id: 'bola', clase: 'fx-obj-bola80', en: ['match'] },
+      ],
+    },
+  },
 };
 
 function pielDe(id) {
@@ -239,7 +265,7 @@ const OBJETO_NOMBRES = {
   destellos: 'Destellos', fugaz: 'Estrella fugaz', kya: '¡KYA!',
   lluvia: 'Lluvia', maquina: 'Máquina de escribir', trompeta: 'Trompeta', extra: '¡EXTRA!',
   bandoneon: 'Bandoneón', microfono: 'Micrófono', notasfx: 'Notas', plaf: '¡PLAF!',
-  termo: 'Termo y mate', parrilla: 'Parrilla', flor: 'Flor y pajarito',
+  termo: 'Termo y mate', patines: 'Patines', discos: 'Discos de vinilo', bola: 'Bola de espejos', parrilla: 'Parrilla', flor: 'Flor y pajarito',
   mascota: 'Mascota',
 };
 
@@ -465,6 +491,22 @@ function tocarSonido(motor, fuerza = 1) {
     [330, 311, 294, 220].forEach((frecuencia, indice) => {
       notaFx(frecuencia, 'sawtooth', 0.022, cuando + indice * 0.24, indice === 3 ? 0.75 : 0.2);
       notaFx(frecuencia * 1.004, 'square', 0.01, cuando + indice * 0.24, indice === 3 ? 0.7 : 0.18);
+    });
+    return;
+  }
+  if (motor === 'disco80-exito') {
+    [[523, 659, 784], [587, 740, 880], [659, 831, 988]].forEach((acorde, indice) => acorde.forEach((frecuencia) => {
+      notaFx(frecuencia, 'square', 0.012, cuando + indice * 0.14, indice === 2 ? 0.7 : 0.12);
+      notaFx(frecuencia / 2, 'sawtooth', 0.014, cuando + indice * 0.14, indice === 2 ? 0.7 : 0.12);
+    }));
+    [1568, 2093, 2637].forEach((frecuencia, indice) => notaFx(frecuencia, 'sine', 0.02, cuando + 0.45 + indice * 0.06, 0.4));
+    return;
+  }
+  if (motor === 'disco80-decepcion') {
+    ruidoFx(0.07, 0.25, 900, 2.2, cuando);
+    [392, 370, 349, 262].forEach((frecuencia, indice) => {
+      notaFx(frecuencia, 'square', 0.016, cuando + 0.08 + indice * 0.2, indice === 3 ? 0.7 : 0.16);
+      notaFx(frecuencia / 2, 'sawtooth', 0.02, cuando + 0.08 + indice * 0.2, indice === 3 ? 0.7 : 0.16);
     });
     return;
   }
@@ -1372,7 +1414,27 @@ function svgMatecito(pose) {
     + `<image href="arte/fileteado/mate-${nombre}.webp" x="${(110 - ancho / 2).toFixed(1)}" y="${(250 - alto).toFixed(1)}" width="${ancho}" height="${alto}"/></svg>`;
 }
 
+const BRILLO_POSES = {
+  reposo: [118.3, 247.7],
+  festeja: [177.0, 250.0],
+  decepcion: [125.2, 228.8],
+  senala: [164.3, 239.9],
+};
+let brilloPrecargado = false;
+
+function svgBrillo(pose) {
+  const nombre = BRILLO_POSES[pose] ? pose : 'reposo';
+  if (!brilloPrecargado) {
+    brilloPrecargado = true;
+    Object.keys(BRILLO_POSES).forEach((n) => { new Image().src = `arte/disco80/brillo-${n}.webp`; });
+  }
+  const [ancho, alto] = BRILLO_POSES[nombre];
+  return `<svg class="brillo" viewBox="0 0 220 250" role="presentation">`
+    + `<image href="arte/disco80/brillo-${nombre}.webp" x="${(110 - ancho / 2).toFixed(1)}" y="${(250 - alto).toFixed(1)}" width="${ancho}" height="${alto}"/></svg>`;
+}
+
 function svgMascota(id, pose) {
+  if (id === 'brillo') return svgBrillo(pose);
   if (id === 'matecito') return svgMatecito(pose);
   if (id === 'sumi') return svgSumi(pose);
   if (id === 'gramo') return svgGramo(pose);
@@ -1831,14 +1893,16 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   const pluma = pal.rueda === 'pluma';
   const deco = pal.rueda === 'deco';
   const filete = pal.rueda === 'filete';
+  const disco = pal.rueda === 'disco';
   if (filete) await Promise.race([cargarFilete(), new Promise((resolve) => setTimeout(resolve, 1500))]);
+  if (disco) await Promise.race([cargarDisco(), new Promise((resolve) => setTimeout(resolve, 1500))]);
   if (neon) pal = { ...pal, fuente: '700 17px system-ui, sans-serif' };
   if (document.fonts && document.fonts.load) {
     await Promise.race([document.fonts.load(pal.fuente).catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1200))]);
   }
   const cx = canvas.width / 2;
   const cy = canvas.height / 2;
-  const r = Math.min(cx, cy) * (filete ? 0.6 : 0.86);
+  const r = Math.min(cx, cy) * (filete ? 0.6 : disco ? 0.74 : 0.86);
   const lienzo = (w, h) => {
     const c = document.createElement('canvas');
     c.width = Math.ceil(w);
@@ -1885,6 +1949,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (deco) decorarRuedaDeco(c, cx, cy, r, 0, slice, opciones.length, 'cara');
     else if (filete) decorarRuedaFilete(c, cx, cy, r, 0, slice, opciones.length, 'cara');
+    else if (disco) decorarRuedaDisco(c, cx, cy, r, 0, slice, opciones.length, 'cara', pal.colores);
   };
   const pintarFoto = (i) => {
     const t = (radio + margenFoto) * 2;
@@ -1959,6 +2024,15 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
       c.strokeStyle = '#FBF5E8';
       c.lineWidth = 3.5;
+    } else if (disco) {
+      c.strokeStyle = '#2B0F3A';
+      c.lineWidth = 9;
+      c.stroke();
+      c.beginPath();
+      c.arc(x, y, radio + 0.5, 0, Math.PI * 2);
+      c.strokeStyle = '#E8E8F0';
+      c.lineWidth = 4;
+      c.setLineDash([5, 2.5]);
     } else if (filete) {
       c.strokeStyle = '#111';
       c.lineWidth = 9;
@@ -1984,7 +2058,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
   };
   const pintarNombre = (i) => {
     const opcion = opciones[i];
-    const nombre = neon || tinta || llanta || nube || baul || kira || pluma || deco || filete ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
+    const nombre = neon || tinta || llanta || nube || baul || kira || pluma || deco || filete || disco ? nombreFicha(opcion.titulo, true) : (opcion.titulo || '');
     const medida = canvas.getContext('2d');
     medida.font = pal.fuente;
     const alto = parseInt(String(pal.fuente).match(/(\d+)px/)?.[1] || '16', 10);
@@ -2000,10 +2074,10 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
       c.shadowColor = 'rgba(0, 0, 0, .85)';
       c.shadowBlur = 4;
     }
-    if (tinta || llanta || nube || baul || kira || pluma || deco || filete) {
+    if (tinta || llanta || nube || baul || kira || pluma || deco || filete || disco) {
       c.lineJoin = 'round';
-      c.lineWidth = nube || kira || pluma || deco || filete ? 7 : 6;
-      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : pluma ? '#1C1C1C' : deco ? '#1A1A1A' : '#111';
+      c.lineWidth = nube || kira || pluma || deco || filete || disco ? 7 : 6;
+      c.strokeStyle = tinta ? '#FFF6DC' : nube ? '#fff' : baul ? '#1E120A' : kira ? '#1B1450' : pluma ? '#1C1C1C' : deco ? '#1A1A1A' : disco ? '#2B0F3A' : '#111';
       c.strokeText(nombre, nx, ny);
     }
     c.fillStyle = pal.texto;
@@ -2022,6 +2096,7 @@ async function crearMotor(canvas, opciones, pal, hasta, animar) {
     else if (pluma) decorarRuedaPluma(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (deco) decorarRuedaDeco(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
     else if (filete) decorarRuedaFilete(c, cx, cy, r, 0, slice, opciones.length, 'fijo');
+    else if (disco) decorarRuedaDisco(c, cx, cy, r, 0, slice, opciones.length, 'fijo', pal.colores);
     else {
       c.beginPath();
       c.moveTo(cx, cy - r - 2);
@@ -2794,6 +2869,114 @@ function decorarRuedaFilete(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   ctx.restore();
 }
 
+const DISCO_RUEDA = { aro: 'rueda-aro', centro: 'rueda-centro' };
+const discoImagenes = {};
+let discoCarga = null;
+
+function cargarDisco() {
+  if (!discoCarga) {
+    discoCarga = Promise.all(Object.entries(DISCO_RUEDA).map(([clave, archivo]) => new Promise((resolve) => {
+      const imagen = new Image();
+      imagen.onload = () => { discoImagenes[clave] = imagen; resolve(); };
+      imagen.onerror = () => resolve();
+      imagen.src = `arte/disco80/${archivo}.webp`;
+    })));
+  }
+  return discoCarga;
+}
+
+// El aro de lamparitas recortado de la H5 tiene el hueco al 81 % de su diámetro.
+const DISCO_HUECO_ARO = 0.81;
+
+function decorarRuedaDisco(ctx, cx, cy, r, angulo, slice, n, parte = 'todo', colores = []) {
+  const TAU = Math.PI * 2;
+  ctx.save();
+  if (parte !== 'fijo') {
+    const paleta = colores.length ? colores : ['#FF2E88', '#FF7A1A', '#1ED6C4', '#B03CE0'];
+    for (let i = 0; i < n; i += 1) {
+      const a0 = angulo + i * slice - Math.PI / 2;
+      const color = paleta[n % paleta.length === 1 && i === n - 1 ? 1 : i % paleta.length];
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, a0, a0 + slice);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      const medio = a0 + slice / 2;
+      const brillo = ctx.createRadialGradient(cx + Math.cos(medio) * r * 0.62, cy + Math.sin(medio) * r * 0.62, 0, cx + Math.cos(medio) * r * 0.62, cy + Math.sin(medio) * r * 0.62, r * 0.6);
+      brillo.addColorStop(0, 'rgba(255, 255, 255, .42)');
+      brillo.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = brillo;
+      ctx.fill();
+    }
+    const sombra = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r);
+    sombra.addColorStop(0, 'rgba(43, 15, 58, .35)');
+    sombra.addColorStop(0.5, 'rgba(43, 15, 58, 0)');
+    sombra.addColorStop(1, 'rgba(43, 15, 58, .3)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, TAU);
+    ctx.fillStyle = sombra;
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(255, 255, 255, .85)';
+    for (let i = 0; i < n; i += 1) {
+      const a = angulo + i * slice - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.stroke();
+    }
+  }
+  if (parte === 'cara') {
+    ctx.restore();
+    return;
+  }
+  const { aro, centro } = discoImagenes;
+  if (aro) {
+    const lado = (2 * (r + 2)) / DISCO_HUECO_ARO;
+    ctx.drawImage(aro, cx - lado / 2, cy - lado / 2, lado, lado);
+  } else {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 14, 0, TAU);
+    ctx.lineWidth = 28;
+    ctx.strokeStyle = '#C9CCD6';
+    ctx.stroke();
+  }
+  if (centro) {
+    const lado = r * 0.46;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, .55)';
+    ctx.shadowBlur = 10;
+    ctx.drawImage(centro, cx - lado / 2, cy - lado / 2, lado, lado);
+    ctx.restore();
+  }
+  const borde = r + r * 0.05;
+  const ancho = r * 0.2;
+  const alto = r * 0.24;
+  const punta = cy - r + r * 0.1;
+  const grad = ctx.createLinearGradient(cx, punta - alto, cx, punta);
+  grad.addColorStop(0, '#FFC93C');
+  grad.addColorStop(1, '#FF7A1A');
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, .6)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx, punta);
+  ctx.lineTo(cx - ancho / 2, cy - borde - alto * 0.55);
+  ctx.quadraticCurveTo(cx, cy - borde - alto * 0.75, cx + ancho / 2, cy - borde - alto * 0.55);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#E8E8F0';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  ctx.restore();
+  ctx.restore();
+}
+
 function decorarRuedaDeco(ctx, cx, cy, r, angulo, slice, n, parte = 'todo') {
   const TAU = Math.PI * 2;
   const tinta = '#1A1A1A';
@@ -3179,7 +3362,7 @@ const CLAVE_PIEL = 'fonomeets.pantalla.piel';
 function pielGuardada() {
   try {
     const valor = new URLSearchParams(location.search).get('piel') || localStorage.getItem(CLAVE_PIEL);
-    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado'].includes(valor) ? valor : '';
+    return ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado', 'disco80'].includes(valor) ? valor : '';
   } catch (error) {
     return '';
   }
@@ -3433,7 +3616,7 @@ async function correrDemo(tipo) {
   await demoRuleta(id, tipo === 'rechazo');
 }
 
-const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado'];
+const PIELES_DEMO = ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado', 'disco80'];
 const PIELES_INFO = {
   nocturna: { nombre: 'Nocturna', estado: 'Arte final' },
   manga: { nombre: 'Manga', estado: 'Arte parcial' },
@@ -3444,6 +3627,7 @@ const PIELES_INFO = {
   trazo: { nombre: 'Trazo', estado: 'Arte final' },
   revista: { nombre: 'Revista', estado: 'Arte final' },
   fileteado: { nombre: 'Fileteado', estado: 'Arte final' },
+  disco80: { nombre: 'Disco 80', estado: 'Arte final' },
 };
 
 function mostrarElegirPiel() {
@@ -3655,7 +3839,7 @@ function htmlPielesDemo() {
   const objetos = [...(piel.efectos.objetos || []), ...(piel.mascota ? [{ id: 'mascota' }] : [])].map((objeto) => (
     `<button type="button" data-ajuste-objeto="${objeto.id}" class="${ajustes.efectos && ajustes.objetos[objeto.id] !== false ? 'is-on' : ''}">${OBJETO_NOMBRES[objeto.id] || objeto.id}</button>`
   )).join('');
-  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado'].map((id) => (
+  return '<div class="demo-dialog-pieles">' + ['nocturna', 'manga', 'meteoro', 'doraemon', 'maison', 'kirameki', 'trazo', 'revista', 'fileteado', 'disco80'].map((id) => (
     `<button type="button" data-piel="${id}" class="${id === demoPiel ? 'is-on' : ''}">${id}</button>`
   )).join('') + '</div>'
     + '<div class="demo-dialog-chips">'
