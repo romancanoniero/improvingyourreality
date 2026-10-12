@@ -7,6 +7,7 @@ import {
   validateHierarchy,
   publicCatalog,
 } from './presentation-agent.mjs';
+import { apkVersions, isApk } from './apk-version.mjs';
 import fastifyStatic from '@fastify/static';
 import rateLimit from '@fastify/rate-limit';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
@@ -150,6 +151,7 @@ export async function createApp({
   firebaseProject = process.env.FIREBASE_PROJECT_ID || '',
   verifyToken,
   generate,
+  apkVersion = apkVersions(),
 } = {}) {
   const app = Fastify({ logger: true, bodyLimit: 1000000 });
   await mkdir(dataDir, { recursive: true });
@@ -199,8 +201,21 @@ export async function createApp({
         }
       : null,
   }));
+  const withVersions = (p) =>
+    Promise.all(
+      (p.modules || []).map(async (m) => {
+        if (!isApk(m.url)) return m;
+        const version = await apkVersion(m.url);
+        return version ? { ...m, version } : m;
+      }),
+    ).then((modules) => ({ ...p, modules }));
   app.get('/api/projects', async () =>
-    publicCatalog(settings.projects, publicProject),
+    Promise.all(
+      publicCatalog(settings.projects, publicProject).map(async (p) => ({
+        ...(await withVersions(p)),
+        children: await Promise.all(p.children.map(withVersions)),
+      })),
+    ),
   );
   const registerAgentAdmin = await installAgent({
     app,
