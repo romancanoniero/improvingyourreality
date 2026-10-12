@@ -213,7 +213,12 @@ function Platforms({ modules }) {
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
               {platform.icon}
             </svg>
-            <span>{platform.name}</span>
+            <span className="platform-text">
+              <span>{platform.name}</span>
+              {m.version && (
+                <small className="platform-version">Versión {m.version}</small>
+              )}
+            </span>
           </a>
         ))}
       </div>

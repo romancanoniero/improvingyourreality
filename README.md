@@ -31,6 +31,8 @@ Comprobar HTTPS, `/api/health`, `/api/projects`, bloqueo sin token de `/api/admi
 
 ## Datos y recuperación
 
+Los módulos que apuntan a un `.apk` muestran debajo del botón la versión del archivo publicado. `apk-version.mjs` la lee del manifiesto con pedidos por rango (unos pocos KB, sin bajar el APK) y la guarda 10 minutos; si la lectura falla, se conserva la última conocida o el botón queda sin versión. En esta VPS el contenedor no puede llamar a su propia IP pública: `APK_VIA_TRAEFIK=1` (ya en `compose.yml`) manda esa lectura al proxy `traefik` de la red `edge`.
+
 `storage/settings.json` se escribe atómicamente y persiste fuera del contenedor. Respaldar ese archivo antes de cada actualización, conservar `.env` en respaldo privado. Para restaurar detener solamente `docker compose stop site`, reponer el archivo y levantar `docker compose up -d`. El catálogo inicial solo se lee cuando aún no hay datos guardados. No ejecutar `down -v` sobre otros proyectos.
 
 ## Diseño

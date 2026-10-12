@@ -604,6 +604,21 @@ select {
   height: 22px;
   flex: none;
 }
+.platform-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.platform-version {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6b716c;
+}
+.platform:hover .platform-version,
+.platform:focus-visible .platform-version {
+  color: inherit;
+  opacity: 0.8;
+}
 .platform-mac svg {
   color: #1d1d1f;
 }
