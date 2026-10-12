@@ -1,14 +1,65 @@
+import { lookup as dnsLookup } from 'node:dns';
+import https from 'node:https';
 import { inflateRawSync } from 'node:zlib';
 
 const VERSION_NAME_ID = 0x0101021c;
 const FRESH_MS = 10 * 60 * 1000;
 
-async function range(url, from, to, fetchImpl) {
-  const r = await fetchImpl(url, {
-    headers: { Range: `bytes=${from}-${to}` },
-    redirect: 'follow',
-    signal: AbortSignal.timeout(5000),
+// En la VPS el contenedor no puede volver a la IP pública (hairpin). Con
+// APK_VIA_TRAEFIK=1 la lectura del APK entra por el proxy `traefik`, que sí
+// resuelve en la red Docker, y el certificado sigue siendo el del dominio.
+export function usesTraefik(url, fetchImpl = fetch) {
+  if (fetchImpl !== fetch || process.env.APK_VIA_TRAEFIK !== '1') return false;
+  try {
+    const host = new URL(url).hostname;
+    return host === 'fonomeets.com' || host === 'www.fonomeets.com';
+  } catch {
+    return false;
+  }
+}
+
+function rangeViaTraefik(url, from, to) {
+  const target = new URL(url);
+  return new Promise((resolve, reject) => {
+    const req = https.request(
+      {
+        host: target.hostname,
+        servername: target.hostname,
+        path: `${target.pathname}${target.search}`,
+        headers: { Host: target.host, Range: `bytes=${from}-${to}` },
+        timeout: 5000,
+        lookup(hostname, options, callback) {
+          dnsLookup('traefik', options, (err, address, family) => {
+            if (err) dnsLookup(hostname, options, callback);
+            else callback(null, address, family);
+          });
+        },
+      },
+      (res) => {
+        const chunks = [];
+        res.on('data', (chunk) => chunks.push(chunk));
+        res.on('end', () =>
+          resolve({
+            status: res.statusCode,
+            arrayBuffer: async () => Buffer.concat(chunks),
+          }),
+        );
+      },
+    );
+    req.on('timeout', () => req.destroy(Error('timeout')));
+    req.on('error', reject);
+    req.end();
   });
+}
+
+async function range(url, from, to, fetchImpl) {
+  const r = usesTraefik(url, fetchImpl)
+    ? await rangeViaTraefik(url, from, to)
+    : await fetchImpl(url, {
+        headers: { Range: `bytes=${from}-${to}` },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(5000),
+      });
   if (r.status !== 206) throw Error('El servidor no entrega rangos');
   return Buffer.from(await r.arrayBuffer());
 }

@@ -4,7 +4,7 @@ import { deflateRawSync } from 'node:zlib';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { apkVersions, manifestVersionName, readApkVersion } from '../apk-version.mjs';
+import { apkVersions, manifestVersionName, readApkVersion, usesTraefik } from '../apk-version.mjs';
 import { createApp } from '../server.mjs';
 
 const u16 = (n) => {
@@ -72,6 +72,22 @@ const serve = (file, calls = []) => async (url, options) => {
   const to = a === '' ? file.length - 1 : Math.min(Number(b), file.length - 1);
   return new Response(file.subarray(from, to + 1), { status: 206 });
 };
+
+test('routes fonomeets downloads through traefik only when asked', () => {
+  const prev = process.env.APK_VIA_TRAEFIK;
+  try {
+    delete process.env.APK_VIA_TRAEFIK;
+    assert.equal(usesTraefik('https://fonomeets.com/descargas/a.apk'), false);
+    process.env.APK_VIA_TRAEFIK = '1';
+    assert.equal(usesTraefik('https://fonomeets.com/descargas/a.apk'), true);
+    assert.equal(usesTraefik('https://www.fonomeets.com/descargas/a.apk'), true);
+    assert.equal(usesTraefik('https://example.com/descargas/a.apk'), false);
+    assert.equal(usesTraefik('https://fonomeets.com/descargas/a.apk', async () => {}), false);
+  } finally {
+    if (prev === undefined) delete process.env.APK_VIA_TRAEFIK;
+    else process.env.APK_VIA_TRAEFIK = prev;
+  }
+});
 
 test('reads versionName by attribute name or by resource id', () => {
   assert.equal(manifestVersionName(manifest('0.1.4')), '0.1.4');

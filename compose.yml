@@ -4,6 +4,8 @@ services:
     build: .
     restart: unless-stopped
     env_file: .env
+    environment:
+      APK_VIA_TRAEFIK: "1"
     volumes:
       - ./storage:/data
     networks:
